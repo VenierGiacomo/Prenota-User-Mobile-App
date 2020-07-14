@@ -1,17 +1,187 @@
-<ion-header [translucent]="true">
+<ion-header>
   <ion-toolbar>
     <ion-title>
-      Tab 1
+      prenota
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Tab 1</ion-title>
-    </ion-toolbar>
-  </ion-header>
-
-  <app-explore-container name="Tab 1 page"></app-explore-container>
+<ion-content>
+    <div class="spinner" [style.display]="spin">
+      <p>Caricamento in corso</p>
+        <div class="double-bounce1"></div>
+        <div class="double-bounce2"></div>
+      </div>
+<section>
+  <h2>Salute</h2>
+<div class='x-scroller'>
+  <!-- <div class="prof-profile " (click)="presentModal('https://s1.dottori.it/uploads/img/68b6ab/e3/219674/b80fb6_b1084_c0d54.jpg','Gianfranco Stupar','Medico dello Sport',1)">
+    <div class="prof-img"><img src='https://s1.dottori.it/uploads/img/68b6ab/e3/219674/b80fb6_b1084_c0d54.jpg'></div>
+  <h4> Gianfranco Stupar</h4>
+  <h5>Medico dello Sport</h5>
+  <div class="location"><img src='../assets/icon/location.svg'> Via Torrebianca 28</div>
+  </div> -->
+  <div class="prof-profile" *ngFor='let shop of shops[0]' (click)="presentModal(shop.img_url,shop.store_name,'Medico dello Sport',shop.id)">
+    <div class="prof-img"><img src='{{shop.img_url}}'></div>
+  <h4>{{shop.store_name}}</h4>
+  <h5>{{shop.business_description}}</h5>
+  <div class="location"><img src='../assets/icon/location.svg'>{{shop.address}}</div>
+  </div>
+  <div class="prof-profile deactivated">
+      <div class="prof-img"><img src='../assets/Female-image-placeholder.png'></div>
+    <h4>Nuovi servizzi</h4>
+    <h5>Arriveranno presto</h5>
+    <div class="location"><img src='../assets/icon/location.svg'>Prenota.cc</div>
+    </div>
+     <div class="prof-profile deactivated">
+      <div class="prof-img"><img src='../assets/placeholder-profile-male (1).jpg'></div>
+    <h4>Nuovi servizzi</h4>
+    <h5>Arriveranno presto</h5>
+    <div class="location"><img src='../assets/icon/location.svg'>Prenota.cc</div>
+    </div>
+</div>
+</section>
+<section>
+    <h2>Cura capelli e viso</h2>
+  <div class='x-scroller'>
+    <div class="prof-profile" *ngFor='let shop of shops[1]' (click)="presentModal(shop.img_url,shop.store_name,'Medico dello Sport',shop.id)">
+          <div class="prof-img"><img src='{{shop.img_url}}'></div>
+        <h4>{{shop.store_name}}</h4>
+        <h5>{{shop.business_description}}</h5>
+        <div class="location"><img src='../assets/icon/location.svg'>{{shop.address}}</div>
+  </div>
+   <div class="prof-profile deactivated">
+    <div class="prof-img"><img src='../assets/placeholder-profile-male (1).jpg'></div>
+  <h4>Nuovi servizzi</h4>
+  <h5>Arriveranno presto</h5>
+  <div class="location"><img src='../assets/icon/location.svg'>Prenota.cc</div>
+  </div>
+  <div class="prof-profile deactivated" >
+    <div class="prof-img"><img src='../assets/Female-image-placeholder.png'></div>
+  <h4>Nuovi servizzi</h4>
+  <h5>Arriveranno presto</h5>
+  <div class="location"><img src='../assets/icon/location.svg'>Prenota.cc</div>
+  </div>
+  </div>
+  </section>
+  <section>
+      <h2>Estetisti</h2>
+      <div class='x-scroller'>
+      
+          <div class="prof-profile deactivated">
+            <div class="prof-img"><img src='../assets/placeholder-profile-male (1).jpg'></div>
+          <h4>Nuovi servizzi</h4>
+          <h5>Arriveranno presto</h5>
+          <div class="location"><img src='../assets/icon/location.svg'>Prenota.cc</div>
+          </div>
+           <div class="prof-profile deactivated" >
+            <div class="prof-img"><img src='../assets/Female-image-placeholder.png'></div>
+          <h4>Nuovi servizzi</h4>
+          <h5>Arriveranno presto</h5>
+          <div class="location"><img src='../assets/icon/location.svg'>Prenota.cc</div>
+          </div>
+          <div class="prof-profile deactivated">
+            <div class="prof-img"><img src='../assets/placeholder-profile-male (1).jpg'></div>
+          <h4>Nuovi servizzi</h4>
+          <h5>Arriveranno presto</h5>
+          <div class="location"><img src='../assets/icon/location.svg'>Prenota.cc</div>
+          </div>
+          </div>
+    </section>
+    <section>
+      <h2>Dentisti</h2>
+    <div class='x-scroller'>
+    <div class="prof-profile deactivated" >
+      <div class="prof-img"><img src='../assets/Female-image-placeholder.png'></div>
+    <h4>Nuovi servizzi</h4>
+    <h5>Arriveranno presto</h5>
+    <div class="location"><img src='../assets/icon/location.svg'>Prenota.cc</div>
+    </div>
+     <div class="prof-profile deactivated" >
+      <div class="prof-img"><img src='../assets/placeholder-profile-male (1).jpg'></div>
+    <h4>Nuovi servizzi</h4>
+    <h5>Arriveranno presto</h5>
+    <div class="location"><img src='../assets/icon/location.svg'>Prenota.cc</div>
+    </div>
+    <div class="prof-profile deactivated" >
+      <div class="prof-img"><img src='../assets/Female-image-placeholder.png'></div>
+    <h4>Nuovi servizzi</h4>
+    <h5>Arriveranno presto</h5>
+    <div class="location"><img src='../assets/icon/location.svg'>Prenota.cc</div>
+    </div>
+    </div>
+    </section>
+    <section>
+        <h2>Fisioterapia</h2>
+        <div class='x-scroller'>
+      
+            <div class="prof-profile deactivated" >
+              <div class="prof-img"><img src='../assets/Female-image-placeholder.png'></div>
+            <h4>Nuovi servizzi</h4>
+            <h5>Arriveranno presto</h5>
+            <div class="location"><img src='../assets/icon/location.svg'>Prenota.cc</div>
+            </div>
+             <div class="prof-profile deactivated" >
+              <div class="prof-img"><img src='../assets/placeholder-profile-male (1).jpg'></div>
+            <h4>Nuovi servizzi</h4>
+            <h5>Arriveranno presto</h5>
+            <div class="location"><img src='../assets/icon/location.svg'>Prenota.cc</div>
+            </div>
+            <div class="prof-profile deactivated" >
+              <div class="prof-img"><img src='../assets/Female-image-placeholder.png'></div>
+            <h4>Nuovi servizzi</h4>
+            <h5>Arriveranno presto</h5>
+            <div class="location"><img src='../assets/icon/location.svg'>Prenota.cc</div>
+            </div>
+            </div>
+      </section>
+      <section>
+          <h2>Personal trainer</h2>
+          <div class='x-scroller'>
+      
+              <div class="prof-profile deactivated" >
+                <div class="prof-img"><img src='../assets/placeholder-profile-male (1).jpg'></div>
+              <h4>Nuovi servizzi</h4>
+              <h5>Arriveranno presto</h5>
+              <div class="location"><img src='../assets/icon/location.svg'>Prenota.cc</div>
+              </div>
+               <div class="prof-profile deactivated" >
+                <div class="prof-img"><img src='../assets/Female-image-placeholder.png'></div>
+              <h4>Nuovi servizzi</h4>
+              <h5>Arriveranno presto</h5>
+              <div class="location"><img src='../assets/icon/location.svg'>Prenota.cc</div>
+              </div>
+              <div class="prof-profile deactivated" >
+                <div class="prof-img"><img src='../assets/placeholder-profile-male (1).jpg'></div>
+              <h4>Nuovi servizzi</h4>
+              <h5>Arriveranno presto</h5>
+              <div class="location"><img src='../assets/icon/location.svg'>Prenota.cc</div>
+              </div>
+              </div>
+        </section>
+        <section>
+            <h2>Avvocati</h2>
+            <div class='x-scroller'>
+      
+                <div class="prof-profile deactivated" >
+                  <div class="prof-img"><img src='../assets/Female-image-placeholder.png'></div>
+                <h4>Nuovi servizzi</h4>
+                <h5>Arriveranno presto</h5>
+                <div class="location"><img src='../assets/icon/location.svg'>Prenota.cc</div>
+                </div>
+                 <div class="prof-profile deactivated" >
+                  <div class="prof-img"><img src='../assets/placeholder-profile-male (1).jpg'></div>
+                <h4>Nuovi servizzi</h4>
+                <h5>Arriveranno presto</h5>
+                <div class="location"><img src='../assets/icon/location.svg'>Prenota.cc</div>
+                </div>
+                <div class="prof-profile deactivated" >
+                  <div class="prof-img"><img src='../assets/Female-image-placeholder.png'></div>
+                <h4>Nuovi servizzi</h4>
+                <h5>Arriveranno presto</h5>
+                <div class="location"><img src='../assets/icon/location.svg'>Prenota.cc</div>
+                </div>
+                </div>
+          </section>
+        
 </ion-content>

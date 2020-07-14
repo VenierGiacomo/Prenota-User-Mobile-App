@@ -1,17 +1,39 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>
-      Tab 3
-    </ion-title>
-  </ion-toolbar>
-</ion-header>
-
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
+<!-- <<ion-header>
     <ion-toolbar>
-      <ion-title size="large">Tab 3</ion-title>
+      <ion-title>
+        prenota
+      </ion-title>
     </ion-toolbar>
   </ion-header>
 
-  <app-explore-container name="Tab 3 page"></app-explore-container>
-</ion-content>
+<ion-content [fullscreen]="true">
+    <h2 (click)='deletestorage()'>I tuoi dati</h2>
+  <div class="form">
+    <ion-list lines="full" class="ion-no-margin ion-no-padding">
+        <ion-item>
+          <ion-label position="stacked">Nome  <ion-text color="danger">*</ion-text></ion-label>
+          <ion-input required type="text" ></ion-input>
+        </ion-item>
+        <ion-item>
+            <ion-label position="stacked">Cognome <ion-text color="danger">*</ion-text></ion-label>
+            <ion-input required type="text" ></ion-input>
+          </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">Email <ion-text color="danger">*</ion-text></ion-label>
+          <ion-input required type="text" ></ion-input>
+        </ion-item>
+        <ion-item>
+            <ion-label position="stacked">Numero di telefono <ion-text color="danger">*</ion-text></ion-label>
+            <ion-input required type="number" ></ion-input>
+          </ion-item>
+          <ion-item>
+              <ion-label style="text-align: right; margin: 0px;">Uomo</ion-label>
+              <ion-toggle ></ion-toggle>
+              <ion-label style="text-align: left;margin: 0px;">Donna</ion-label>
+            </ion-item>
+    
+    </ion-list>
+  </div>
+  <ion-button (click)='presentRegisterModal()'>Cambia profilo</ion-button>
+</ion-content> -->

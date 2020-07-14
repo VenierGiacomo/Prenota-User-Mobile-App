@@ -1,17 +1,20 @@
-<ion-header [translucent]="true">
+<ion-header>
   <ion-toolbar>
     <ion-title>
-      Tab 2
+      prenota
     </ion-title>
+    <ion-buttons slot="end" (click)='logout()' >
+        Esci
+      </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Tab 2</ion-title>
-    </ion-toolbar>
-  </ion-header>
-
-  <app-explore-container name="Tab 2 page"></app-explore-container>
+  <h2 (click)='deletestorage()'>I tuoi appuntamenti</h2>
+  <div class="appintment" *ngIf='appointments_list.length==0'>Al monento non c'è nessun appuntamento prenotato</div>
+  <div class="appintment" *ngFor="let appointment of appointments_list">
+    <div class='app-Shop'>{{appointment.studio}}</div>
+    <div class='app-service'>{{appointment.service}}</div>
+    <div class='app-date'>  <ion-icon name="today-outline"></ion-icon> {{appointment.date}} ore {{appointment.time}} </div>
+  </div>
 </ion-content>

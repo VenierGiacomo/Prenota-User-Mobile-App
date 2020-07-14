@@ -24,3 +24,68 @@
 @import "~@ionic/angular/css/text-alignment.css";
 @import "~@ionic/angular/css/text-transformation.css";
 @import "~@ionic/angular/css/flex-utils.css";
+
+@import"~assets/author/css/animate.css";
+@import"~assets/author/css/owl.carousel.min.css";
+@import"~assets/author/css/owl.theme.default.min.css";
+@import"~assets/author/css/magnific-popup.css";
+@import"~assets/author/css/flaticon.css";
+@import"~assets/author/css/style.css";
+
+
+@font-face {
+    font-family: "Comfortaa Regular";
+    src: url('./assets/Comfortaa/static/Comfortaa-Regular.ttf') format('opentype');
+  }
+  @font-face {
+    font-family: "Comfortaa Bold";
+    src: url('./assets/Comfortaa/static/Comfortaa-Bold.ttf') format('opentype');
+  }
+body{
+    background: #efefef;
+    color: #0061d5 ;
+    font-family:  'Open Sans', sans-serif !important;
+}
+
+ion-content{
+  width: 100vw;
+  font-family:  'Open Sans', sans-serif !important;
+    border: none;
+    margin-top: 10px;
+    --background: #efefef;
+    --color: #0061d5 ;
+}
+ion-toolbar{
+  width: 100vw;
+  font-family:  'Open Sans', sans-serif !important;
+  --background: transparent;
+}
+ion-header{
+     width: 100vw;
+    font-size: 24px;
+    background: #0061d5;
+    color:#fff;
+    text-align: center;
+    font-family: 'Comfortaa Bold';
+    margin:0px!important;
+}
+ion-tab-bar{
+  --background: #0061d5;
+}
+.select-modal{
+    background: transparent;
+    .modal-wrapper { border-top-left-radius: 15px; border-top-right-radius: 15px;}
+    padding-top:80px!important;
+  }
+
+  ion-title {
+    width: 100vw !important;
+    position: absolute !important;
+    left:0px !important;
+    font-size: 24px;
+    color:#fff;
+    bottom:15px;    
+    margin:0px!important;
+    font-family: 'Comfortaa Bold';
+    text-align:center !important;
+  }

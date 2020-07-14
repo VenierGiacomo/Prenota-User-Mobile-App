@@ -1,5 +1,7 @@
 {
   "name": "prenota-client",
-  "integrations": {},
+  "integrations": {
+    "cordova": {}
+  },
   "type": "angular"
 }

@@ -1,0 +1,59 @@
+h2{
+    padding: 10px 0px 0px 10px;
+    color: #48466d;
+    font-size: 21px;
+    font-weight: 600;
+    font-family:  'Open Sans', sans-serif !important;
+    margin:0px 5px;
+}
+.appintment{
+    padding: 10px;
+    position: relative;
+    display: block;
+    margin: 15px auto;
+    width: 96vw;
+    background: white;
+    border-radius: 5px;
+    box-shadow: 0 5px 7px rgba(#2c59ac, 0.3);
+    border-left: 5px solid #2c59ac;
+    .app-Shop{
+        color: #48466d;
+        font-weight: 600;
+        font-size: 18px;
+        line-height: 18px;
+    }
+    .app-service{
+    color: #00479D ;
+    font-size: 15px;
+    }
+    .app-date{
+        font-size: 15px;
+        ion-icon{
+            margin-bottom: -3px;
+        }
+    padding: 0px 0px 0px 0px;
+    }
+}
+// .appintment:nth-child(even){
+//     border-left: 5px solid #2c59ac;
+// }
+// .appintment:nth-child(odd){
+//     border-left: 5px solid #0099ff;
+// }
+.log-out-btn{
+    display: block;
+    height: 60px;
+    width: 60px;
+    padding-top:10px;
+    border-radius: 50%;
+    text-align: center;
+    color: white;
+    background: #0061d5;
+}
+ion-header{
+    ion-buttons{
+        padding-right: 10px;
+        font-size: 18px;
+      color:  #fff;
+    }
+  }
