@@ -58,11 +58,18 @@ h1{
 width: 70vw;
 left: 15vw;
     }
-
+ p{
+     font-size: 10px;
+     color: #48466d;
+     a{
+         color: #0061D5;
+     }
+ }
 }
 .err{
 color:rgb(168, 2, 2);
 width: 100vw;
+text-align: center;
 }
 ion-toggle {
     margin: 0px 10px;

@@ -8,6 +8,8 @@ import { NativeApiService } from '../services/nativeapi.service';
 import { ApiService } from '../services/api.service';
 import { RegisterPage } from '../register/register.page';
 import { MoreInfoPage } from '../more-info/more-info.page';
+import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
+import { combineLatest } from 'rxjs';
 @Component({
   selector: 'app-book-modal',
   templateUrl: './book-modal.page.html',
@@ -20,7 +22,7 @@ export class BookModalPage implements OnInit {
   spin='block'
   today
   unique :any
-  user:any= {first_name:'', last_name:''}
+  user:any= {first_name:'', last_name:'',phone:''}
   confirm='none'
   service :any =''
   @Input() id
@@ -48,7 +50,7 @@ export class BookModalPage implements OnInit {
   months=['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno','Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre']
   months_short=['Gen','Feb','Mar','Apr','Mag','Giu','Lug','Ago','Set','Ott','Nov','Dic']
   years=[2020,2021]
-  constructor(private apiNative:NativeApiService, private plt: Platform,private api: ApiService, private router: Router,private storage: StorageService, public modalController: ModalController, private pickerController: PickerController,) {}
+  constructor(private localNotifications: LocalNotifications, private apiNative:NativeApiService, private plt: Platform,private api: ApiService, private router: Router,private storage: StorageService, public modalController: ModalController, private pickerController: PickerController,) {}
 // private apiNative: NativeApiService,
   ngOnInit() {
     Notiflix.Block.Standard('.service', 'Caricamento serivzi...');
@@ -56,20 +58,20 @@ export class BookModalPage implements OnInit {
     // this.apiNative.storeToken("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoyLCJ1c2VybmFtZSI6ImdpYWNvbW92ZW5pZXJAZ21haWwuY29tIiwiZXhwIjoxNTk2MTkwMTU1LCJlbWFpbCI6ImdpYWNvbW92ZW5pZXJAZ21haWwuY29tIiwib3JpZ19pYXQiOjE1OTM1MjUyMzJ9.JuKYHCyGe9BNt-WNitG3cH0Dm36_gF290C3vTKAtDV8")
     var now = new Date()
     var today = now.getDay()
-    this.day = now.getDate()+1
+    this.day = now.getDate()
     this.month = now.getMonth()
     this.year = now.getFullYear()
-    this.today= `${this.day} ${this.months[this.month]} ${this.year}`
     var now = new  Date()
-  var month = now.getMonth()
-  var day_number = now.getDate()+1
-  for (let i=0;i<10;i++){
+    var month = now.getMonth()
+    var day_number = now.getDate()
+  
+  for (let i=0;i<11;i++){
       if((day_number + i)<= this.months_days[month]){
-        var day = {"number" :day_number + i, "week_day" : ((today+i)%7), "month":this.month}
+        var day = {"number" :day_number + i, "week_day" : ((today+i-1)%7), "month":this.month}
         this.active_date.push(false)
         this.week.push(day)
       }else{
-        var day = {"number" :day_number + i - this.months_days[month], "week_day" : ((today+i)%7), "month":this.month+1 }
+        var day = {"number" :day_number + i - this.months_days[month], "week_day" : ((today+i-1)%7), "month":this.month+1 }
         this.active_date.push(false)
         this.week.push(day)
       }
@@ -204,7 +206,7 @@ export class BookModalPage implements OnInit {
       for (let indd in this.active_date){
         this.active_date[indd]=false
       }
-      this.today= `${date_avi.number} ${date_avi.month} ${this.year}`
+      this.today= `${date_avi.number} ${this.months[date_avi.month]} ${this.year}`
       this.day = date_avi.number
       this.month = date_avi.month
       this.active_date[ind] = true
@@ -225,14 +227,18 @@ export class BookModalPage implements OnInit {
     this.timeslot =this.times[time.start]
     this.confirm='block'
   }
-  calculateWorkdates(){
-    this.api.getemployeeHoursByShop(this.id).subscribe(data=>{
-      var empl = data
+  async calculateWorkdates(){
+    await this.api.getemployeeHoursByShop(this.id).subscribe(async data=>{
+      var empl = await data
+      console.log(data, this.week, this.id)
       var x:any =[]
       for(let work of empl){
         for(let day of this.week){
           if(day.week_day == work.wkday){
-          x.push(day)
+            if(day.number<=this.day+1 && day.month==this.month){
+            }else{
+              x.push(day)
+            }
           }
         }
       }
@@ -243,6 +249,9 @@ export class BookModalPage implements OnInit {
         if (a.number > b.number) return 1;
         if (a.number < b.number) return -1;
       })
+      console.log(this.unique)
+      this.day=this.unique[0].number
+      this.today= `${this.day} ${this.months[this.month]} ${this.year}`
       this.spin = 'none'
     })
   }
@@ -268,7 +277,6 @@ export class BookModalPage implements OnInit {
         if (day_of_week == -1){
           day_of_week= 6
         }
-
     this.availableSpots=[]
     if (this.plt.is('hybrid')) {
     this.apiNative.getemployeeHoursByShop(this.id).then(
@@ -303,7 +311,7 @@ export class BookModalPage implements OnInit {
         var max_ind = this.openhours.length-1
         for(let idx in this.openhours){
           let id:any = idx
-          if(id ==0 || id == max_ind || this.openhours[id].time-this.openhours[id-1].time> 1  || this.openhours[id].employee-this.openhours[id-1].employee!= 0 ||  app.duration == this.total_service.duration){
+          if(id ==0 || id == max_ind || this.openhours[id].time-this.openhours[id-1].time> 1  || this.openhours[id].employee-this.openhours[id-1].employee!= 0 || app == undefined || app.duration == this.total_service.duration){
             if (app != undefined){
               if(app.duration>=   this.total_service.duration){
                 this.availableSpots.push(app)
@@ -319,7 +327,6 @@ export class BookModalPage implements OnInit {
         this.availableSpots.sort(function(a, b) {
              return a.start - b.start;
           });
-          console.log( this.availableSpots)
           this.availableSpots=[...new Set(this.availableSpots)]
           Notiflix.Block.Remove('.time');
     }).catch(
@@ -359,7 +366,7 @@ export class BookModalPage implements OnInit {
           var max_ind = this.openhours.length-1
           for(let idx in this.openhours){
             let id:any = idx
-            if(id ==0 || id == max_ind || this.openhours[id].time-this.openhours[id-1].time> 1  || this.openhours[id].employee-this.openhours[id-1].employee!= 0 ||  app.duration == this.total_service.duration){
+            if(id ==0 || id == max_ind || this.openhours[id].time-this.openhours[id-1].time> 1  || this.openhours[id].employee-this.openhours[id-1].employee!= 0 ||  app == undefined || app.duration == this.total_service.duration){
               if (app != undefined){
                 if(app.duration>=   this.total_service.duration){
                   this.availableSpots.push(app)
@@ -408,18 +415,40 @@ async book(){
   var token: any = await this.apiNative.isvalidToken()
   if (this.plt.is('hybrid')) {
     if(token){
-      this.storage.setAppointment(appointment)
       Notiflix.Block.Standard('.cont', 'Prenotaizone in corso...');
       var client_name = this.user.first_name+' '+ this.user.last_name
       var start = this.rows.indexOf(this.times[this.selected_hour.start])
       var end = start + this.total_service.duration
            //  bookAppointmentNoOwner(start, end,        day,      month,      year,        name,           phone,                  details,                    employee,               service, shop):Observable<any>{
-      this.apiNative.bookAppointmentNoOwner(start, end, this.day, this.month, this.year, client_name, this.user.phone,  this.total_service.name, this.selected_hour.employee, this.total_service.id,this.id).then(data=>{ 
-      this.sendEmailConfirmation(this.user.email,this.user.first_name,this.user.last_name,this.day,this.months_names[this.month],this.year,this.times[this.selected_hour.start],this.total_service.name,"Wellness Clinic")
+      this.apiNative.bookAppointmentNoOwner(start, end, this.day, this.month, this.year, client_name, this.user.phone,  this.total_service.name, this.selected_hour.employee, this.total_service.id,this.id).then(async data=>{ 
+      this.sendEmailConfirmation(this.user.email,this.user.first_name,this.user.last_name,this.day,this.months_names[this.month],this.year,this.times[this.selected_hour.start],this.total_service.name, this.name)
+      await this.storage.setAppointment(appointment)
       this.confirm='none'
       Notiflix.Block.Remove('.cont');
        Notiflix.Report.Success("L'appuntamento è stato prenotato", 'Controlla la tua email per ulteriori informazioni', 'OK');
-       this.closeModal()
+       await this.closeModal()
+       var x = this.timeslot.split(":")
+       var month = this.month
+       var day = this.day
+       if (day!=1){
+          day=day-1
+       }else{
+          day = this.months_days[this.month-1]
+          month=month-1
+       }
+       this.localNotifications.schedule({
+         text: `Ricordati il tuo appuntamento presso ${this.name}.\n${this.total_service.name} il ${this.today} alle ${this.timeslot}`,
+         trigger: {at: new Date(this.year, month, day, 11)},
+         led: 'FF0000',
+         sound: null
+      });
+      
+      this.localNotifications.schedule({
+       text: `Ricordati il tuo appuntamento presso ${this.name}.\n${this.total_service.name} oggi alle ${this.timeslot}`,
+       trigger: {at: new Date(this.year, this.month, this.day, x[0]-2)},
+       led: 'FF0000',
+       sound: null
+     });
        this.router.navigateByUrl('tabs/tab2')}).catch(
       err=>{
         Notiflix.Report.Failure("Errore, prenotazione fallita", 'Controlla la tua connessione o prova a cambiare orario', 'Annulla');
@@ -430,8 +459,18 @@ async book(){
       this.presentRegisterModal()
     }
   }else{
+    this.storage.setAppointment(appointment)
+    var month = this.month
+    var day = this.day
+   if (day!=1){
+     day=day-1
+   }else{
+     day = this.months_days[this.month]-1
+     month=month-1
+   }
+   var x = this.timeslot.split(":")
+    // console.log(new Date(this.year, month, this.day, x[0]-2), `Ricordati il tuo appuntamento presso ${this.name}.\n${this.total_service.name} oggi alle ${this.timeslot}`, new Date(this.year, this.month, day, 11),`Ricordati il tuo appuntamento presso ${this.name}.\n${this.total_service.name} il ${this.today} alle ${this.timeslot}`,)
     if(this.api.isvalidToken()){
-      this.storage.setAppointment(appointment)
       Notiflix.Block.Standard('.cont', 'Prenotaizone in corso...');
       var client_name = this.user.first_name+' '+ this.user.last_name
       var start = this.rows.indexOf(this.times[this.selected_hour.start])
@@ -439,6 +478,7 @@ async book(){
            //  bookAppointmentNoOwner(start, end,        day,      month,      year,        name,           phone,                  details,                    employee,               service, shop):Observable<any>{
       this.api.bookAppointmentNoOwner(start, end, this.day, this.month, this.year, client_name, this.user.phone,  this.total_service.name, this.selected_hour.employee, this.total_service.id,this.id).subscribe(data=>{ 
       this.sendEmailConfirmation(this.user.email,this.user.first_name,this.user.last_name,this.day,this.months_names[this.month],this.year,this.times[this.selected_hour.start],this.total_service.name,"Wellness Clinic")
+      this.storage.setAppointment(appointment)
       this.confirm='none'
       Notiflix.Block.Remove('.cont');
        Notiflix.Report.Success("L'appuntamento è stato prenotato", 'Controlla la tua email per ulteriori informazioni', 'OK');
@@ -462,7 +502,7 @@ async book(){
       time: this.timeslot,
     }
     if (this.plt.is('hybrid')) {
-      var token = this.apiNative.isvalidToken()
+      var token = await this.apiNative.isvalidToken() //occhio l/await non testato
       if(token){
         this.storage.setAppointment(appointment)
         Notiflix.Block.Standard('.cont', 'Prenotaizone in corso...');
@@ -485,6 +525,7 @@ async book(){
         this.presentRegisterModal()
       }
     }else{
+      var token = await this.api.isvalidToken()
       if(this.api.isvalidToken()){
         this.storage.setAppointment(appointment)
         Notiflix.Block.Standard('.cont', 'Prenotaizone in corso...');

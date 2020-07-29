@@ -5,6 +5,7 @@ import { NativeApiService } from '../services/nativeapi.service';
 import { Router } from '@angular/router';
 import { ApiService } from '../services/api.service';
 import Notiflix from "notiflix";
+import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 
 @Component({
   selector: 'app-tab2',
@@ -14,14 +15,19 @@ import Notiflix from "notiflix";
 export class Tab2Page {
 appointments_list:any=[]
 
-  constructor(private storage: StorageService, private plt:Platform,private apiNative:NativeApiService, private router:Router, private api: ApiService) {}
+  constructor(private localNotifications: LocalNotifications, private storage: StorageService, private plt:Platform,private apiNative:NativeApiService, private router:Router, private api: ApiService) {}
 
   async ionViewDidEnter() {
     this.appointments_list= await this.storage.getAppoitments()
-    console.log( this.appointments_list)
   }
-  deletestorage(){
-    this.storage.deleteappointments()
+   deletestorage(id){
+    console.log(this.appointments_list, id)
+    // this.storage.deleteappointments()
+    this.storage.deleteappointment(id)
+    setTimeout(async () => {
+      this.appointments_list= await this.storage.getAppoitments()
+    }, 100);
+    
   }
   logout(){
     if (this.plt.is('hybrid')) {

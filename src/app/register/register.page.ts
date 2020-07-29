@@ -63,9 +63,10 @@ BASE_URL = 'https://giacomovenier.pythonanywhere.com/api/'
             console.log(data, 'efverfvgr')
             await this.nativeApi.storeToken(data.token)
             Notiflix.Block.Remove('.wrapper');
-            this.closeModal()
+            await this.closeModal()
+            this.homeref.user.phone = this.phone
             this.homeref.bookfromLogin(data.email, data.first_name, data.last_name)
-            this.homeref.closeModal()
+            await this.homeref.closeModal()
           }
         ).catch(
           err => {
@@ -86,7 +87,8 @@ BASE_URL = 'https://giacomovenier.pythonanywhere.com/api/'
          this.api.storeToken(data.token)
           Notiflix.Block.Remove('.wrapper');
           this.closeModal()
-          this.homeref.bookfromLogin(data.email, data.first_name, data.last_name)
+          this.homeref.user.phone = this.phone
+          this.homeref.bookfromLogin(data.email, data.first_name, data.last_name )
           this.homeref.closeModal()
         },
         err => {

@@ -27,6 +27,8 @@ h2{
     font-size: 15px;
     }
     .app-date{
+        color: #48466d;
+
         font-size: 15px;
         ion-icon{
             margin-bottom: -3px;
@@ -57,3 +59,24 @@ ion-header{
       color:  #fff;
     }
   }
+
+  .login-btn{
+    position: absolute;
+    bottom: 0px;
+    width: 100vw;
+    text-align: center;
+    padding:0vw 10vw;
+    margin: 10px 0px;
+ p{
+     font-size: 10px;
+     color: #48466d;
+    
+     a{
+         color: #0061D5;
+     }
+ }
+
+}
+ion-item{
+    --background:#efefef
+ }

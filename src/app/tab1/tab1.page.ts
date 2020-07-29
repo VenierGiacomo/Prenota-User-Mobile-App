@@ -51,6 +51,7 @@ dentist =[ 'Controlli di routine', 'Visita odontoiatrica',"Estrazioni", ' Ottura
                 this[a.business_type].push(a);
             }, Object.create(null));
             this.shops = grouped
+            console.log(this.shops)
             this.spin='none'
                     },err=>{
                       this.spin='none'

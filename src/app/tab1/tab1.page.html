@@ -6,7 +6,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content [fullscreen]="true">
     <div class="spinner" [style.display]="spin">
       <p>Caricamento in corso</p>
         <div class="double-bounce1"></div>
@@ -21,7 +21,7 @@
   <h5>Medico dello Sport</h5>
   <div class="location"><img src='../assets/icon/location.svg'> Via Torrebianca 28</div>
   </div> -->
-  <div class="prof-profile" *ngFor='let shop of shops[0]' (click)="presentModal(shop.img_url,shop.store_name,'Medico dello Sport',shop.id)">
+  <div class="prof-profile" *ngFor='let shop of shops[0]' (click)="presentModal(shop.img_url,shop.store_name, shop.business_description ,shop.id)">
     <div class="prof-img"><img src='{{shop.img_url}}'></div>
   <h4>{{shop.store_name}}</h4>
   <h5>{{shop.business_description}}</h5>
@@ -29,13 +29,13 @@
   </div>
   <div class="prof-profile deactivated">
       <div class="prof-img"><img src='../assets/Female-image-placeholder.png'></div>
-    <h4>Nuovi servizzi</h4>
+    <h4>Nuovi servizi</h4>
     <h5>Arriveranno presto</h5>
     <div class="location"><img src='../assets/icon/location.svg'>Prenota.cc</div>
     </div>
      <div class="prof-profile deactivated">
       <div class="prof-img"><img src='../assets/placeholder-profile-male (1).jpg'></div>
-    <h4>Nuovi servizzi</h4>
+    <h4>Nuovi servizi</h4>
     <h5>Arriveranno presto</h5>
     <div class="location"><img src='../assets/icon/location.svg'>Prenota.cc</div>
     </div>
@@ -44,7 +44,7 @@
 <section>
     <h2>Cura capelli e viso</h2>
   <div class='x-scroller'>
-    <div class="prof-profile" *ngFor='let shop of shops[1]' (click)="presentModal(shop.img_url,shop.store_name,'Medico dello Sport',shop.id)">
+    <div class="prof-profile" *ngFor='let shop of shops[1]' (click)="presentModal(shop.img_url,shop.store_name, shop.business_description ,shop.id)">
           <div class="prof-img"><img src='{{shop.img_url}}'></div>
         <h4>{{shop.store_name}}</h4>
         <h5>{{shop.business_description}}</h5>
@@ -52,13 +52,13 @@
   </div>
    <div class="prof-profile deactivated">
     <div class="prof-img"><img src='../assets/placeholder-profile-male (1).jpg'></div>
-  <h4>Nuovi servizzi</h4>
+  <h4>Nuovi servizi</h4>
   <h5>Arriveranno presto</h5>
   <div class="location"><img src='../assets/icon/location.svg'>Prenota.cc</div>
   </div>
   <div class="prof-profile deactivated" >
     <div class="prof-img"><img src='../assets/Female-image-placeholder.png'></div>
-  <h4>Nuovi servizzi</h4>
+  <h4>Nuovi servizi</h4>
   <h5>Arriveranno presto</h5>
   <div class="location"><img src='../assets/icon/location.svg'>Prenota.cc</div>
   </div>
@@ -70,19 +70,19 @@
       
           <div class="prof-profile deactivated">
             <div class="prof-img"><img src='../assets/placeholder-profile-male (1).jpg'></div>
-          <h4>Nuovi servizzi</h4>
+          <h4>Nuovi servizi</h4>
           <h5>Arriveranno presto</h5>
           <div class="location"><img src='../assets/icon/location.svg'>Prenota.cc</div>
           </div>
            <div class="prof-profile deactivated" >
             <div class="prof-img"><img src='../assets/Female-image-placeholder.png'></div>
-          <h4>Nuovi servizzi</h4>
+          <h4>Nuovi servizi</h4>
           <h5>Arriveranno presto</h5>
           <div class="location"><img src='../assets/icon/location.svg'>Prenota.cc</div>
           </div>
           <div class="prof-profile deactivated">
             <div class="prof-img"><img src='../assets/placeholder-profile-male (1).jpg'></div>
-          <h4>Nuovi servizzi</h4>
+          <h4>Nuovi servizi</h4>
           <h5>Arriveranno presto</h5>
           <div class="location"><img src='../assets/icon/location.svg'>Prenota.cc</div>
           </div>
@@ -93,19 +93,19 @@
     <div class='x-scroller'>
     <div class="prof-profile deactivated" >
       <div class="prof-img"><img src='../assets/Female-image-placeholder.png'></div>
-    <h4>Nuovi servizzi</h4>
+    <h4>Nuovi servizi</h4>
     <h5>Arriveranno presto</h5>
     <div class="location"><img src='../assets/icon/location.svg'>Prenota.cc</div>
     </div>
      <div class="prof-profile deactivated" >
       <div class="prof-img"><img src='../assets/placeholder-profile-male (1).jpg'></div>
-    <h4>Nuovi servizzi</h4>
+    <h4>Nuovi servizi</h4>
     <h5>Arriveranno presto</h5>
     <div class="location"><img src='../assets/icon/location.svg'>Prenota.cc</div>
     </div>
     <div class="prof-profile deactivated" >
       <div class="prof-img"><img src='../assets/Female-image-placeholder.png'></div>
-    <h4>Nuovi servizzi</h4>
+    <h4>Nuovi servizi</h4>
     <h5>Arriveranno presto</h5>
     <div class="location"><img src='../assets/icon/location.svg'>Prenota.cc</div>
     </div>
@@ -117,19 +117,19 @@
       
             <div class="prof-profile deactivated" >
               <div class="prof-img"><img src='../assets/Female-image-placeholder.png'></div>
-            <h4>Nuovi servizzi</h4>
+            <h4>Nuovi servizi</h4>
             <h5>Arriveranno presto</h5>
             <div class="location"><img src='../assets/icon/location.svg'>Prenota.cc</div>
             </div>
              <div class="prof-profile deactivated" >
               <div class="prof-img"><img src='../assets/placeholder-profile-male (1).jpg'></div>
-            <h4>Nuovi servizzi</h4>
+            <h4>Nuovi servizi</h4>
             <h5>Arriveranno presto</h5>
             <div class="location"><img src='../assets/icon/location.svg'>Prenota.cc</div>
             </div>
             <div class="prof-profile deactivated" >
               <div class="prof-img"><img src='../assets/Female-image-placeholder.png'></div>
-            <h4>Nuovi servizzi</h4>
+            <h4>Nuovi servizi</h4>
             <h5>Arriveranno presto</h5>
             <div class="location"><img src='../assets/icon/location.svg'>Prenota.cc</div>
             </div>
@@ -141,19 +141,19 @@
       
               <div class="prof-profile deactivated" >
                 <div class="prof-img"><img src='../assets/placeholder-profile-male (1).jpg'></div>
-              <h4>Nuovi servizzi</h4>
+              <h4>Nuovi servizi</h4>
               <h5>Arriveranno presto</h5>
               <div class="location"><img src='../assets/icon/location.svg'>Prenota.cc</div>
               </div>
                <div class="prof-profile deactivated" >
                 <div class="prof-img"><img src='../assets/Female-image-placeholder.png'></div>
-              <h4>Nuovi servizzi</h4>
+              <h4>Nuovi servizi</h4>
               <h5>Arriveranno presto</h5>
               <div class="location"><img src='../assets/icon/location.svg'>Prenota.cc</div>
               </div>
               <div class="prof-profile deactivated" >
                 <div class="prof-img"><img src='../assets/placeholder-profile-male (1).jpg'></div>
-              <h4>Nuovi servizzi</h4>
+              <h4>Nuovi servizi</h4>
               <h5>Arriveranno presto</h5>
               <div class="location"><img src='../assets/icon/location.svg'>Prenota.cc</div>
               </div>
@@ -165,19 +165,19 @@
       
                 <div class="prof-profile deactivated" >
                   <div class="prof-img"><img src='../assets/Female-image-placeholder.png'></div>
-                <h4>Nuovi servizzi</h4>
+                <h4>Nuovi servizi</h4>
                 <h5>Arriveranno presto</h5>
                 <div class="location"><img src='../assets/icon/location.svg'>Prenota.cc</div>
                 </div>
                  <div class="prof-profile deactivated" >
                   <div class="prof-img"><img src='../assets/placeholder-profile-male (1).jpg'></div>
-                <h4>Nuovi servizzi</h4>
+                <h4>Nuovi servizi</h4>
                 <h5>Arriveranno presto</h5>
                 <div class="location"><img src='../assets/icon/location.svg'>Prenota.cc</div>
                 </div>
                 <div class="prof-profile deactivated" >
                   <div class="prof-img"><img src='../assets/Female-image-placeholder.png'></div>
-                <h4>Nuovi servizzi</h4>
+                <h4>Nuovi servizi</h4>
                 <h5>Arriveranno presto</h5>
                 <div class="location"><img src='../assets/icon/location.svg'>Prenota.cc</div>
                 </div>
