@@ -175,6 +175,17 @@ bookAppointmentNoOwner(start, end, day, month, year,name, phone, details, employ
 getAppointments(week):Observable<any>{
   return this.http.get(BASE_URL+'bookings/week/'+week+'/?owner=2', {headers: this.httpheader})
 }
+
+getClientAppointments():Observable<any>{
+  const token = this.getToken()
+  var l 
+  if (token) {
+     l = this.parseJwt(token) 
+     return this.http.get(BASE_URL+'bookings/user/?user='+l.user_id,{headers: this.newheader()})
+  }
+  throw throwError("error"); 
+}
+
 getAppointmentsByshop(week,id):Observable<any>{
   return this.http.get(BASE_URL+'bookings/week/'+week+'/shop/?shop='+id, {headers: this.httpheader})
 }

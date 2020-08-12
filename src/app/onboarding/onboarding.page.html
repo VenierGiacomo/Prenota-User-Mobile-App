@@ -1,0 +1,34 @@
+<ion-content fullscreen scroll-y="false">
+  <ion-slides pager="true" #slides>
+
+  <ion-slide>
+    <span class="logo">p</span>
+    <h1>Benvenuto su <b>prenota</b></h1>
+    <p>Prendi appuntamenti online in meno di un minuto!</p>
+    <div class="btn-cont">
+      <ion-button class='continue-btn' fill="clear" (click)="next()">Avanti <ion-icon slot="end" name="arrow-forward"></ion-icon></ion-button>
+    </div>
+  </ion-slide>
+
+  <ion-slide>
+    <img class='not-logo' src='../assets/icon/notification.svg'>
+    <h1>Promemoria</h1>
+    <p>Ricevi una notifica il giorno prima e 2 ore prima dell'appuntamento</p>
+    <div class="btn-cont">
+        <ion-button class='continue-btn' fill="clear" (click)="next()">Avanti <ion-icon slot="end" name="arrow-forward"></ion-icon></ion-button>
+    </div>
+  </ion-slide>
+
+  <ion-slide>
+    <img class='not-logo' src="../assets/icon/remove.svg"/>
+    <h1>Cancella</h1>
+    <p>Cancella l'appuntamento con l'app fino a 48h prima. Altrimenti chiama lo studio.</p>
+    <div class="btn-cont">
+        <ion-button class='continue-btn' fill="clear" (click)="home()">Prenota subito <ion-icon slot="end" name="arrow-forward"></ion-icon></ion-button>
+    </div>
+  </ion-slide>
+
+
+
+</ion-slides>
+</ion-content>

@@ -4,14 +4,14 @@
       prenota
     </ion-title>
     <ion-buttons slot="end" (click)='logout()' >
-        Esci
+        {{text_top_right}}
       </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content >
   <h2>I tuoi appuntamenti</h2>
-  <div class="appintment" *ngIf='appointments_list.length==0'>Al monento non c'è nessun appuntamento prenotato</div>
+  <div class="appintment" *ngIf='appointments_list.length==0'>Al monento non hai appuntamenti prenotati</div>
     <!-- <ion-item>
       <ion-label>New Message</ion-label>
     </ion-item>
@@ -27,12 +27,12 @@
   <ion-item-sliding *ngFor="let appointment of appointments_list">
    <ion-item lines='none'>
     <div  class="appintment">
-      <div class='app-Shop'>{{appointment.studio}}</div>
-      <div class='app-service'>{{appointment.service}}</div>
-      <div class='app-date'>  <ion-icon name="today-outline"></ion-icon> {{appointment.date}} ore {{appointment.time}} </div>
+      <div class='app-Shop'>{{appointment.store_name}}</div>
+      <div class='app-service'>{{appointment.details}}</div>
+      <div class='app-date'>  <ion-icon name="today-outline"></ion-icon> {{appointment.day}} {{months_names[appointment.month]}} {{appointment.year}} ore {{rows[appointment.start]}} </div>
     </div>
   </ion-item>
-    <ion-item-options side="end" (click)='deletestorage(appointment.index)'>
+    <ion-item-options side="end" (click)='deletestorage(appointment)'>
       <ion-item-option color="danger">Elimina</ion-item-option>
     </ion-item-options>
 </ion-item-sliding>

@@ -1,0 +1,147 @@
+
+.ios.platform-mobile ion-menu.menu-enabled, .ios.platform-mobile ion-menu.menu-enabled, .ios.platform-mobile ion-modal.show-page{
+    background:linear-gradient(0deg,  rgb(33, 182, 202) 0%, rgb(48, 111, 170) 40%,  rgb(17, 31, 45)85%) !important;
+    --ion-background-color: linear-gradient(0deg,  rgb(33, 182, 202) 0%, rgb(48, 111, 170) 40%,  rgb(17, 31, 45)85%) !important;
+      margin-top: 0 !important; // for ios 11.1
+      margin-top: 0 !important;  // for ios 11.2 and onwards
+      margin-bottom: env(safe-area-inset-bottom);
+  }
+.swiper-slide {
+    display: block;
+    }
+ion-slide{
+    height: 100vh;
+    padding-bottom: 40px;
+    --bullet-background: #8888FF;
+    --bullet-background-active: #ffffff;
+    p{
+        position: absolute;
+       
+        top: 60vh;
+        margin-top: 4vh;
+        width: 84vw;
+        left: 8vw;
+        font-size: 2.7vh;
+        font-weight: 300;
+        b{
+            font-weight: 600;
+        }
+    }
+    h1 {
+       font-family: 'Comfortaa Bold';
+        position: absolute;
+        width: 80vw;
+        left: 10vw;
+        top: 40vh;
+        font-size: 10vw;
+        margin-top: 7vh;
+       
+        margin-bottom: 2vh;
+        font-weight: 800;
+        }
+        .swiper-pagination, .swiper-pagination-bullets{
+            bottom: 30px !important;
+        }
+        .swiper-container-horizontal .swiper-pagination-bullets{
+            bottom: 30px !important;
+        }
+}
+ion-slide > img {
+position: relative ;
+display: inline-block;
+height: auto;
+width: 70vw;
+margin-bottom: 10vh;
+}
+ion-slide > .logo {
+    position: relative ;
+    display: inline-block;
+    top: 5vh;
+    height: auto;
+    width: 70vw;
+    font-family: 'Comfortaa Bold';
+    font-size:40vw;
+}
+.not-logo{
+width: 40vw !important;
+top: 15vh !important;
+width: auto;
+}
+.swiper-wrapper{
+    height:80vh !important;
+}
+.swiper-pagination, .swiper-pagination-bullets{
+    bottom: 30px !important;
+}
+.swiper-container-horizontal > .swiper-pagination-bullets{
+    bottom: 30px !important;
+}
+ion-contet, :host, :root, ion-header{
+    text-align: center;
+    --ion-background-color: linear-gradient(0deg,  rgb(33, 182, 202) 0%, rgb(48, 111, 170) 35%,  rgb(17, 31, 45)75%) !important;
+}
+.btn-cont{
+    position: absolute;
+    top: 75vh;
+    width: 100vw;
+    height: 15vh;
+   
+    text-align: center;
+     
+}
+.end-btn{
+    position: relative;
+    width: 60vw;
+    height: 6vh;
+    margin-top: 2vh;
+    border-radius: 10px;
+    border: solid 2px white;
+    font-size: 4vh;
+    letter-spacing: 1px;
+  //font-weight: 500;
+    color: white;
+    }
+.continue-btn{
+    position: relative;
+    color: #0061D5;
+    font-weight: 200;
+    font-size: 2vh;
+    margin-top: 10vh
+}
+
+ion-checkbox{
+    background-color: transparent;
+   // --background: tra
+}
+
+.rule{
+    position: relative;
+    top:10vh;
+    width: 80vw;
+    margin: 10vh 10vw;
+    display: block;
+    text-align: left;
+    .text{
+        position: absolute;
+        display: inline-block;
+        width: 60vw;
+        left: 5vw;
+        p{
+            position: relative;
+            display: inline;
+            top:0vh;
+            margin: 0vh;
+           
+            font-size: 2.1vh;
+            font-weight: 300;
+            b{
+                font-weight: 600;
+            }
+            a{
+                font-weight: 600;
+                color: #0061D5;
+            }
+        }
+    }
+    
+}

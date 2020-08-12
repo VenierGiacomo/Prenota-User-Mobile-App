@@ -4,7 +4,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content >
+<ion-content>
     <div class="spinner" [style.display]="spin">
         <div class="double-bounce1"></div>
         <div class="double-bounce2"></div>
@@ -14,7 +14,7 @@
       <div class="names">
           <h2>{{name}}</h2>
           <h5>{{role}}</h5>
-          <!-- <ion-button fill=outline (click)='infoModal()'>Maggiori informazioni</ion-button> -->
+          <ion-button fill=outline (click)='infoModal()'>Maggiori informazioni</ion-button>
       </div>
 </section>
 <section >
@@ -52,6 +52,9 @@
       </div> -->
   </section>
 
+
+</ion-content>
+
 <div class="confirm-tab" [style.display]='confirm'>
   <div class="cont">
     <h3>Riassunto prenotazione</h3>
@@ -61,5 +64,3 @@
         <div class="buttons">  <button (click)='confirm="none"'>Annulla</button><button (click)='book()' class='confirm'>prenota</button></div>
   </div>
 </div>
-</ion-content>
-

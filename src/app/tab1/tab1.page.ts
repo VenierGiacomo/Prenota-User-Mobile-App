@@ -6,6 +6,8 @@ import { RouterLink } from '@angular/router';
 import { ApiService } from '../services/api.service';
 import { NgControlStatus } from '@angular/forms';
 import { NativeApiService } from '../services/nativeapi.service';
+import { StorageService } from '../services/storage.service';
+import { SafariViewController } from '@ionic-native/safari-view-controller/ngx';
 
 @Component({
   selector: 'app-tab1',
@@ -21,12 +23,13 @@ spin='block'
 doctor = ['ECG', 'Visita agonistica', 'Visita non agonistica', 'Nutrizione e dieta', 'Visista sotto sforzo']
 barber = [ 'Taglio uomo', 'Taglio donna', 'Shampoo', 'Barba', 'Tinta', 'Manicure', 'Meches']
 dentist =[ 'Controlli di routine', 'Visita odontoiatrica',"Estrazioni", ' Otturazioni e terapie canalari', 'Apparecchio','Applicazione di protesi'  ]
-  constructor(public modalController: ModalController,private api:ApiService, private plt:Platform,private apiNative:NativeApiService) {
+  constructor(private safariViewController: SafariViewController, private storage: StorageService, public modalController: ModalController,private api:ApiService, private plt:Platform,private apiNative:NativeApiService) {
     this.plt.ready().then(
       () =>{
         if (this.plt.is('hybrid')) {
           this.apiNative.getStores().then(data=>{
             var shops:any =data
+            this.storage.setShops(shops)
             var items = shops,
             grouped = [];
             items.forEach(function (a) {
@@ -44,6 +47,7 @@ dentist =[ 'Controlli di routine', 'Visita odontoiatrica',"Estrazioni", ' Ottura
         else{
           this.api.getStores().subscribe(data=>{
             var shops:any =data
+            this.storage.setShops(shops)
             var items = shops,
             grouped = [];
             items.forEach(function (a) {
@@ -51,7 +55,6 @@ dentist =[ 'Controlli di routine', 'Visita odontoiatrica',"Estrazioni", ' Ottura
                 this[a.business_type].push(a);
             }, Object.create(null));
             this.shops = grouped
-            console.log(this.shops)
             this.spin='none'
                     },err=>{
                       this.spin='none'
@@ -66,7 +69,34 @@ dentist =[ 'Controlli di routine', 'Visita odontoiatrica',"Estrazioni", ' Ottura
   ngOnInit() {
 
   }
-  async presentModal(img, name, role,id ) {
+  safari(){
+    this.safariViewController.isAvailable()
+  .then((available: boolean) => {
+      if (available) {
+
+        this.safariViewController.show({
+          url: 'http://ionic.io',
+          hidden: false,
+          animated: false,
+          transition: 'curl',
+          enterReaderModeIfAvailable: true,
+          tintColor: '#ff0000'
+        })
+        .subscribe((result: any) => {
+            if(result.event === 'opened') console.log('Opened');
+            else if(result.event === 'loaded') console.log('Loaded');
+            else if(result.event === 'closed') console.log('Closed');
+          },
+          (error: any) => console.error(error)
+        );
+
+      } else {
+        console.log('no available')
+      }
+    }
+  );
+  }
+  async presentModal(img, name, role,id,max_spots ) {
     const modal = await this.modalController.create({
       component:BookModalPage,
       swipeToClose: true,
@@ -75,8 +105,8 @@ dentist =[ 'Controlli di routine', 'Visita odontoiatrica',"Estrazioni", ' Ottura
         image: img,
         name: name,
         role: role,
-        id: id
-
+        id: id,
+        max_spots: max_spots
       }
     });
     return await modal.present();

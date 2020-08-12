@@ -141,6 +141,8 @@ BASE_URL = 'https://giacomovenier.pythonanywhere.com/api/'
     }).catch(err=>console.log(err, 'login'))
   })
   .catch((error:any) => {
+    Notiflix.Notify.Init({ position:"center-bottom"}); 
+    Notiflix.Notify.Warning('Le credenziali inserite non sono valide')
     this.error = 'La password o la email che hai inserito non sono valide'
   });
       
@@ -156,9 +158,13 @@ BASE_URL = 'https://giacomovenier.pythonanywhere.com/api/'
               this.homeref.closeModal()
               
             },err =>{
+              Notiflix.Notify.Init({ position:"center-bottom"}); 
+              Notiflix.Notify.Warning('Le credenziali inserite non sono valide')
               this.error = 'La password o la email che hai inserito non sono valide'
             })
         },err =>{
+          Notiflix.Notify.Init({ position:"center-bottom"}); 
+          Notiflix.Notify.Warning('Le credenziali inserite non sono valide')
           this.error = 'La password o la email che hai inserito non sono valide'
         })
     }

@@ -21,13 +21,13 @@
   <h5>Medico dello Sport</h5>
   <div class="location"><img src='../assets/icon/location.svg'> Via Torrebianca 28</div>
   </div> -->
-  <div class="prof-profile" *ngFor='let shop of shops[0]' (click)="presentModal(shop.img_url,shop.store_name, shop.business_description ,shop.id)">
+  <div class="prof-profile" *ngFor='let shop of shops[0]' (click)="presentModal(shop.img_url,shop.store_name, shop.business_description ,shop.id, shop.max_spots)">
     <div class="prof-img"><img src='{{shop.img_url}}'></div>
   <h4>{{shop.store_name}}</h4>
   <h5>{{shop.business_description}}</h5>
   <div class="location"><img src='../assets/icon/location.svg'>{{shop.address}}</div>
   </div>
-  <div class="prof-profile deactivated">
+  <div class="prof-profile deactivated" (click)="safari()">
       <div class="prof-img"><img src='../assets/Female-image-placeholder.png'></div>
     <h4>Nuovi servizi</h4>
     <h5>Arriveranno presto</h5>
@@ -41,10 +41,12 @@
     </div>
 </div>
 </section>
+<!-- <a ng-href="https://google.com" onclick="window.open(this.href, '_system', 'location=yes')" class="ion-home color-primary item"> ng</a>
+<a class="ion-home color-primary item" href="#" onclick="window.open('https:\/\/google.com', '_system', 'location=yes'); return false;"> href</a> -->
 <section>
     <h2>Cura capelli e viso</h2>
   <div class='x-scroller'>
-    <div class="prof-profile" *ngFor='let shop of shops[1]' (click)="presentModal(shop.img_url,shop.store_name, shop.business_description ,shop.id)">
+    <div class="prof-profile" *ngFor='let shop of shops[1]' (click)="presentModal(shop.img_url,shop.store_name, shop.business_description ,shop.id, shop.max_spots)">
           <div class="prof-img"><img src='{{shop.img_url}}'></div>
         <h4>{{shop.store_name}}</h4>
         <h5>{{shop.business_description}}</h5>
@@ -67,7 +69,12 @@
   <section>
       <h2>Estetisti</h2>
       <div class='x-scroller'>
-      
+        <div class="prof-profile" *ngFor='let shop of shops[2]' (click)="presentModal(shop.img_url,shop.store_name, shop.business_description ,shop.id, shop.max_spots)">
+          <div class="prof-img"><img src='{{shop.img_url}}'></div>
+        <h4>{{shop.store_name}}</h4>
+        <h5>{{shop.business_description}}</h5>
+        <div class="location"><img src='../assets/icon/location.svg'>{{shop.address}}</div>
+      </div>
           <div class="prof-profile deactivated">
             <div class="prof-img"><img src='../assets/placeholder-profile-male (1).jpg'></div>
           <h4>Nuovi servizi</h4>
@@ -89,7 +96,13 @@
           </div>
     </section>
     <section>
-      <h2>Dentisti</h2>
+      <h2>Fisioterapia</h2>
+      <div class="prof-profile" *ngFor='let shop of shops[3]' (click)="presentModal(shop.img_url,shop.store_name, shop.business_description ,shop.id, shop.max_spots)">
+        <div class="prof-img"><img src='{{shop.img_url}}'></div>
+      <h4>{{shop.store_name}}</h4>
+      <h5>{{shop.business_description}}</h5>
+      <div class="location"><img src='../assets/icon/location.svg'>{{shop.address}}</div>
+</div>
     <div class='x-scroller'>
     <div class="prof-profile deactivated" >
       <div class="prof-img"><img src='../assets/Female-image-placeholder.png'></div>
@@ -112,9 +125,14 @@
     </div>
     </section>
     <section>
-        <h2>Fisioterapia</h2>
+        <h2>Dentisti</h2>
         <div class='x-scroller'>
-      
+          <div class="prof-profile" *ngFor='let shop of shops[4]' (click)="presentModal(shop.img_url,shop.store_name, shop.business_description ,shop.id, shop.max_spots)">
+            <div class="prof-img"><img src='{{shop.img_url}}'></div>
+          <h4>{{shop.store_name}}</h4>
+          <h5>{{shop.business_description}}</h5>
+          <div class="location"><img src='../assets/icon/location.svg'>{{shop.address}}</div>
+    </div>
             <div class="prof-profile deactivated" >
               <div class="prof-img"><img src='../assets/Female-image-placeholder.png'></div>
             <h4>Nuovi servizi</h4>
@@ -138,7 +156,12 @@
       <section>
           <h2>Personal trainer</h2>
           <div class='x-scroller'>
-      
+              <div class="prof-profile" *ngFor='let shop of shops[5]' (click)="presentModal(shop.img_url,shop.store_name, shop.business_description ,shop.id, shop.max_spots)">
+                    <div class="prof-img"><img src='{{shop.img_url}}'></div>
+                  <h4>{{shop.store_name}}</h4>
+                  <h5>{{shop.business_description}}</h5>
+                  <div class="location"><img src='../assets/icon/location.svg'>{{shop.address}}</div>
+              </div>
               <div class="prof-profile deactivated" >
                 <div class="prof-img"><img src='../assets/placeholder-profile-male (1).jpg'></div>
               <h4>Nuovi servizi</h4>
@@ -162,7 +185,12 @@
         <section>
             <h2>Avvocati</h2>
             <div class='x-scroller'>
-      
+                <div class="prof-profile" *ngFor='let shop of shops[6]' (click)="presentModal(shop.img_url,shop.store_name, shop.business_description ,shop.id, shop.max_spots)">
+                      <div class="prof-img"><img src='{{shop.img_url}}'></div>
+                    <h4>{{shop.store_name}}</h4>
+                    <h5>{{shop.business_description}}</h5>
+                    <div class="location"><img src='../assets/icon/location.svg'>{{shop.address}}</div>
+                </div>
                 <div class="prof-profile deactivated" >
                   <div class="prof-img"><img src='../assets/Female-image-placeholder.png'></div>
                 <h4>Nuovi servizi</h4>
@@ -183,5 +211,5 @@
                 </div>
                 </div>
           </section>
-        
+          
 </ion-content>

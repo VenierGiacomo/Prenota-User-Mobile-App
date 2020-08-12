@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-
-import { Platform } from '@ionic/angular';
+import { Storage } from '@ionic/storage';
+import { Platform, NavController } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 
@@ -13,7 +13,9 @@ export class AppComponent {
   constructor(
     private platform: Platform,
     private splashScreen: SplashScreen,
-    private statusBar: StatusBar
+    private statusBar: StatusBar,
+    private storage: Storage,
+    private nav: NavController
   ) {
     this.initializeApp();
   }
@@ -22,6 +24,19 @@ export class AppComponent {
     this.platform.ready().then(() => {
       this.statusBar.styleDefault();
       this.splashScreen.hide();
+      this.storage.get('introShown').then((result) => 
+    {
+        // If it is set, then skip that page
+        if(result){
+          this.nav.navigateRoot('tabs/tab1');
+        }
+        // Otherwise if property is not set, then show that page for once and then set property to true
+        else {
+          this.nav.navigateRoot('onboarding');
+          this.storage.set('introShown', true);
+        }
+
+      });
     });
   }
 }

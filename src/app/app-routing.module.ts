@@ -18,6 +18,10 @@ const routes: Routes = [
     path: 'more-info',
     loadChildren: () => import('./more-info/more-info.module').then( m => m.MoreInfoPageModule)
   },
+  {
+    path: 'onboarding',
+    loadChildren: () => import('./onboarding/onboarding.module').then( m => m.OnboardingPageModule)
+  },
   
 ];
 @NgModule({

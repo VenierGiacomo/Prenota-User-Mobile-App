@@ -10,6 +10,8 @@ import { RegisterPage } from '../register/register.page';
 import { MoreInfoPage } from '../more-info/more-info.page';
 import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 import { combineLatest } from 'rxjs';
+import { CodeNode } from 'source-list-map';
+import { SafariViewController } from '@ionic-native/safari-view-controller/ngx';
 @Component({
   selector: 'app-book-modal',
   templateUrl: './book-modal.page.html',
@@ -20,6 +22,7 @@ export class BookModalPage implements OnInit {
   month
   day
   spin='block'
+  cont_scroll =false
   today
   unique :any
   user:any= {first_name:'', last_name:'',phone:''}
@@ -29,6 +32,7 @@ export class BookModalPage implements OnInit {
   @Input() image
   @Input() name
   @Input() role
+  @Input() max_spots
   list_appointments
   services:any=[]
   week = []
@@ -50,7 +54,7 @@ export class BookModalPage implements OnInit {
   months=['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno','Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre']
   months_short=['Gen','Feb','Mar','Apr','Mag','Giu','Lug','Ago','Set','Ott','Nov','Dic']
   years=[2020,2021]
-  constructor(private localNotifications: LocalNotifications, private apiNative:NativeApiService, private plt: Platform,private api: ApiService, private router: Router,private storage: StorageService, public modalController: ModalController, private pickerController: PickerController,) {}
+  constructor(private safariViewController: SafariViewController, private localNotifications: LocalNotifications, private apiNative:NativeApiService, private plt: Platform,private api: ApiService, private router: Router,private storage: StorageService, public modalController: ModalController, private pickerController: PickerController,) {}
 // private apiNative: NativeApiService,
   ngOnInit() {
     Notiflix.Block.Standard('.service', 'Caricamento serivzi...');
@@ -77,7 +81,7 @@ export class BookModalPage implements OnInit {
       }
   }
     this.getservices()
-    this.getAppointments(this.day)
+    // this.getAppointments(this.day)
     this.tokenValidation()
     this.calculateWorkdates()
     this.getEmployees()
@@ -230,7 +234,6 @@ export class BookModalPage implements OnInit {
   async calculateWorkdates(){
     await this.api.getemployeeHoursByShop(this.id).subscribe(async data=>{
       var empl = await data
-      console.log(data, this.week, this.id)
       var x:any =[]
       for(let work of empl){
         for(let day of this.week){
@@ -249,10 +252,11 @@ export class BookModalPage implements OnInit {
         if (a.number > b.number) return 1;
         if (a.number < b.number) return -1;
       })
-      console.log(this.unique)
       this.day=this.unique[0].number
+      this.month =this.unique[0].month
       this.today= `${this.day} ${this.months[this.month]} ${this.year}`
       this.spin = 'none'
+      this.getAppointments(this.day)
     })
   }
   calculateAvailability(date){
@@ -328,6 +332,44 @@ export class BookModalPage implements OnInit {
              return a.start - b.start;
           });
           this.availableSpots=[...new Set(this.availableSpots)]
+          if(this.max_spots!=-1){
+            function groupBy(arr, property) {
+              return arr.reduce(function(memo, x) {
+                if (!memo[x[property]]) { memo[x[property]] = []; }
+                memo[x[property]].push(x);
+                return memo;
+              }, {});
+            }
+            var o = groupBy( this.availableSpots, 'employee')
+            // console.log( this.availableSpots, o,1)
+            this.availableSpots = []
+            for(let ind in this.employees_list){
+              var empl_id = this.employees_list[ind].employee.toString()
+              var x = Math.floor(o[empl_id].length/(this.max_spots+2))
+              var int:any = ind
+              // console.log(o[empl_id])
+              if(x== 0 || x==-1 ){
+                for(let el of o[empl_id]){
+                  this.availableSpots.push(el)
+                }
+              }else{
+                if(int%2 ==0){
+                  for(let i =1; i<=this.max_spots ; i++){
+                    // console.log(o[empl_id][(x*(i+1))-1], (x*(i+1))-1)
+                    this.availableSpots.push(o[empl_id][(x*(i+1))-1])
+                  }
+                }else{
+                  for(let i =1; i<=this.max_spots ; i++){
+                    // console.log( o[empl_id][x*(i+1)], x*(i+1))
+                    this.availableSpots.push(o[empl_id][x*(i+1)])
+                  }
+                }
+              }
+              
+            }
+          }
+          // console.log( this.availableSpots, o,2)
+          this.availableSpots=[...new Set(this.availableSpots)]
           Notiflix.Block.Remove('.time');
     }).catch(
       err=>{
@@ -362,13 +404,13 @@ export class BookModalPage implements OnInit {
             var start = this.times.indexOf(this.rows[appointment.start])
             var end = start+appointment.end -  appointment.start
             this.openhours = this.openhours.filter(function(value, index, arr){ return (value.time < start && appointment.employee==value.employee )|| (value.time  >= end && appointment.employee==value.employee ) || appointment.employee!=value.employee})
-          } 
+          }
           var max_ind = this.openhours.length-1
           for(let idx in this.openhours){
             let id:any = idx
             if(id ==0 || id == max_ind || this.openhours[id].time-this.openhours[id-1].time> 1  || this.openhours[id].employee-this.openhours[id-1].employee!= 0 ||  app == undefined || app.duration == this.total_service.duration){
               if (app != undefined){
-                if(app.duration>=   this.total_service.duration){
+                if(app.duration>=this.total_service.duration){
                   this.availableSpots.push(app)
                 }
               }
@@ -382,7 +424,44 @@ export class BookModalPage implements OnInit {
           this.availableSpots.sort(function(a, b) {
                return a.start - b.start;
             });
-            console.log( this.availableSpots)
+          this.availableSpots=[...new Set(this.availableSpots)]
+            if(this.max_spots!=-1){
+              function groupBy(arr, property) {
+                return arr.reduce(function(memo, x) {
+                  if (!memo[x[property]]) { memo[x[property]] = []; }
+                  memo[x[property]].push(x);
+                  return memo;
+                }, {});
+              }
+              var o = groupBy( this.availableSpots, 'employee')
+              // console.log( this.availableSpots, o,1)
+              this.availableSpots = []
+              for(let ind in this.employees_list){
+                var empl_id = this.employees_list[ind].employee.toString()
+                var x = Math.floor(o[empl_id].length/(this.max_spots+2))
+                var int:any = ind
+                // console.log(o[empl_id])
+                if(x== 0 || x==-1 ){
+                  for(let el of o[empl_id]){
+                    this.availableSpots.push(el)
+                  }
+                }else{
+                  if(int%2 ==0){
+                    for(let i =1; i<=this.max_spots ; i++){
+                      // console.log(o[empl_id][(x*(i+1))-1], (x*(i+1))-1)
+                      this.availableSpots.push(o[empl_id][(x*(i+1))-1])
+                    }
+                  }else{
+                    for(let i =1; i<=this.max_spots ; i++){
+                      // console.log( o[empl_id][x*(i+1)], x*(i+1))
+                      this.availableSpots.push(o[empl_id][x*(i+1)])
+                    }
+                  }
+                }
+                
+              }
+            }
+            // console.log( this.availableSpots, o,2)
             this.availableSpots=[...new Set(this.availableSpots)]
             Notiflix.Block.Remove('.time');
       }, err=>{
@@ -426,7 +505,7 @@ async book(){
       this.confirm='none'
       Notiflix.Block.Remove('.cont');
        Notiflix.Report.Success("L'appuntamento è stato prenotato", 'Controlla la tua email per ulteriori informazioni', 'OK');
-       await this.closeModal()
+       this.closeModal()
        var x = this.timeslot.split(":")
        var month = this.month
        var day = this.day
@@ -459,7 +538,6 @@ async book(){
       this.presentRegisterModal()
     }
   }else{
-    this.storage.setAppointment(appointment)
     var month = this.month
     var day = this.day
    if (day!=1){
@@ -504,19 +582,42 @@ async book(){
     if (this.plt.is('hybrid')) {
       var token = await this.apiNative.isvalidToken() //occhio l/await non testato
       if(token){
-        this.storage.setAppointment(appointment)
+        await this.storage.setAppointment(appointment)
         Notiflix.Block.Standard('.cont', 'Prenotaizone in corso...');
         var start = this.rows.indexOf(this.times[this.selected_hour.start])
         var end = start + this.total_service.duration
         var client_name =first_name+' '+ last_name
              //  bookAppointmentNoOwner(start, end,        day,      month,      year,        name,           phone,                  details,                    employee,               service, shop):Observable<any>{
-        this.apiNative.bookAppointmentNoOwner(start, end, this.day, this.month, this.year, client_name, this.user.phone,  this.total_service.name, this.selected_hour.employee, this.total_service.id,this.id).then(data=>{ 
+        this.apiNative.bookAppointmentNoOwner(start, end, this.day, this.month, this.year, client_name, this.user.phone,  this.total_service.name, this.selected_hour.employee, this.total_service.id,this.id).then(async data=>{ 
         this.sendEmailConfirmation(email,first_name, last_name,this.day,this.months_names[this.month],this.year,this.times[this.selected_hour.start],this.total_service.name,"Wellness Clinic")
+        await this.storage.setAppointment(appointment)
         this.confirm='none'
         Notiflix.Block.Remove('.cont');
-         Notiflix.Report.Success("L'appuntamento è stato prenotato", 'Controlla la tua email per ulteriori informazioni', 'OK');
-         this.closeModal()
-         this.router.navigateByUrl('tabs/tab2')}).catch(
+        Notiflix.Report.Success("L'appuntamento è stato prenotato", 'Controlla la tua email per ulteriori informazioni', 'OK');
+        this.closeModal()
+        var x = this.timeslot.split(":")
+        var month = this.month
+        var day = this.day
+        if (day!=1){
+            day=day-1
+        }else{
+            day = this.months_days[this.month-1]
+            month=month-1
+        }
+        this.localNotifications.schedule({
+         text: `Ricordati il tuo appuntamento presso ${this.name}.\n${this.total_service.name} il ${this.today} alle ${this.timeslot}`,
+         trigger: {at: new Date(this.year, month, day, 11)},
+         led: 'FF0000',
+         sound: null
+      });
+      
+      this.localNotifications.schedule({
+       text: `Ricordati il tuo appuntamento presso ${this.name}.\n${this.total_service.name} oggi alle ${this.timeslot}`,
+       trigger: {at: new Date(this.year, this.month, this.day, x[0]-2)},
+       led: 'FF0000',
+       sound: null
+     });
+       this.router.navigateByUrl('tabs/tab2')}).catch(
         err=>{
           Notiflix.Report.Failure("Errore, prenotazione fallita", 'Controlla la tua connessione o prova a cambiare orario', 'Annulla');
           Notiflix.Block.Remove('.cont');
@@ -584,11 +685,30 @@ async presentRegisterModal() {
  
 }
 async infoModal() {
-  const modal = await this.modalController.create({
-    component:MoreInfoPage,
-    swipeToClose: true,
-    cssClass: 'select-modal' ,
-  });
-  return await modal.present();
+  this.safariViewController.isAvailable()
+  .then((available: boolean) => {
+      if (available) {
+
+        this.safariViewController.show({
+          url: 'https://prenota.cc/booking',
+          hidden: false,
+          animated: false,
+          transition: 'curl',
+          enterReaderModeIfAvailable: true,
+          tintColor: '#ff0000'
+        })
+        .subscribe((result: any) => {
+            if(result.event === 'opened') console.log('Opened');
+            else if(result.event === 'loaded') console.log('Loaded');
+            else if(result.event === 'closed') console.log('Closed');
+          },
+          (error: any) => console.error(error)
+        );
+
+      } else {
+        console.log('no available')
+      }
+    }
+  );
 }
 }

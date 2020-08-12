@@ -11,6 +11,7 @@ import { AppComponent } from './app.component';
 import { CommonModule } from '@angular/common';
 import { HTTP } from '@ionic-native/http/ngx';
 import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
+import { SafariViewController } from '@ionic-native/safari-view-controller/ngx';
 @NgModule({
   declarations: [AppComponent],
   entryComponents: [],
@@ -23,6 +24,7 @@ import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
     HttpClientModule],
   providers: [
     StatusBar,
+    SafariViewController,
     LocalNotifications,
     HTTP,
     SplashScreen,

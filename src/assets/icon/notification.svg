@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" x="0px" y="0px" viewBox="0 0 512 512" style="enable-background:new 0 0 512 512;" xml:space="preserve" width="512px" height="512px"><g><g>
+	<g>
+		<g>
+			<path d="M480,400c0,44.183-35.817,80-80,80H112c-44.183,0-80-35.817-80-80V112c0-44.183,35.817-80,80-80h160V0H112     C50.144,0,0,50.144,0,112v288c0,61.856,50.144,112,112,112h288c61.856,0,112-50.144,112-112V240h-32V400z" data-original="#000000" class="active-path" data-old_color="#000000" fill="#0061D5"/>
+			<path d="M400,224c61.856,0,112-50.144,112-112S461.856,0,400,0S288,50.144,288,112S338.144,224,400,224z M400,32     c44.183,0,80,35.817,80,80s-35.817,80-80,80c-44.183,0-80-35.817-80-80S355.817,32,400,32z" data-original="#000000" class="active-path" data-old_color="#000000" fill="#0061D5"/>
+		</g>
+	</g>
+</g></g> </svg>

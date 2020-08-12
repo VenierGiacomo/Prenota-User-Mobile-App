@@ -198,6 +198,22 @@ async getAppointmentsByshop(week,id){
   return responseData;
 }
 
+async getClientAppointments(){
+  var l
+  let token 
+  token = await this.getToken()
+  l = this.parseJwt(token) 
+  let url = BASE_URL+'bookings/user/?user='+l.user_id
+  this.HTTP.setDataSerializer("json");
+  this.HTTP.setHeader('*',"Accept", 'application/json');
+  this.HTTP.setHeader('*','Content-Type', 'application/json');
+  this.HTTP.setHeader('*','Authorization','JWT '+ token );
+  var headers_t = this.HTTP.getHeaders("*")
+  let responseData = await this.HTTP.get(url, {},headers_t).then(resp => {return JSON.parse(resp.data)}).catch(err => {return err.error});
+  return responseData;
+  // throw throwError("error"); 
+}
+
 // updateAppointment(id, start, end, day, month, year,name, details, employee):Observable<any>{
 //   var week = this.getWeekNumber(new Date(year, month, day))
 //   var data = {'start': start , 'end': end, 'day': day, 'week':week, 'month':month, 'year' : year, 'employee': employee,  'client_name' :name, 'details': details}

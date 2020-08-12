@@ -34,4 +34,11 @@ async setAppointment(service){
 deletestorage(){
   this.storage.clear()
 }
+setShops(shops){
+  this.storage.set('shops_list',shops)
+}
+async getShops(){
+  var shops = await  this.storage.get('shops_list')
+  return shops == null ? [] : shops;
+}
 }

@@ -77,7 +77,10 @@
   --ion-color-light-shade: #d7d8da;
   --ion-color-light-tint: #f5f6f9;
 }
-
+ion-slides{  
+  --bullet-background: rgb(107, 158, 220) !important;
+  --bullet-background-active: #0061D5 !important;
+}
 // @media (prefers-color-scheme: dark) {
 //   /*
 //    * Dark Colors
