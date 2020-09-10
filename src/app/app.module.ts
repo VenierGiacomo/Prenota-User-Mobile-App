@@ -12,6 +12,8 @@ import { CommonModule } from '@angular/common';
 import { HTTP } from '@ionic-native/http/ngx';
 import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 import { SafariViewController } from '@ionic-native/safari-view-controller/ngx';
+import { Deeplinks } from '@ionic-native/deeplinks/ngx';
+import { CodePush } from '@ionic-native/code-push/ngx';
 @NgModule({
   declarations: [AppComponent],
   entryComponents: [],
@@ -24,9 +26,11 @@ import { SafariViewController } from '@ionic-native/safari-view-controller/ngx';
     HttpClientModule],
   providers: [
     StatusBar,
+    CodePush,
     SafariViewController,
     LocalNotifications,
     HTTP,
+    Deeplinks,
     SplashScreen,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],

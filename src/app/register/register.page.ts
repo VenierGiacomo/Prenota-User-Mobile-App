@@ -58,7 +58,7 @@ BASE_URL = 'https://giacomovenier.pythonanywhere.com/api/'
     }
     if(this.first_name_err == '' && this.last_name_err == '' && this.email_err == '' && this.phone_err == '' && this.password_err == ''){
       if (this.plt.is('hybrid')) {
-        await this.nativeApi.register(this.first_name, this.last_name, this.email, this.sex, this.phone, this.password).then(
+        await this.nativeApi.register(this.first_name, this.last_name, this.email, 'm', this.phone, this.password).then(
           async data=>{
             console.log(data, 'efverfvgr')
             await this.nativeApi.storeToken(data.token)
@@ -82,7 +82,7 @@ BASE_URL = 'https://giacomovenier.pythonanywhere.com/api/'
           }
         )
       }else{
-      this.api.register(this.first_name, this.last_name, this.email, this.sex, this.phone, this.password).subscribe(
+      this.api.register(this.first_name, this.last_name, this.email, 'm', this.phone, this.password).subscribe(
         data=>{
          this.api.storeToken(data.token)
           Notiflix.Block.Remove('.wrapper');

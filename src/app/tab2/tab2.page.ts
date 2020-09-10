@@ -23,8 +23,6 @@ rows = ["06:45", "07:00", "07:15", "07:30", "07:45", "08:00", "08:15", "08:30", 
 
   async ionViewDidEnter() {
     if (this.plt.is('hybrid')) {
-    this.shops = await this.storage.getShops()
-    console.log( this.shops)
     var token: any = await this.apiNative.isvalidToken()
     if(token){
       this.text_top_right='Esci'
@@ -34,7 +32,6 @@ rows = ["06:45", "07:00", "07:15", "07:30", "07:45", "08:00", "08:15", "08:30", 
       this.text_top_right='Accedi'
     }
     }else{
-      this.shops = await this.storage.getShops()
       if(this.api.isvalidToken()){
         this.text_top_right='Esci'
         // await this.getClientAppointments()
@@ -58,8 +55,24 @@ await this.getClientAppointments()
     const diffTime = Math.abs(date2 - date1);
     const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)); 
     if(diffDays>=3){
-      this.storage.deleteappointments()
-      this.storage.deleteappointment(appo.index)
+      if (this.plt.is('hybrid')) {
+        this.apiNative.deleteAppointment(appo.id).then(data=>{
+          this.storage.deleteappointment(appo.id)
+          // this.getClientAppointments()
+          Notiflix.Report.Success("Appuntamento cancellato", "L'appuntamenton è stato cancellato con successo!", 'Continua')
+        }).catch(err=>{
+          Notiflix.Report.Failure("Errore durante la cancellazione", "L'appuntamenton non è stato cancellato. Controlla la tua connessione e riprova.", 'Annulla');
+        })
+       }else{
+        this.api.deleteAppointment(appo.id).subscribe(data=>{
+          this.storage.deleteappointment(appo.id)
+          // this.getClientAppointments()
+          Notiflix.Report.Success("Appuntamento cancellato", "L'appuntamenton è stato cancellato con successo!", 'Continua')
+        },err=>{
+          Notiflix.Report.Failure("Errore durante la cancellazione", "L'appuntamenton non è stato cancellato. Controlla la tua connessione e riprova.", 'Annulla');
+        })
+       }
+
       setTimeout(async () => {
       this.appointments_list= await this.storage.getAppoitments()
       }, 100);
@@ -71,8 +84,6 @@ await this.getClientAppointments()
   }
   async  handelNotdelete(appo) {
     // console.log(this.shops)
-    var store_phone = await this.shops.find(x =>  x.id === appo.shop).phone_number
-    // console.log(store_phone)
     const alert = await this.alertController.create({
       header: "Impossibile annullare l'appuntamento",
       message: 'Mancano meno di 2 giorni al tuo appuntamento, non è più possibile cancellarlo automaticamente. \nPuoi sempre chiamare lo studio',
@@ -83,7 +94,18 @@ await this.getClientAppointments()
         }, {
           text: "Chiama e cancella ",
           handler: () => {
-            window.open(`tel:+39${store_phone}`)
+            this.plt.ready().then(()=>{
+              // console.log('tel:+39'+appo.store_phone,"_blank")
+              // window.open('tel:+39'+appo.store_phone,"_blank")
+              // window.open('tel:+39'+appo.store_phone,"_self")
+              // window.open('tel:+39'+appo.store_phone,"_parent")
+              // window.open('tel:+39'+appo.store_phone,"_top")
+              // window.open('tel:+39'+appo.store_phone)   
+              // window.location.href="tel://+39"+appo.store_phone;
+              // window.location.href="tel://"+appo.store_phone;
+              // window.location.href="tel:"+appo.store_phone;
+              window.location.href="tel:+39"+appo.store_phone;
+            })
           }
         }
       ]
@@ -96,6 +118,7 @@ await this.getClientAppointments()
       var token: any = await this.apiNative.isvalidToken()
       if(token){   
         this.storage.deletestorage()
+        this.text_top_right='Accedi'
         Notiflix.Notify.Init({ position:"center-center", success: {background:"#fff",textColor:"#0061d5",notiflixIconColor:"#0061d5",}, }); 
         Notiflix.Notify.Success('Logout effettuato con successo')
         this.appointments_list=[]
@@ -107,6 +130,7 @@ await this.getClientAppointments()
       if(this.api.isvalidToken()){  
         this.storage.deletestorage()
         localStorage.clear()
+        this.text_top_right='Accedi'
         Notiflix.Notify.Init({ position:"center-center", success: {background:"#fff",textColor:"#0061d5",notiflixIconColor:"#0061d5",}, }); 
         Notiflix.Notify.Success('Logout effettuato con successo')
         this.appointments_list=[]    
@@ -139,8 +163,9 @@ await this.getClientAppointments()
           this.appointments_list = await data
           this.shops = await this.storage.getShops()
           for(let appo of this.appointments_list){
-            appo.store_name = await this.shops.find(x =>  x.id === appo.shop).store_name
+           this.storage.setAppointment(appo)
           }
+          
         }).catch(err=>{
           console.log(err)
         })
@@ -149,9 +174,12 @@ await this.getClientAppointments()
       this.api.getClientAppointments().subscribe(async data=>{
         this.appointments_list = await data
         this.shops = await this.storage.getShops()
+        // for(let appo of this.appointments_list){
+        //   appo.store_name = await this.shops.find(x =>  x.id === appo.shop).store_name
+        // }
         for(let appo of this.appointments_list){
-          appo.store_name = await this.shops.find(x =>  x.id === appo.shop).store_name
-        }
+          this.storage.setAppointment(appo)
+         }
       },err=>{
         console.log(err)
       })

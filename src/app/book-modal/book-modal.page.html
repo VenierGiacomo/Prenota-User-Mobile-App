@@ -14,14 +14,15 @@
       <div class="names">
           <h2>{{name}}</h2>
           <h5>{{role}}</h5>
-          <ion-button fill=outline (click)='infoModal()'>Maggiori informazioni</ion-button>
+          <ion-button fill=outline (click)='infoModal()'> Maggiori informazioni</ion-button>
+          <!-- <ion-button style='margin: 0px 10px;' fill=outline (click)='infoModal()'><a href="https://www.google.com/maps/place/Via+Pirano,+12,+34145+Trieste+TS/@45.6308291,13.7860032" target="_blank">Mappa</a></ion-button> -->
       </div>
 </section>
 <section >
 <h5>Seleziona servizio</h5><p>Scorri per altri servizi</p>
   <div class="service">
       <!-- <ion-radio-group [(ngModel)]="service" > -->
-          <ion-item *ngFor='let service of services' lines="full" (click)='changeService(service)'>
+          <ion-item *ngFor='let service of services' lines="full" (click)='selectService(service)'>
               <ion-label>{{service.name}}</ion-label>
               <ion-checkbox slot="end"  [value]="service"></ion-checkbox>
           </ion-item>
@@ -35,16 +36,18 @@
       <div  [innerHTML]="today" class="align-right"></div>
   </ion-item> -->
   <div class='x-scroller'>
-      <div class="time-slot" *ngFor='let date_avi of unique, let ind = index' (click)="DatePicker(date_avi, ind)" [class.active]='active_date[ind]'>{{date_avi.number}} {{months_short[date_avi.month]}}</div>
+      <div class="time-slot" *ngFor='let date_avi of unique, let ind = index' (click)="DatePicker(date_avi, ind)" [class.active]='active_date[ind]'>{{week_name[date_avi.week_day]}} {{date_avi.number}} {{months_short[date_avi.month]}}</div>
     </div>
 </section>
 <section class="time" *ngIf="selected_services !=''">
     <h5>Seleziona orario</h5>
     <div *ngFor="let empl of employees_list,let ix = index" style="position: relative;">
-      <h6  *ngIf='emplo_show[ix]'>Disponibilità di {{empl.name}}:</h6>
-        <div class='x-scroller' *ngIf='emplo_show[ix]'>
-            <span  *ngFor='let time of availableSpots'><div *ngIf='time.employee == empl.employee' class="time-slot" (click)="selectTime(time)">{{times[time.start]}}</div></span>
+      <h6>Disponibilità di {{empl.name}}:</h6>
+        <div class='x-scroller'>
+            <span  *ngFor='let time of final_spots'><div *ngIf='time[0].employee == empl.employee' class="time-slot" (click)="selectTime(time)">{{times[time[0].start]}}</div></span>
+            <p  *ngIf='!emplo_show[ix]' style="color: #777; font-size: 13px;">Nessuna disponibilita, prova in un' altra data</p>
         </div>
+         
        
     </div>
     <!-- <div class='x-scroller'>

@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="io.prenota.client" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="io.prenota.client" version="0.2.7" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>Prenota</name>
     <description>Prenota parrucchieri e molto altro</description>
     <author email="hi@ionicframework.com" href="http://ionicframework.com/">Giacomo Venier</author>
@@ -23,10 +23,12 @@
     <preference name="WKWebViewOnly" value="true" />
     <preference name="KeyboardResize" value="true" />
     <preference name="HideKeyboardFormAccessoryBar" value="false" />
+    <preference name="AndroidLaunchMode" value="singleTask" />
     <platform name="android">
         <edit-config file="app/src/main/AndroidManifest.xml" mode="merge" target="/manifest/application" xmlns:android="http://schemas.android.com/apk/res/android">
             <application android:networkSecurityConfig="@xml/network_security_config" />
         </edit-config>
+        <preference name="APP_SECRET" value="b4445a8d-9e80-491c-808d-3a4818088c71" />
         <resource-file src="resources/android/xml/network_security_config.xml" target="app/src/main/res/xml/network_security_config.xml" />
         <allow-intent href="market:*" />
         <icon density="ldpi" src="resources/android/icon/drawable-ldpi-icon.png" />
@@ -51,6 +53,7 @@
     <platform name="ios">
         <allow-intent href="itms:*" />
         <allow-intent href="itms-apps:*" />
+        <preference name="APP_SECRET" value="0ef8fa1b-e828-4699-b9a4-4d28fb236122" />
         <icon height="57" src="resources/ios/icon/icon.png" width="57" />
         <icon height="114" src="resources/ios/icon/icon@2x.png" width="114" />
         <icon height="29" src="resources/ios/icon/icon-small.png" width="29" />

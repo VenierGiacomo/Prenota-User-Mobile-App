@@ -1,8 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, NgZone } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import { Platform, NavController } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
+import { Deeplinks } from '@ionic-native/deeplinks/ngx';
+import { CodePush } from '@ionic-native/code-push/ngx';
 
 @Component({
   selector: 'app-root',
@@ -15,7 +17,10 @@ export class AppComponent {
     private splashScreen: SplashScreen,
     private statusBar: StatusBar,
     private storage: Storage,
-    private nav: NavController
+    private nav: NavController,
+    public deeplinks: Deeplinks,
+    private zone: NgZone,
+    private codePush: CodePush
   ) {
     this.initializeApp();
   }
@@ -37,6 +42,24 @@ export class AppComponent {
         }
 
       });
+      document.addEventListener("resume", function () {
+        this.codePush.sync();
+    });
+    });
+  }
+  setUpDeepLinks(){
+    this.deeplinks.route({
+      '': 'home',
+    }).subscribe(match => {
+      this.zone.run(()=>{
+        this.nav.navigateRoot("")
+      })
+      console.log('Successfully matched route', match);
+    }, nomatch => {
+      this.zone.run(()=>{
+        this.nav.navigateRoot("")
+      })
+      console.error('Got a deeplink that didn\'t match', nomatch);
     });
   }
 }

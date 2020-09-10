@@ -264,6 +264,14 @@ async getStoreservicebyStore(id){
     }
    
   }
+async getEmploservicebyStore(id){
+  let url = BASE_URL+'employee/services/store/?store='+id
+  this.HTTP.setHeader('*',"Accept", 'application/json');
+  this.HTTP.setHeader('*','Content-Type', 'application/json');
+  var headers_t = this.HTTP.getHeaders("*")
+  let responseData = await this.HTTP.get(url,{},headers_t).then(resp => {return JSON.parse(resp.data)}).catch(err => {return err});
+  return responseData;
+  }
 getWeekNumber(d) {
   // Copy date so don't modify original
   d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));

@@ -147,6 +147,9 @@ getStoreservice(id){
 getStoreservicebyStore(id){
   return this.http.get(BASE_URL+'services/byshop/',{headers: this.httpheader, params: {shop: id }})
 }
+getEmploservicebyStore(id){
+  return this.http.get(BASE_URL+'employee/services/store/?store='+id,{headers: this.httpheader, params: {shop: id }})
+}
 setEmployeeservice(employee, service_id){
   var data = {'employee':employee, 'service_id':service_id}
     return this.http.post(BASE_URL+'employee/serices/', data, {headers: this.newheader()})
@@ -220,6 +223,10 @@ sendEmail(input: any) {
   return this.http.post(this.mailApi, input, { responseType: 'text' })
 }
 
+getemployeeHoursNoLogin(id): Observable<any>{
+  return this.http.get(BASE_URL+'employeehours/?employee='+id,{headers: this.httpheader})
+
+}
 getWeekNumber(d) {
   // Copy date so don't modify original
   d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));

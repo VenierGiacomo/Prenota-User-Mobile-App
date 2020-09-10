@@ -69,44 +69,45 @@ dentist =[ 'Controlli di routine', 'Visita odontoiatrica',"Estrazioni", ' Ottura
   ngOnInit() {
 
   }
-  safari(){
-    this.safariViewController.isAvailable()
-  .then((available: boolean) => {
-      if (available) {
+  // safari(){
+  //   this.safariViewController.isAvailable()
+  // .then((available: boolean) => {
+  //     if (available) {
 
-        this.safariViewController.show({
-          url: 'http://ionic.io',
-          hidden: false,
-          animated: false,
-          transition: 'curl',
-          enterReaderModeIfAvailable: true,
-          tintColor: '#ff0000'
-        })
-        .subscribe((result: any) => {
-            if(result.event === 'opened') console.log('Opened');
-            else if(result.event === 'loaded') console.log('Loaded');
-            else if(result.event === 'closed') console.log('Closed');
-          },
-          (error: any) => console.error(error)
-        );
+  //       this.safariViewController.show({
+  //         url: 'http://ionic.io',
+  //         hidden: false,
+  //         animated: false,
+  //         transition: 'curl',
+  //         enterReaderModeIfAvailable: true,
+  //         tintColor: '#ff0000'
+  //       })
+  //       .subscribe((result: any) => {
+  //           if(result.event === 'opened') console.log('Opened');
+  //           else if(result.event === 'loaded') console.log('Loaded');
+  //           else if(result.event === 'closed') console.log('Closed');
+  //         },
+  //         (error: any) => console.error(error)
+  //       );
 
-      } else {
-        console.log('no available')
-      }
-    }
-  );
-  }
-  async presentModal(img, name, role,id,max_spots ) {
+  //     } else {
+  //       console.log('no available')
+  //     }
+  //   }
+  // );
+  // }
+  async presentModal(shop) {
     const modal = await this.modalController.create({
       component:BookModalPage,
       swipeToClose: true,
       cssClass: 'select-modal' ,
       componentProps: {
-        image: img,
-        name: name,
-        role: role,
-        id: id,
-        max_spots: max_spots
+        image:  shop.img_url,
+        name: shop.store_name,
+        role: shop.business_description,
+        id: shop.id,
+        max_spots: shop.max_spots,
+        website: shop.website
       }
     });
     return await modal.present();
