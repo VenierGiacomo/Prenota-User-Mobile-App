@@ -52,21 +52,15 @@ h2{
     color: white;
     background: #0061d5;
 }
-ion-header{
-    ion-buttons{
-        padding-right: 10px;
-        font-size: 18px;
-      color:  #fff;
-    }
-  }
+// ion-header{
+   
 
   .login-btn{
-    position: absolute;
-    bottom: 0px;
-    width: 100vw;
+    position: relative;
+    top: 0px;
+    width: 100%;
     text-align: center;
     padding:0vw 10vw;
-    margin: 10px 0px;
  p{
      font-size: 10px;
      color: #48466d;
@@ -78,5 +72,22 @@ ion-header{
 
 }
 ion-item{
-    --background:#efefef
+    --background:#fff
  }
+
+ 
+//   }
+//  .div_h1{
+//     width: 100vw !important;
+//     position: absolute !important;
+//     left:0px !important;
+//     font-size: 24px;
+//     height: 50px !important;
+//     line-height: 50px !important;
+//     color:#fff;
+//     margin:0px!important;
+//     font-family: 'Comfortaa Bold';
+//     text-align:center !important;
+//     --background: #0061d5;
+//     background: #0061d5;
+// }

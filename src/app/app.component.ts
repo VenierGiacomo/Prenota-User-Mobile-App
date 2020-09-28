@@ -4,7 +4,7 @@ import { Platform, NavController } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { Deeplinks } from '@ionic-native/deeplinks/ngx';
-import { CodePush } from '@ionic-native/code-push/ngx';
+import { CodePush, InstallMode, SyncStatus } from '@ionic-native/code-push/ngx';
 
 @Component({
   selector: 'app-root',
@@ -42,9 +42,28 @@ export class AppComponent {
         }
 
       });
-      document.addEventListener("resume", function () {
-        this.codePush.sync();
-    });
+    
+       
+    this.codePush.sync({ installMode: InstallMode.ON_NEXT_RESUME, mandatoryInstallMode: InstallMode.IMMEDIATE}).subscribe((syncStatus) => {
+      })
+
+      // document.addEventListener("resume", function () {
+        // this.codePush.sync({ updateDialog: {
+        //   appendReleaseDescription: true,
+        //   descriptionPrefix: "\n\nChange log:\n"   
+        //  },
+        //  installMode: InstallMode.IMMEDIATE}).subscribe(
+        //   (data) => {
+        //    console.log('CODE PUSH SUCCESSFUL: ' + data);
+           
+        //   },
+        //   (err) => {
+        //    console.log('CODE PUSH ERROR: ' + err);
+           
+        //   }
+        // );
+     
+ 
     });
   }
   setUpDeepLinks(){

@@ -1,0 +1,144 @@
+ion-content{
+  padding: 0px !important;
+  background-image: url(./../../assets/wave.jpg) !important;
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: 100vh;
+  overflow: hidden;
+}
+#card-errors{
+  width: 82vw;
+  margin: 0px 9vw 10px 9vw;
+  padding: 0px 10px;
+  color: #fff;
+}
+.pay_cont{
+  left: 0px;
+  width: 100vw;
+  position: absolute;
+  height: auto;
+  border-top-left-radius: 40px;
+  border-top-right-radius: 40px;
+  top:10px;
+  bottom: 0px;
+  background:rgba(#535353, 0.8) ;
+  backdrop-filter: blur(8px);
+  animation-name: scrool_up;
+  animation-duration: 600ms;
+}
+
+form{
+  left: 0px;
+  width: 100vw;
+  position: absolute;
+  height: 80vh;
+  top:10px;
+  bottom: 0px;
+  animation-name: scrool_up;
+  animation-duration: 600ms;
+
+ .input_bg{
+  width: 82vw;
+  margin: 0px 9vw 10px 9vw;
+  padding: 0px 10px;
+  height: 50px;
+  border-radius: 7px;;
+  line-height: 50px;
+  color:#fff;
+  background: rgba(#2c2c2c, 0.5);
+  border: none;
+ }
+ .input_sm1{
+  width: 37vw;
+  margin: 0px 0vw 10px 9vw;
+  padding: 0px 10px;
+  height: 50px;
+  border-radius: 7px;;
+  line-height: 50px;
+  color:#fff;
+  background: rgba(#2c2c2c, 0.5);
+  border: none;
+ }
+ .input_sm2{
+  width: 37vw;
+  margin: 0px 0vw 10px 4vw;
+  padding: 0px 10px;
+  height: 50px;
+  border-radius: 7px;;
+  line-height: 50px;
+  color:#fff;
+  background: rgba(#2c2c2c, 0.5);
+  border: none;
+ }
+}
+ @keyframes scrool_up {
+    from {top: 100vh;}
+    to {top: 10vh;}
+  }
+::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: #ddd;
+  opacity: 1; /* Firefox */
+}
+
+:-ms-input-placeholder { /* Internet Explorer 10-11 */
+  color: #bbb;
+}
+
+::-ms-input-placeholder { /* Microsoft Edge */
+  color: #bbb;
+}
+h1{
+  color: white;
+  padding: 20px 9vw 0px 9vw;
+  font-size: 24px;
+  font-weight: 700;
+}
+.label{
+  color: white;
+  padding: 10px 9vw 0px 9vw;
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 0px;
+}
+.label1{
+  color: white;
+  padding: 10px 5vw 0px 5vw;
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 0px;
+}
+.StripeElement {
+  width: 82vw;
+  margin: 5px 9vw 10px 9vw;
+  padding: 0px 10px;
+  height: 50px;
+  border-radius: 7px;;
+  line-height: 50px;
+  color:#fff;
+  background: rgba(#2c2c2c, 0.5);
+  border: none;
+}
+
+.confirm-pay button{
+  width: 82vw;
+  margin: 5px 9vw 10px 9vw;
+  padding: 0px 10px;
+  height: 50px;
+  border-radius: 7px;;
+  line-height: 50px;
+  background: #003679;
+  font-weight: 700;
+  color: white;
+}
+.delete-pay button{
+  width: 82vw;
+  margin: 5px 9vw 10px 9vw;
+  padding: 0px 10px;
+  height: 50px;
+  border-radius: 7px;;
+  line-height: 50px;
+  font-weight: 700;
+  background: #ffffff;
+  color: #003679;
+}
+

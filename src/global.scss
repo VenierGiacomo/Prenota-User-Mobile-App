@@ -42,7 +42,7 @@
     src: url('./assets/Comfortaa/static/Comfortaa-Bold.ttf') format('opentype');
   }
 body{
-    background: #efefef;
+    background: #fff;
     color: #0061d5 ;
     font-family:  'Open Sans', sans-serif !important;
 }
@@ -52,7 +52,7 @@ ion-content{
   font-family:  'Open Sans', sans-serif !important;
     border: none;
     margin-top: 10px;
-    --background: #efefef;
+    --background: transparent;
     --color: #0061d5 ;
 }
 ion-toolbar{
@@ -61,7 +61,8 @@ ion-toolbar{
   --background: transparent;
 }
 ion-header{
-     width: 100vw;
+    width: 100vw;
+    padding: 5px;
     font-size: 24px;
     background: #0061d5;
     color:#fff;
@@ -71,6 +72,10 @@ ion-header{
 }
 ion-tab-bar{
   --background: #0061d5;
+}
+
+.header-ios ion-toolbar:last-of-type {
+  --border-width: 0 0 !important;
 }
 .select-modal{
     background: transparent;
@@ -83,9 +88,15 @@ ion-tab-bar{
     position: absolute !important;
     left:0px !important;
     font-size: 24px;
+    line-height: 50px;
     color:#fff;
     bottom:15px;    
     margin:0px!important;
     font-family: 'Comfortaa Bold';
     text-align:center !important;
+    --background: #0061d5;
+    background: #0061d5;
+  }
+  .crisp-client .crisp-1rjpbb7[data-full-view=true] .crisp-1rf4xdh .crisp-ewasyx{
+    height: calc(100vh - 50px) !important;
   }

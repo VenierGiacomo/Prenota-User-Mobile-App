@@ -188,9 +188,21 @@ getClientAppointments():Observable<any>{
   }
   throw throwError("error"); 
 }
+getClientAppointmentsweek(week, year):Observable<any>{
+  const token = this.getToken()
+  var l 
+  if (token) {
+     l = this.parseJwt(token) 
+     return this.http.get(BASE_URL+'bookings/user/week/'+week+'/?user='+l.user_id+'&year='+year,{headers: this.newheader()})
+  }
+  throw throwError("error"); 
+}
 
 getAppointmentsByshop(week,id):Observable<any>{
   return this.http.get(BASE_URL+'bookings/week/'+week+'/shop/?shop='+id, {headers: this.httpheader})
+}
+getAppointmentsByshop2(week,id):Observable<any>{
+  return this.http.get(BASE_URL+'bookings/week/'+week+'/2shop/?shop='+id, {headers: this.httpheader})
 }
 getMonthAppointments(month):Observable<any>{
   return this.http.get(BASE_URL+'bookings/month/'+month,{headers: this.newheader()})
@@ -270,5 +282,8 @@ emailConfirmBooking(email,name,surname,day,month,year,time,service,shop){
 }
 getStores(){
     return this.http.get(BASE_URL+'store/list',{headers: this.httpheader})
+}
+getStores1(){
+  return this.http.get(BASE_URL+'store/list1',{headers: this.httpheader})
 }
 }

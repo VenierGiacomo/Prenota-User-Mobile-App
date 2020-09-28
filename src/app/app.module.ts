@@ -14,6 +14,8 @@ import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 import { SafariViewController } from '@ionic-native/safari-view-controller/ngx';
 import { Deeplinks } from '@ionic-native/deeplinks/ngx';
 import { CodePush } from '@ionic-native/code-push/ngx';
+import { AppCenterAnalytics } from '@ionic-native/app-center-analytics/ngx';
+import { Stripe } from '@ionic-native/stripe/ngx';
 @NgModule({
   declarations: [AppComponent],
   entryComponents: [],
@@ -27,9 +29,11 @@ import { CodePush } from '@ionic-native/code-push/ngx';
   providers: [
     StatusBar,
     CodePush,
+    AppCenterAnalytics,
     SafariViewController,
     LocalNotifications,
     HTTP,
+    Stripe,
     Deeplinks,
     SplashScreen,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }

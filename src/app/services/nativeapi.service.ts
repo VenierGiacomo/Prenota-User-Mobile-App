@@ -197,6 +197,15 @@ async getAppointmentsByshop(week,id){
   let responseData = await this.HTTP.get(url, {},headers_t).then(resp => {return JSON.parse(resp.data)}).catch(err => {return err.error});
   return responseData;
 }
+async getAppointmentsByshop2(week,id){
+  let url = BASE_URL+'bookings/week/'+week+'/2shop/?shop='+id;
+  this.HTTP.setHeader('*',"Accept", 'application/json');
+  this.HTTP.setHeader('*','Content-Type', 'application/json');
+  var headers_t = this.HTTP.getHeaders("*")
+  let responseData = await this.HTTP.get(url, {},headers_t).then(resp => {return JSON.parse(resp.data)}).catch(err => {return err.error});
+  return responseData;
+}
+
 
 async getClientAppointments(){
   var l
@@ -213,12 +222,20 @@ async getClientAppointments(){
   return responseData;
   // throw throwError("error"); 
 }
-
-// updateAppointment(id, start, end, day, month, year,name, details, employee):Observable<any>{
-//   var week = this.getWeekNumber(new Date(year, month, day))
-//   var data = {'start': start , 'end': end, 'day': day, 'week':week, 'month':month, 'year' : year, 'employee': employee,  'client_name' :name, 'details': details}
-//   return this.http.put(BASE_URL+'bookings/'+id+'/', data, {headers: this.newheader()})
-// }
+async getClientAppointmentsweek(week, year){
+  var l
+  let token 
+  token = await this.getToken()
+  l = this.parseJwt(token) 
+  let url = BASE_URL+'bookings/user/week/'+week+'/?user='+l.user_id+'&year='+year
+  this.HTTP.setDataSerializer("json");
+  this.HTTP.setHeader('*',"Accept", 'application/json');
+  this.HTTP.setHeader('*','Content-Type', 'application/json');
+  this.HTTP.setHeader('*','Authorization','JWT '+ token );
+  var headers_t = this.HTTP.getHeaders("*")
+  let responseData = await this.HTTP.get(url, {},headers_t).then(resp => {return JSON.parse(resp.data)}).catch(err => {return err.error});
+  return responseData;
+}
 
 async deleteAppointment(id){
   let url = BASE_URL+'bookings/'+id+'/'
@@ -314,6 +331,14 @@ parseJwt = (token) => {
   }
 async getStores(){
   let url = BASE_URL+'store/list'
+  this.HTTP.setHeader('*',"Accept", 'application/json');
+  this.HTTP.setHeader('*','Content-Type', 'application/json');
+  var headers_t = this.HTTP.getHeaders("*")
+  let responseData = await this.HTTP.get(url, {},headers_t).then(resp => {return JSON.parse(resp.data)}).catch(err => {return err.error});
+  return responseData
+}
+async getStores1(){
+  let url = BASE_URL+'store/list1'
   this.HTTP.setHeader('*',"Accept", 'application/json');
   this.HTTP.setHeader('*','Content-Type', 'application/json');
   var headers_t = this.HTTP.getHeaders("*")

@@ -1,8 +1,26 @@
+
 .spinner {
     top:0vh;
-    width: 100vh;
+    width: 100vw;
     height:100%;
-    background: white;
+    background-image: url(./../../assets/Waves-multiple.svg) !important;
+    background-repeat: no-repeat;
+    background-size: cover;
+    // height: 100vh;
+    overflow: hidden;
+    color: white;
+    position: absolute;
+    text-align: center;
+    z-index: 10000000;
+  }
+  .spinner1{
+    width: 100vw;
+    height: 100%;
+    left: 0px;
+    background: transparent;
+    // height: 100vh;
+    overflow: hidden;
+    color: white;
     position: absolute;
     text-align: center;
     z-index: 10000000;
@@ -12,11 +30,11 @@
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background-color: #0061d5;
+    background-color: white;
     opacity: 0.6;
     position: absolute;
     left:calc(50vw - 20px);
-    top:calc(50% - 20px);
+    top:calc(40% - 20px);
     
     -webkit-animation: sk-bounce 2.0s infinite ease-in-out;
     animation: sk-bounce 2.0s infinite ease-in-out;
@@ -62,27 +80,34 @@ ion-toolbar{
 }
 .white-icon{
     font-size: 30px;
+    padding-right: 10px;
     color: white;
 }
 section{
     padding: 5px 20px;
-    background: #fafafa;
+    // background: #fafafa;
     h5{
+        color: #fff;
         margin:0px
     }
     p{
+        color: #fff;
         margin:0px
     }
 }
 ion-content{
-    --background: #fafafa
+    background-image: url(./../../assets/Waves-multiple.svg) !important;
+    background-repeat: no-repeat;
+    background-size: cover;
+    // height: 100vh;
+    overflow: hidden;
 }
 
 .profile{
     position: relative;
-
+    padding:  10px;
     width: 100vw;
-    padding: 10px;
+    // padding: 10px;
     .names{
         position: absolute;
         left: 36vw;
@@ -91,12 +116,19 @@ ion-content{
         display: inline-block;
         height: 100%;
         h2{
-            font-size:24px;
-            margin:0px
+            color: #fff;
+            font-size:21px;
+            line-height: 21px;
+            margin:0px;
+            font-weight:700
         }
         h5{
+            color: #f3f3f3;
+            font-size: 15px;
+            line-height: 15px;
             margin-top: 0px;
-            color: #00479D;
+            margin-bottom: 15px;
+            // color: #00479D;
         }
         ion-button{
             font-size: 13px;
@@ -107,7 +139,8 @@ ion-content{
         height:25vw;
         width: 25vw;;
         margin: 10px;
-        border-radius: 50%;
+        border-radius: 10px;
+        box-shadow: 0 3px 6px rgba(#112233, 0.3);
         display: inline-block;
         overflow: hidden;
         img{
@@ -121,11 +154,13 @@ ion-content{
     }
 }
 .service{
-    height: 200px;
-    border-radius: 10px;
-    margin: 10px 0px;
+    max-height: 230px;
+    bottom: 0px;
+    border-radius: 4px;
+    // margin: 10px 0px;
+    left: 0px;
     width: 100%;
-    background: #fff;
+    background: transparent;
     overflow: scroll;
     box-shadow: 0 3px 6px rgba(#2c59ac, 0.4);
     .item-native{
@@ -168,19 +203,21 @@ ion-content{
             display: inline-block;
             color: #28264d;
             background: #fff;
+            border: 1px solid white;
             box-shadow: 0 5px 7px rgba(#2c59ac, 0.2);
         }
     }
     
 } 
 .active{
-    background:#0061d5 !important;
+    background:#00479D !important;
+    border: 1px solid white;
     color: white !important;
 }
 .time{
     padding-bottom: 20px;
     .x-scroller{
-        background: #fafafa;
+        // background: #fafafa;
         white-space: nowrap;
         position: relative;
         overflow-x: scroll;
@@ -213,6 +250,7 @@ ion-toolbar{
 .confirm-tab{
 width: 100vw;
 height: 100vh;
+
 display: block;
 position: absolute;
 overflow: hidden;
@@ -221,11 +259,12 @@ z-index: 20;
 background: rgba($color: rgb(1, 28, 83), $alpha: 0.8);
 .cont{
 width: 80vw;
+background: white;
 display: block;
 border-radius: 10px;
 margin-top: 20vh;
 margin-left: 10vw;
-background: #efefef;
+// background: #efefef;
 }
 h3{
     font-size: 24px;
@@ -272,4 +311,9 @@ button{
 }
 h6{
     margin-top: 10px;
+}
+.all_spots{
+    overflow: hidden;
+    position: relative;
+    width: 100vw;
 }

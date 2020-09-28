@@ -1,6 +1,10 @@
 import { Component } from '@angular/core';
-import { ModalController } from '@ionic/angular';
+import { ModalController, Platform } from '@ionic/angular';
 import { RegisterPage } from '../register/register.page';
+import { StorageService } from '../services/storage.service';
+import { ApiService } from '../services/api.service';
+import { NativeApiService } from '../services/nativeapi.service';
+import Notiflix from "notiflix";
 
 @Component({
   selector: 'app-tab3',
@@ -8,8 +12,40 @@ import { RegisterPage } from '../register/register.page';
   styleUrls: ['tab3.page.scss']
 })
 export class Tab3Page {
-
-  constructor(public modalController: ModalController) {}
+  shops:any=[]
+  spin='block'
+  constructor(private storage: StorageService, public modalController: ModalController,private api:ApiService, private plt:Platform,private apiNative:NativeApiService) {
+    this.plt.ready().then(
+      () =>{
+        if (this.plt.is('hybrid')) {
+          this.apiNative.getStores().then(data=>{
+            var shops:any =data
+            this.storage.setShops(shops)
+            this.shops = data
+            this.spin='none'
+                    }).catch(err=>{
+                      this.spin='none'
+                      Notiflix.Report.Warning("Problemi di rete", 'Verifica che la tua connessione funzioni o riprova più tardi', 'OK');
+                     
+                    })
+                    
+        }
+        else{
+          this.api.getStores().subscribe(data=>{
+            var shops:any =data
+            this.storage.setShops(shops)
+          
+            this.shops = data
+            console.log(data)
+            this.spin='none'
+                    },err=>{
+                      this.spin='none'
+                      Notiflix.Report.Warning("Problemi di rete", 'Verifica che la tua connessione funzioni o riprova più tardi', 'OK');
+                    
+                    })
+        }
+        } ) 
+  }
   async presentRegisterModal() {
     const modal = await this.modalController.create({
       component:RegisterPage,

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ModalController, Platform } from '@ionic/angular';
+import { ModalController, Platform, NavController } from '@ionic/angular';
 import { BookModalPage } from '../book-modal/book-modal.page';
 import Notiflix from "notiflix";
 import { RouterLink } from '@angular/router';
@@ -8,7 +8,8 @@ import { NgControlStatus } from '@angular/forms';
 import { NativeApiService } from '../services/nativeapi.service';
 import { StorageService } from '../services/storage.service';
 import { SafariViewController } from '@ionic-native/safari-view-controller/ngx';
-
+import { CodePush, InstallMode, SyncStatus } from '@ionic-native/code-push/ngx';
+import { AppCenterAnalytics } from '@ionic-native/app-center-analytics/ngx';
 @Component({
   selector: 'app-tab1',
   templateUrl: 'tab1.page.html',
@@ -20,52 +21,39 @@ salute:any=[]
 capelli:any=[]
 grouped:any=[]
 spin='block'
-doctor = ['ECG', 'Visita agonistica', 'Visita non agonistica', 'Nutrizione e dieta', 'Visista sotto sforzo']
-barber = [ 'Taglio uomo', 'Taglio donna', 'Shampoo', 'Barba', 'Tinta', 'Manicure', 'Meches']
-dentist =[ 'Controlli di routine', 'Visita odontoiatrica',"Estrazioni", ' Otturazioni e terapie canalari', 'Apparecchio','Applicazione di protesi'  ]
-  constructor(private safariViewController: SafariViewController, private storage: StorageService, public modalController: ModalController,private api:ApiService, private plt:Platform,private apiNative:NativeApiService) {
+  constructor( private nav: NavController ,private appCenterAnalytics:AppCenterAnalytics, private codePush: CodePush, private safariViewController: SafariViewController, private storage: StorageService, public modalController: ModalController,private api:ApiService, private plt:Platform,private apiNative:NativeApiService) {
     this.plt.ready().then(
       () =>{
         if (this.plt.is('hybrid')) {
-          this.apiNative.getStores().then(data=>{
+          this.apiNative.getStores1().then(data=>{
             var shops:any =data
             this.storage.setShops(shops)
-            var items = shops,
-            grouped = [];
-            items.forEach(function (a) {
-                this[a.business_type] || grouped.push(this[a.business_type] = []);
-                this[a.business_type].push(a);
-            }, Object.create(null));
-            this.shops = grouped
+            this.shops = data
             this.spin='none'
                     }).catch(err=>{
                       this.spin='none'
                       Notiflix.Report.Warning("Problemi di rete", 'Verifica che la tua connessione funzioni o riprova più tardi', 'OK');
-                      console.log(err,'1ui')
+                     
                     })
+                    
         }
         else{
-          this.api.getStores().subscribe(data=>{
+          this.api.getStores1().subscribe(data=>{
             var shops:any =data
             this.storage.setShops(shops)
-            var items = shops,
-            grouped = [];
-            items.forEach(function (a) {
-                this[a.business_type] || grouped.push(this[a.business_type] = []);
-                this[a.business_type].push(a);
-            }, Object.create(null));
-            this.shops = grouped
+          
+            this.shops = data
             this.spin='none'
                     },err=>{
                       this.spin='none'
                       Notiflix.Report.Warning("Problemi di rete", 'Verifica che la tua connessione funzioni o riprova più tardi', 'OK');
-                      console.log(err,'qua')
+                    
                     })
         }
         } ) 
         
   }
-
+ 
   ngOnInit() {
 
   }
@@ -97,6 +85,11 @@ dentist =[ 'Controlli di routine', 'Visita odontoiatrica',"Estrazioni", ' Ottura
   // );
   // }
   async presentModal(shop) {
+    this.appCenterAnalytics.setEnabled(true).then(() => {
+      this.appCenterAnalytics.trackEvent("shop_app_open", { TEST: shop.store_name }).then(() => {
+          console.log('Custom event tracked');
+      });
+   });
     const modal = await this.modalController.create({
       component:BookModalPage,
       swipeToClose: true,
@@ -111,5 +104,8 @@ dentist =[ 'Controlli di routine', 'Visita odontoiatrica',"Estrazioni", ' Ottura
       }
     });
     return await modal.present();
+  }
+  gopay(){
+    this.nav.navigateRoot('/payments') 
   }
 }

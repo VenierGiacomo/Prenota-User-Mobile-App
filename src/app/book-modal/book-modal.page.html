@@ -4,7 +4,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content >
     <div class="spinner" [style.display]="spin">
         <div class="double-bounce1"></div>
         <div class="double-bounce2"></div>
@@ -14,12 +14,13 @@
       <div class="names">
           <h2>{{name}}</h2>
           <h5>{{role}}</h5>
-          <ion-button fill=outline (click)='infoModal()'> Maggiori informazioni</ion-button>
+          <ion-button fill=outline (click)='infoModal()' color="light"> Maggiori informazioni</ion-button>
           <!-- <ion-button style='margin: 0px 10px;' fill=outline (click)='infoModal()'><a href="https://www.google.com/maps/place/Via+Pirano,+12,+34145+Trieste+TS/@45.6308291,13.7860032" target="_blank">Mappa</a></ion-button> -->
       </div>
 </section>
 <section >
-<h5>Seleziona servizio</h5><p>Scorri per altri servizi</p>
+<h5>Seleziona un servizio</h5>
+<p *ngIf='services.length>5'>Scorri per altri servizi</p>
   <div class="service">
       <!-- <ion-radio-group [(ngModel)]="service" > -->
           <ion-item *ngFor='let service of services' lines="full" (click)='selectService(service)'>
@@ -29,32 +30,39 @@
       <!-- </ion-radio-group> -->
   </div>
 </section>
-<section class="date">
-  <h5>Seleziona data</h5>
-  <!-- <ion-item (click)='showDatePicker()'> 
-      <ion-label>Data</ion-label>
-      <div  [innerHTML]="today" class="align-right"></div>
-  </ion-item> -->
+<div class="all_spots">
+    <div class="spinner1" [style.display]="spin_spots">
+        <div class="double-bounce1"></div>
+        <div class="double-bounce2"></div>
+      </div>
+<section class="date" [style.visibility]="spin_spots_neg">
+  <h5 *ngIf='uniques.length!=0'>Seleziona una data</h5>
+
   <div class='x-scroller'>
-      <div class="time-slot" *ngFor='let date_avi of unique, let ind = index' (click)="DatePicker(date_avi, ind)" [class.active]='active_date[ind]'>{{week_name[date_avi.week_day]}} {{date_avi.number}} {{months_short[date_avi.month]}}</div>
+      <div class="time-slot" *ngFor='let date_avi of uniques, let ind = index' (click)="DatePicker(date_avi, ind)" [class.active]='active_date[ind]'>{{week_name[date_avi.week_day]}} {{date_avi.number}} {{months_short[date_avi.month]}}</div>
     </div>
 </section>
-<section class="time" *ngIf="selected_services !=''">
-    <h5>Seleziona orario</h5>
-    <div *ngFor="let empl of employees_list,let ix = index" style="position: relative;">
-      <h6>Disponibilità di {{empl.name}}:</h6>
-        <div class='x-scroller'>
-            <span  *ngFor='let time of final_spots'><div *ngIf='time[0].employee == empl.employee' class="time-slot" (click)="selectTime(time)">{{times[time[0].start]}}</div></span>
-            <p  *ngIf='!emplo_show[ix]' style="color: #777; font-size: 13px;">Nessuna disponibilita, prova in un' altra data</p>
-        </div>
-         
-       
+<section class="time" *ngIf='uniques.length!=0' [style.visibility]="spin_spots_neg">
+    <!-- <div class="spinner1" [style.display]="spin_spots1">
+        <div class="double-bounce1"></div>
+        <div class="double-bounce2"></div>
+      </div> -->
+    <h5 style="color: #fff;" >Seleziona un orario</h5>
+    <p  *ngIf='!show_something' style="color: #efefef; font-size: 15px;"  [style.visibility]="spin_spots_neg">Nessuna disponibilita, prova in un' altra data</p>
+    <div  *ngFor="let empl of employees_list,let ix = index" style="position: relative;"   [style.visibility]="spin_spots_neg">
+      <span  *ngIf='emplo_show[ix]'>
+        <h6 style="color: #fff;" >Disponibilità di {{empl.name}}:</h6>
+          <div class='x-scroller'>
+              <span  *ngFor='let time of final_spots'><div *ngIf='time[0].employee == empl.employee' class="time-slot" (click)="selectTime(time)">{{times[time[0].start]}}</div></span>
+              <!-- <p  *ngIf='!emplo_show[ix]' style="color: #efefef; font-size: 13px;">Nessuna disponibilita, prova in un' altra data</p> -->
+          </div>
+      </span> 
     </div>
     <!-- <div class='x-scroller'>
         <div class="time-slot" *ngFor='let time of availableSpots' (click)="selectTime(time)">{{times[time.start]}}</div>
       </div> -->
   </section>
-
+</div>
 
 </ion-content>
 

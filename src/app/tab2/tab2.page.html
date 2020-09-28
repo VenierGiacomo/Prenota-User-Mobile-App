@@ -3,15 +3,25 @@
     <ion-title>
       prenota
     </ion-title>
-    <ion-buttons slot="end" (click)='logout()' >
+    <ion-buttons slot="end" (click)='logout()' style="color: white;
+    font-size: 18px;
+    padding-right: 10px;">
         {{text_top_right}}
       </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content >
-  <h2>I tuoi appuntamenti</h2>
-  <div class="appintment" *ngIf='appointments_list.length==0'>Al monento non hai appuntamenti prenotati</div>
+  <ion-content >
+  <h2 *ngIf='appointments_list.length!=0'>I tuoi appuntamenti</h2>
+  <!-- <div class="appintment" >Al momento non hai appuntamenti prenotati</div> -->
+  <div *ngIf='appointments_list.length==0' style="width: 100vw; padding: 0px 50px; top: 30vh;text-align: center;">
+  <h2 style="margin-top: 40px"> Non hai ancora fissato un appuntamento!</h2>
+  <img src='../assets/icon/undraw_Booking_re_gw4j.svg' style="width: 100%; margin: 40px;">
+  <p style="color:#888">Una volta fatta la prima prenotazione, qui troverai i tuoi appuntamenti</p>
+  <div class="login-btn">
+      <p >Leggi di più su i nostri <a (click)='infoModal("https:prenota.cc/termofuse")'>Termi di Utilizzo</a> e <a (click)='infoModal("https:prenota.cc/privacy")'>Privacy Policy</a></p>
+    </div>
+</div>
     <!-- <ion-item>
       <ion-label>New Message</ion-label>
     </ion-item>
@@ -36,7 +46,5 @@
       <ion-item-option color="danger">Elimina</ion-item-option>
     </ion-item-options>
 </ion-item-sliding>
-  <div class="login-btn">
-      <p >Leggi di più su i nostri <a href="https:prenota.cc/termofuse">Termi di Utilizzo</a> e <a href="https:prenota.cc/privacy">Privacy Policy</a></p>
-    </div>
+  
 </ion-content>
