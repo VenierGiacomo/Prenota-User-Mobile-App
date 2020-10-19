@@ -1,16 +1,18 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>
-      prenota
-    </ion-title>
-    <ion-buttons slot="end" (click)='logout()' style="color: white;
-    font-size: 18px;
-    padding-right: 10px;">
-        {{text_top_right}}
-      </ion-buttons>
-  </ion-toolbar>
-</ion-header>
-
+<ion-header  mode=ios>
+    <ion-toolbar  mode=ios>
+        <!-- <ion-buttons slot="start">
+          <ion-button>
+            Clear
+          </ion-button>
+        </ion-buttons> -->
+        <ion-buttons slot="end">
+          <ion-button  mode=ios (click)='logout()'>
+             <p style="color: #0061d5; margin: 0px;">{{text_top_right}}</p>
+          </ion-button>
+        </ion-buttons>
+        <ion-title mode=ios>prenota</ion-title>
+      </ion-toolbar>
+    </ion-header>
   <ion-content >
   <h2 *ngIf='appointments_list.length!=0'>I tuoi appuntamenti</h2>
   <!-- <div class="appintment" >Al momento non hai appuntamenti prenotati</div> -->
@@ -19,7 +21,7 @@
   <img src='../assets/icon/undraw_Booking_re_gw4j.svg' style="width: 100%; margin: 40px;">
   <p style="color:#888">Una volta fatta la prima prenotazione, qui troverai i tuoi appuntamenti</p>
   <div class="login-btn">
-      <p >Leggi di più su i nostri <a (click)='infoModal("https:prenota.cc/termofuse")'>Termi di Utilizzo</a> e <a (click)='infoModal("https:prenota.cc/privacy")'>Privacy Policy</a></p>
+      <p><a (click)='infoModal("https:prenota.cc/termofuse")'>Termini di Utilizzo</a> - <a (click)='infoModal("https:prenota.cc/privacy")'>Privacy Policy</a> <br> <br><a href='https://wa.me/393404526854'>Contatta l'assistenza 24/7</a></p>
     </div>
 </div>
     <!-- <ion-item>

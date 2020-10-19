@@ -64,7 +64,7 @@ cardErr: boolean =false
 
 
     // this.striperedirect = await loadStripe('pk_test_f3m2iNJqa6UdyuD9Ey8O7ZiH00eSjJ4lEt');
-    const stripe = Stripe('pk_test_f3m2iNJqa6UdyuD9Ey8O7ZiH00eSjJ4lEt');
+    const stripe = Stripe('pk_test_f3m2iNJqa6UdyuD9Ey8O7ZiH00eSjJ4lEt',{locale: 'it'});
     const elements = stripe.elements();
     const paymentRequest = stripe.paymentRequest({
       country: 'US',
@@ -90,11 +90,11 @@ cardErr: boolean =false
     // Custom styling can be passed to options when creating an Element.
     const style = {
       base: {
-        color: '#fff',
+        color: '#0f0f0f',
         fontSize: '16px',
         lineHeight: '50px',
         '::placeholder': {
-          color: '#ddd'
+          color: '#333'
         },
         ':-webkit-autofill': {
           color: '#32325d',
@@ -148,6 +148,7 @@ form1.addEventListener('submit', function(event) {
     }
   });
 });
+var self= this
 function stripeTokenHandler(token) {
   // Insert the token ID into the form so it gets submitted to the server
   // var form = <HTMLFormElement>document.getElementById('payment-form-card');
@@ -158,6 +159,7 @@ function stripeTokenHandler(token) {
   // form.appendChild(hiddenInput);
   // Submit the form
   console.log(token)
+  self.nav.navigateRoot('/payment-success')
   // form.submit();
 }
   }
@@ -192,7 +194,7 @@ function stripeTokenHandler(token) {
     //   } 
     }
    
-    navHome(){
-      this.nav.navigateBack('/tabs')
+    async navHome(){
+      await this.nav.navigateBack('/tabs')
     }
 }

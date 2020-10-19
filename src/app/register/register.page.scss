@@ -1,15 +1,4 @@
 
-ion-title{
-    position: absolute;
-    // top: 15vh;
-    width: 80vw;
-    left: 10vw;
-    padding: 0px;;
-    font-size: 36px;
-    height: 100px;
-    color: #0061d5;  
-     font-family: 'Comfortaa Bold'
-}
 body{
     background: #fff;
 }
@@ -81,22 +70,18 @@ ion-toggle {
   }
 
   ion-icon{
+    margin-right:10px;
     font-size: 32px;
-    color: white;
-}
-ion-header{
-    color: white;
-    height: 50px;
-    ion-icon{
-        color:white;
-        --color: #fff
-    }
-}
-ion-toolbar{
-    padding-top: 5px !important;
-}
-.white-icon{
-    font-size: 30px;
-    color: white;
+    color: #0061d5;
 }
 
+
+ion-header{
+
+    height: 50px;
+    
+}
+ion-toolbar{
+   
+    padding-top: 5px !important;
+}

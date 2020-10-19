@@ -1,8 +1,8 @@
 <ion-header class="ion-no-border">
     <ion-toolbar>
-        <ion-icon slot="end" name="close-outline"  class="white-icon" (click)='closeModal()'></ion-icon>
+        <ion-icon slot="end" name="close-outline"  (click)='closeModal(false)'></ion-icon>
     </ion-toolbar>
-</ion-header>
+  </ion-header>
   
 
 <ion-content  *ngIf="registerpage">
@@ -60,7 +60,8 @@
     <div class="login-btn">
     <ion-button fill=outline (click)='login()'>Login</ion-button>
     </div>
-    <p class='err' *ngIf='error!=""' >{{error}}</p>  
+    <p class='err' *ngIf='error!=""' >{{error}}</p>
+    <p class="login">Hai dimenticato la password? <a (click)='changePassword()'>Cambiala</a></p>
     <p class="login">Non hai un profilo? Creane uno! <a (click)='goRegister()'>Registrati</a></p>
    </div>
    

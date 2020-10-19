@@ -15,10 +15,6 @@ const routes: Routes = [
     loadChildren: () => import('./register/register.module').then( m => m.RegisterPageModule)
   },
   {
-    path: 'more-info',
-    loadChildren: () => import('./more-info/more-info.module').then( m => m.MoreInfoPageModule)
-  },
-  {
     path: 'onboarding',
     loadChildren: () => import('./onboarding/onboarding.module').then( m => m.OnboardingPageModule)
   },
@@ -26,7 +22,13 @@ const routes: Routes = [
     path: 'payments',
     loadChildren: () => import('./payments/payments.module').then( m => m.PaymentsPageModule)
   },
-  
+  {
+    path: 'payment-success',
+    loadChildren: () => import('./payment-success/payment-success.module').then( m => m.PaymentSuccessPageModule)
+  },
+  {path: '**', 
+  redirectTo: '/tabs/tab1',
+}
 ];
 @NgModule({
   imports: [

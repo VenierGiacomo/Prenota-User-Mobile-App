@@ -16,36 +16,43 @@ ion-content{
   left: 0px;
   width: 100vw;
   position: absolute;
+  z-index: 1;
   height: auto;
   border-top-left-radius: 40px;
   border-top-right-radius: 40px;
   top:10px;
   bottom: 0px;
-  background:rgba(#535353, 0.8) ;
-  backdrop-filter: blur(8px);
+  background:rgba(#000, 0.5) ;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  animation-delay: 50ms;
   animation-name: scrool_up;
   animation-duration: 600ms;
 }
-
+textarea:focus, input:focus{
+  outline: none;
+}
+*:focus {
+  outline: none;
+}
 form{
+  z-index: 100;
   left: 0px;
   width: 100vw;
   position: absolute;
   height: 80vh;
   top:10px;
   bottom: 0px;
-  animation-name: scrool_up;
-  animation-duration: 600ms;
 
  .input_bg{
   width: 82vw;
   margin: 0px 9vw 10px 9vw;
-  padding: 0px 10px;
+  padding: 0px 20px;
   height: 50px;
   border-radius: 7px;;
   line-height: 50px;
-  color:#fff;
-  background: rgba(#2c2c2c, 0.5);
+  color:#0f0f0f;
+  background: rgba(#dcdcdc, 0.8);
   border: none;
  }
  .input_sm1{
@@ -73,19 +80,19 @@ form{
 }
  @keyframes scrool_up {
     from {top: 100vh;}
-    to {top: 10vh;}
+    to {top: 10px;}
   }
 ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
-  color: #ddd;
+  color: #333;
   opacity: 1; /* Firefox */
 }
 
 :-ms-input-placeholder { /* Internet Explorer 10-11 */
-  color: #bbb;
+  color: #333;
 }
 
 ::-ms-input-placeholder { /* Microsoft Edge */
-  color: #bbb;
+  color: #333;
 }
 h1{
   color: white;
@@ -114,8 +121,8 @@ h1{
   height: 50px;
   border-radius: 7px;;
   line-height: 50px;
-  color:#fff;
-  background: rgba(#2c2c2c, 0.5);
+  color:#0f0f0f;
+  background: rgba(#dcdcdc, 0.8);
   border: none;
 }
 

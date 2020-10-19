@@ -1,19 +1,20 @@
-<ion-header>
-    <ion-toolbar>
-      <ion-title>
-        prenota
-      </ion-title>
-      <ion-buttons slot="end"style="color: white;
-      font-size: 18px;
-      padding-right: 10px;" >
-         <!-- <a href="https://wa.me/393404526854"> <img src="../assets/icon/whatsapp.svg" style="height: 30px; margin-right: 10px;"></a> -->
-         <a (click)='gopay()'> <img src="../assets/icon/whatsapp.svg" style="height: 30px; margin-right: 10px;"></a>
-        </ion-buttons>
-    </ion-toolbar>
+<ion-header  mode=ios >
+<ion-toolbar  mode=ios translucent>
+    <!-- <ion-buttons slot="start">
+      <ion-button>
+        Clear
+      </ion-button>
+    </ion-buttons> -->
+    <ion-buttons slot="end"  mode=ios>
+      <ion-button  mode=ios>
+          <a href='https://wa.me/393404526854' target="_blank"><ion-icon name="chatbubbles-outline" style="color: #0061d5; font-size: 22px;"></ion-icon></a>
+      </ion-button>
+    </ion-buttons>
 
-  </ion-header>
-  
-  <ion-content [fullscreen]="true" class="ion-padding">
+    <ion-title mode=ios >prenota</ion-title>
+  </ion-toolbar>
+</ion-header>
+  <ion-content>
       <div class="spinner" [style.display]="spin">
         <p>Caricamento in corso</p>
           <div class="double-bounce1"></div>

@@ -16,7 +16,6 @@ async setAppointment(service){
     service.index = maxId + 1
   }
   oldAppointments.push(service)
-  console.log(oldAppointments)
   this.storage.set('appointments',oldAppointments)
     }
  

@@ -172,7 +172,6 @@ bookAppointment(start, end, day, month, year,name, details, employee, service):O
 bookAppointmentNoOwner(start, end, day, month, year,name, phone, details, employee, service, shop):Observable<any>{
   var week = this.getWeekNumber(new Date(year, month, day))
   var data = {'start': start , 'end': end, 'day': day, 'week':week, 'month':month, 'year' : year, 'employee': employee,  'client_name' :name, 'phone': phone, 'details': details, 'service_n': service, 'shop':shop}
-  console.log(data)
     return this.http.post(BASE_URL+'bookings/', data,{headers: this.newheader()})
 }
 getAppointments(week):Observable<any>{
@@ -209,7 +208,6 @@ getMonthAppointments(month):Observable<any>{
 }
 
 updateAppointment(id, start, end, day, month, year,name, details, employee, service):Observable<any>{
-  console.log(id, start, end, day, month, year,name, details, employee, service, 'id, start, end, day, month, year,name, details, employee, service')
   var week = this.getWeekNumber(new Date(year, month, day))
   var data = {'start': start , 'end': end, 'day': day, 'week':week, 'month':month, 'year' : year, 'employee': employee,  'client_name' :name, 'details': details, 'service_n': service}
   return this.http.put(BASE_URL+'bookings/'+id+'/', data, {headers: this.newheader()})
@@ -231,7 +229,6 @@ createStore(store_name, address, city, zip_code):Observable<any>{
 }
 
 sendEmail(input: any) {
-  console.log('called')
   return this.http.post(this.mailApi, input, { responseType: 'text' })
 }
 

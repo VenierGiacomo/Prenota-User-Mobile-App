@@ -25,7 +25,7 @@ spin='block'
     this.plt.ready().then(
       () =>{
         if (this.plt.is('hybrid')) {
-          this.apiNative.getStores1().then(data=>{
+          this.apiNative.getStores().then(data=>{
             var shops:any =data
             this.storage.setShops(shops)
             this.shops = data
@@ -38,7 +38,7 @@ spin='block'
                     
         }
         else{
-          this.api.getStores1().subscribe(data=>{
+          this.api.getStores().subscribe(data=>{
             var shops:any =data
             this.storage.setShops(shops)
           

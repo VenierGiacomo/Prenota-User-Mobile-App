@@ -29,19 +29,19 @@ export class AppComponent {
     this.platform.ready().then(() => {
       this.statusBar.styleDefault();
       this.splashScreen.hide();
-      this.storage.get('introShown').then((result) => 
-    {
-        // If it is set, then skip that page
-        if(result){
-          this.nav.navigateRoot('tabs/tab1');
-        }
-        // Otherwise if property is not set, then show that page for once and then set property to true
-        else {
-          this.nav.navigateRoot('onboarding');
-          this.storage.set('introShown', true);
-        }
+    //   this.storage.get('introShown').then((result) => 
+    // {
+    //     // If it is set, then skip that page
+    //     if(result){
+    //       this.nav.navigateRoot('tabs/tab1');
+    //     }
+    //     // Otherwise if property is not set, then show that page for once and then set property to true
+    //     else {
+    //       this.nav.navigateRoot('onboarding');
+    //       this.storage.set('introShown', true);
+    //     }
 
-      });
+    //   });
     
        
     this.codePush.sync({ installMode: InstallMode.ON_NEXT_RESUME, mandatoryInstallMode: InstallMode.IMMEDIATE}).subscribe((syncStatus) => {

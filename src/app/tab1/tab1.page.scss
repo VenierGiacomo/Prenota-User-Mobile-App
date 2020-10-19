@@ -63,7 +63,10 @@ p{
   color: #0061d5;
   text-align: center;
   background: white;
-  border:1px #ccc solid;
+  // border:1px #ccc solid;
+  -webkit-box-shadow: 0px 0px 15px 0px rgba(0,0,50,0.17);
+-moz-box-shadow: 0px 0px 15px 0px rgba(0,0,0,50.17);
+box-shadow: 0px 0px 15px 0px rgba(0,0,50,0.17);
   // box-shadow: 0 5px 7px rgba(#333, 0.3);
 // h4{
 //    position: absolute;

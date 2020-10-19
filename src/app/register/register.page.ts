@@ -4,6 +4,7 @@ import { ApiService } from '../services/api.service';
 import Notiflix from "notiflix";
 import { HTTP, HTTPResponse } from '@ionic-native/http/ngx';
 import { NativeApiService } from '../services/nativeapi.service';
+import { SafariViewController } from '@ionic-native/safari-view-controller/ngx';
 
 @Component({
   selector: 'app-register',
@@ -15,7 +16,7 @@ export class RegisterPage implements OnInit {
   error
 BASE_URL = 'https://giacomovenier.pythonanywhere.com/api/'
   registerpage =true
-  constructor(private plt: Platform, private nativeApi: NativeApiService, private http: HTTP, public modalController: ModalController,private api: ApiService, private nav: NavController) { }
+  constructor(private safariViewController: SafariViewController,private plt: Platform, private nativeApi: NativeApiService, private http: HTTP, public modalController: ModalController,private api: ApiService, private nav: NavController) { }
   first_name = ''
   last_name = ''
   email = ''
@@ -30,8 +31,8 @@ BASE_URL = 'https://giacomovenier.pythonanywhere.com/api/'
   password_err=''
   ngOnInit() {
   }
-  async closeModal(){
-    await this.modalController.dismiss();
+  async closeModal(bool){
+    await this.modalController.dismiss(bool);
   }
   async register(){
     Notiflix.Block.Standard('.wrapper', 'Salvando dati...');     
@@ -63,10 +64,10 @@ BASE_URL = 'https://giacomovenier.pythonanywhere.com/api/'
             console.log(data, 'efverfvgr')
             await this.nativeApi.storeToken(data.token)
             Notiflix.Block.Remove('.wrapper');
-            await this.closeModal()
+            await this.closeModal(true)
             this.homeref.user.phone = this.phone
             this.homeref.bookfromLogin(data.email, data.first_name, data.last_name)
-            await this.homeref.closeModal()
+            // await this.homeref.closeModal()
           }
         ).catch(
           err => {
@@ -86,10 +87,10 @@ BASE_URL = 'https://giacomovenier.pythonanywhere.com/api/'
         data=>{
          this.api.storeToken(data.token)
           Notiflix.Block.Remove('.wrapper');
-          this.closeModal()
+          this.closeModal(true)
           this.homeref.user.phone = this.phone
           this.homeref.bookfromLogin(data.email, data.first_name, data.last_name )
-          this.homeref.closeModal()
+          // this.homeref.closeModal()
         },
         err => {
           Notiflix.Block.Remove('.wrapper');
@@ -135,9 +136,9 @@ BASE_URL = 'https://giacomovenier.pythonanywhere.com/api/'
     await this.nativeApi.storeToken(res.token)
     await this.nativeApi.getUser().then(data=>{
       var res:any=data
-      this.closeModal()
+      this.closeModal(true)
       this.homeref.bookfromLogin(res.email, res.first_name, res.last_name)
-      this.homeref.closeModal()
+      // this.homeref.closeModal()
     }).catch(err=>console.log(err, 'login'))
   })
   .catch((error:any) => {
@@ -153,9 +154,9 @@ BASE_URL = 'https://giacomovenier.pythonanywhere.com/api/'
           this.api.getUser().subscribe(
             data =>{
               var res:any=data
-              this.closeModal()
+              this.closeModal(true)
               this.homeref.bookfromLogin(res.email, res.first_name, res.last_name)
-              this.homeref.closeModal()
+              // this.homeref.closeModal()
               
             },err =>{
               Notiflix.Notify.Init({ position:"center-bottom"}); 
@@ -170,4 +171,36 @@ BASE_URL = 'https://giacomovenier.pythonanywhere.com/api/'
     }
     
   }
+  changePassword(){
+    this.safariViewController.isAvailable()
+  .then((available: boolean) => {
+      if (available) {
+        this.safariViewController.show({
+          url: 'https://giacomovenier.pythonanywhere.com/api/auth/reset_password',
+          hidden: false,
+          animated: true,
+          transition: 'curl',
+          enterReaderModeIfAvailable: false,
+          // tintColor: '#0061d5'
+        })
+        .subscribe((result: any) => {
+            if(result.event === 'opened') console.log('Opened');
+            else if(result.event === 'loaded') console.log('Loaded');
+            else if(result.event === 'closed') console.log('Closed');
+          },
+          (error: any) => console.error(error)
+        );
+
+      } else {
+        window.open('https://giacomovenier.pythonanywhere.com/api/auth/reset_password','_blank')
+        
+      }
+    }
+  ).catch(()=>{
+    window.open('https://giacomovenier.pythonanywhere.com/api/auth/reset_password','_blank')
+  }
+    
+  )
+  }
+  
 }

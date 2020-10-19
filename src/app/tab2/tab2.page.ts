@@ -28,29 +28,19 @@ rows = ["06:45", "07:00", "07:15", "07:30", "07:45", "08:00", "08:15", "08:30", 
     var token: any = await this.apiNative.isvalidToken()
     if(token){
       this.text_top_right='Esci'
-      this.appointments_list= await this.storage.getAppoitments()
     }else{
       this.text_top_right='Accedi'
     }
     }else{
       if(this.api.isvalidToken()){
         this.text_top_right='Esci'
-        this.appointments_list= await this.storage.getAppoitments()
       }else{
         this.text_top_right='Accedi'
       }
     }
-    var date = + new Date()
-    console.log(date)
-    if( date - this.date >120000){
-      this.date = date
-      console.log(date,this.date)
-      await this.getClientAppointments()
-    }
-    
+      await this.getClientAppointments()    
   }
   async ngOnInit() {
-await this.getClientAppointments()
   }
    deletestorage(appo){
     var date = new Date()
@@ -152,8 +142,14 @@ await this.getClientAppointments()
           homeref: this
         }
       });
-      modal.onDidDismiss().then(async () => {
-       await this.getClientAppointments()
+      modal.onDidDismiss().then(async data => {
+       if(data.data){
+        await this.getClientAppointments()
+        this.text_top_right='Esci'
+       }else{
+        this.text_top_right='Accedi'
+       }
+      
        
     });
       return await modal.present();
@@ -167,10 +163,11 @@ await this.getClientAppointments()
       if(token){
         this.apiNative.getClientAppointmentsweek(week,year).then(async data=>{
           this.appointments_list = await data
-          await this.storage.deleteappointments()
-          for(let appo of this.appointments_list ){
-            await this.storage.setAppointment(appo)
-          }
+          // await this.storage.deleteappointments()
+          // for(let appo of this.appointments_list ){
+          //   await this.storage.setAppointment(appo)
+          // }
+          this.text_top_right='Esci'
         }).catch(err=>{
           console.log(err)
         })
@@ -178,10 +175,11 @@ await this.getClientAppointments()
     }else{
       this.api.getClientAppointmentsweek(week,year).subscribe(async data=>{
         this.appointments_list = await data
-        await this.storage.deleteappointments()
-        for(let appo of this.appointments_list ){
-          await this.storage.setAppointment(appo)
-        }
+        // await this.storage.deleteappointments()
+        this.text_top_right='Esci'
+        // for(let appo of this.appointments_list ){
+        //   await this.storage.setAppointment(appo)
+        // }
        
         this.shops = await this.storage.getShops()
       },err=>{
