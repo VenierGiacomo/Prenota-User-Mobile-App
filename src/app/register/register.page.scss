@@ -1,10 +1,6 @@
 
 body{
-    background: #fff;
-}
-ion-content{
-    overflow:scroll;
-    --background:#fff;
+    background: #EBEEFF;
 }
 ion-button p{
 color: white;
@@ -13,27 +9,38 @@ font-weight: 500;;
 .login{
     width: 100vw;
     text-align: center;
-    color:#48466d;
+    color:#EBEEFF;
     a{
-        color:#0061d5;;
+        color:#101078;;
     }
 }
 h1{
     margin: 10px 0px;
-    font-size: 36px;
+    font-size: 24px;
     text-align: center;
+    color:#EBEEFF;
+    font-weight: 700;
 }
 .input-cont{
     position: absolute;
     top: 70px;
     ion-item{
-        color:#48466d;;
+        font-size: 13px !important;
+        color:#EBEEFF;;
         width: 80vw;
         left:10vw;
+        max-height: 65px;
+    }
+    ion-label{
+        max-height: 15px;
+        line-height: 13px !important;
+        font-size: 13px !important;
     }
     ion-input{
+        max-height: 30px;
         --placeholder-opacity: 0.9;
         --placeholder-color: rgb(168, 2, 2);
+        border-bottom: 1px #EBEEFF solid;
     }
 }
 .login-btn{
@@ -41,17 +48,17 @@ h1{
     text-align: center;
     padding:0vw 10vw;
     margin: 30px 0px;
-    color: #0061d5;
-    border: #0061d5;
+    color: #EBEEFF !important;
+    border: #EBEEFF !important;
     ion-button{
 width: 70vw;
 left: 15vw;
     }
  p{
      font-size: 10px;
-     color: #48466d;
+     color: #EBEEFF;
      a{
-         color: #0061D5;
+         color: #101078;
      }
  }
 }
@@ -65,23 +72,52 @@ ion-toggle {
     --background: #77c3ec;
     --background-checked: #f9cee7;
   
-    --handle-background: #fff ;
-    --handle-background-checked: 	#fff;
+    --handle-background: #EBEEFF ;
+    --handle-background-checked: 	#EBEEFF;
   }
 
   ion-icon{
     margin-right:10px;
     font-size: 32px;
-    color: #0061d5;
+    color: #EBEEFF;
 }
 
 
 ion-header{
-
+border: none !important;
     height: 50px;
     
 }
-ion-toolbar{
-   
-    padding-top: 5px !important;
+.bar-header {
+    border: 0px !important;
+    border-bottom-color: transparent !important;
+    background-image: none !important;
+    border-bottom: none !important;
 }
+
+
+    ion-content{
+        background-image: url(./../../assets/Waves-multiple.svg) !important;
+        background-repeat: no-repeat;
+        background-size: cover;
+        // height: 100vh;
+        overflow: hidden;
+    }
+    
+
+
+ion-list,  ion-item{
+    --background: transparent !important;
+} 
+
+ion-header{
+    background: #0061d5;
+     --background: #0061d5;
+      color:#EBEEFF;
+      font-family: 'Comfortaa Bold';
+      border: none !important;
+  }
+  ion-tab-bar{
+    --background: #0061d5;
+  }
+ 

@@ -7,3 +7,48 @@ ion-icon{
 ion-label{
     line-height: 13px;
 }
+ion-tabs{
+	ion-fab {
+		margin-bottom: 5px; /* fix notch ios*/
+		ion-fab-button {
+			--box-shadow: none;
+		}
+	}
+	ion-tab-bar {
+		--border: 0;
+		--background: #fff;
+		position: absolute;
+		bottom: 0;
+		left:0; right: 0;
+        width: 100%;
+        -webkit-box-shadow: 0px 0px 15px 0px rgba(0,0,50,0.17);
+        -moz-box-shadow: 0px 0px 15px 0px rgba(0,0,0,50.17);
+        box-shadow: 0px 0px 15px 0px rgba(0,0,50,0.17);
+		&:after{
+			content: " ";
+			width: 100%;
+			bottom: 0;
+			background: #fff;
+			height: env(safe-area-inset-bottom);
+			position: absolute;
+		}
+		ion-tab-button {
+			--background: #fff;
+		}
+		ion-tab-button.comments {
+			margin-right: 0px;
+			border-top-right-radius: 18px;
+		}
+		ion-tab-button.notifs {
+			margin-left: 0px;
+			border-top-left-radius: 18px;
+		}
+		svg {    
+			width: 72px;
+			margin-top: 19px;
+			path{
+				fill:  #fff;
+			}		
+		}
+	}
+}

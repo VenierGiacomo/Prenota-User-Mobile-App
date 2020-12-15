@@ -1,0 +1,70 @@
+
+
+<ion-header class="ion-no-border bar-header">
+  <ion-toolbar style=" background: transparent !important; height: 50px !important;">
+    <ion-title>Trieste trasporti</ion-title>
+    <ion-buttons slot="end">
+      <ion-button  mode=ios (click)='closeModal()'>
+        <ion-icon  name="close-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="prof-profile" (click)='buy()'>
+    <div class="cont_img_text">
+            <div class="prof-img"> <img src='../assets/Trieste_Trasporti_logo.svg.png'></div>
+            <div class="text_widg">
+                <h4>Biglietto 1 ora</h4>
+                <h5>Intera rete</h5>
+                <!-- <div class="location"><img src='../assets/icon/location.svg'>{{shop.address}}</div>  -->
+            </div>
+
+    </div>
+</div>          
+<div class="prof-profile" (click)='pay()'>
+  <div class="cont_img_text">
+          <div class="prof-img"> <img src='../assets/Trieste_Trasporti_logo.svg.png'></div>
+          <div class="text_widg">
+              <h4>Biglietto Giornaliero</h4>
+              <h5>Intera rete</h5>
+              <!-- <div class="location"><img src='../assets/icon/location.svg'>{{shop.address}}</div>  -->
+          </div>
+
+  </div>
+</div>    
+
+<div class="confirm-tab" [style.display]='confirm'>
+  <div class="cont" [style.display]='sure_confirm'>
+    <h3>Desideri acquistare il biglietto?</h3>
+        <div class="buttons">  
+          <button class='confirm' (click)='confirmBuy()'>Acquista </button> 
+          <div (click)='confirm="none"' style="color: #fff;">Indietro</div>
+        </div>
+  </div>
+  <div [style.display]='loading' style="z-index: 10000;"><div class="loader-5 center"><span></span></div></div>
+</div>
+<div class="confirm-load" [style.display]='loading'><div class="loader-5 center"><span></span></div></div>
+<div class="card-int" [style.display]='card'>
+    <form  id='payment-form-card' >
+  <h3>Seleziona un metodo di pagamento</h3>
+ 
+ 
+<label class='label' for="card-number"> Carta di credito</label>
+        <div id='card-element'>
+          
+          </div>
+      
+      
+    <div id="card-errors" role="alert"></div>
+    <div class="confirm-pay"> <button  type='submit'><ion-icon name="card-outline"></ion-icon> Carta di Credito</button></div>
+    <div class="paypal_pay_btn" (click)='payWithBrainTree()'>  <img src='../assets/logo-paypal.svg'> PayPal</div>
+    <div class="apple_pay_btn" (click)='applePayment()'>  <ion-icon name="logo-apple"></ion-icon>Pay </div>
+  </form>
+   
+    
+
+</div>
+</ion-content>

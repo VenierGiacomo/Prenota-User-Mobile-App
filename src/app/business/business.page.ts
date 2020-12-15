@@ -12,11 +12,11 @@ import { combineLatest } from 'rxjs';
 import { CodeNode } from 'source-list-map';
 import { SafariViewController } from '@ionic-native/safari-view-controller/ngx';
 @Component({
-  selector: 'app-book-modal',
-  templateUrl: './book-modal.page.html',
-  styleUrls: ['./book-modal.page.scss'],
+  selector: 'app-business',
+  templateUrl: './business.page.html',
+  styleUrls: ['./business.page.scss'],
 })
-export class BookModalPage implements OnInit {
+export class BusinessPage implements OnInit {
   year
   month
   day
@@ -34,12 +34,12 @@ export class BookModalPage implements OnInit {
   confirm='none'
   service :any = []
   o:any ={}
-  @Input() id
-  @Input() image
-  @Input() name
-  @Input() role
-  @Input() max_spots
-  @Input() website
+  id:any
+  image=''
+   name=''
+ role=''
+   max_spots=-1
+  website=''
   list_appointments
   services:any=[]
   week = []
@@ -80,9 +80,25 @@ export class BookModalPage implements OnInit {
   final_spots_displ=[]
   empl_for_service =[]
   place_holder
-  constructor(private safariViewController: SafariViewController, private localNotifications: LocalNotifications, private apiNative:NativeApiService, private plt: Platform,private api: ApiService, private nav: NavController, private storage: StorageService, public modalController: ModalController, private pickerController: PickerController,) {}
+  address
+  constructor(private route: Router, private safariViewController: SafariViewController, private localNotifications: LocalNotifications, private apiNative:NativeApiService, private plt: Platform,private api: ApiService, private nav: NavController, private storage: StorageService, public modalController: ModalController, private pickerController: PickerController,) {}
 // private apiNative: NativeApiService,
   async ngOnInit() {
+    this.spin='block'
+    this.id = this.route.url.split('/').slice(-1)[0]
+    this.api.getStoresDetails(this.id).subscribe(async data=>{
+      var store:any = await data
+      this.name = store.store_name
+      this.image = store.img_url
+      this.role = store.business_description
+      this.max_spots = store.max_spots
+      this.website = store.website
+      this.address= store.address
+      this.spin='none'
+    },err=>{
+      console.log(err)
+    })
+
     Notiflix.Block.Standard('.service', 'Caricamento serivzi...');
     // this.api.storeToken("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoyLCJ1c2VybmFtZSI6ImdpYWNvbW92ZW5pZXJAZ21haWwuY29tIiwiZXhwIjoxNTk2MTkwMTU1LCJlbWFpbCI6ImdpYWNvbW92ZW5pZXJAZ21haWwuY29tIiwib3JpZ19pYXQiOjE1OTM1MjUyMzJ9.JuKYHCyGe9BNt-WNitG3cH0Dm36_gF290C3vTKAtDV8")
     // this.apiNative.storeToken("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoyLCJ1c2VybmFtZSI6ImdpYWNvbW92ZW5pZXJAZ21haWwuY29tIiwiZXhwIjoxNTk2MTkwMTU1LCJlbWFpbCI6ImdpYWNvbW92ZW5pZXJAZ21haWwuY29tIiwib3JpZ19pYXQiOjE1OTM1MjUyMzJ9.JuKYHCyGe9BNt-WNitG3cH0Dm36_gF290C3vTKAtDV8")
@@ -101,20 +117,13 @@ export class BookModalPage implements OnInit {
 // },false);
   for (let i=0;i<31;i++){
       if((day_number + i)<= this.months_days[month]){
-        var day = {"number" :day_number + i, "week_day" : ((today+i-1)%7), "month":+this.month, "year": this.year}
+        var day = {"number" :day_number + i, "week_day" : ((today+i-1)%7), "month":this.month}
         this.active_date.push(false)
         this.week.push(day)
       }else{
-        if(((this.month+1)%12)==0){
-          var day = {"number" :day_number + i - this.months_days[month], "week_day" : ((today+i-1)%7), "month":((this.month+1)%12), "year": this.year+1 }
-          this.active_date.push(false)
-          this.week.push(day)
-        }
-        else{
-          var day = {"number" :day_number + i - this.months_days[month], "week_day" : ((today+i-1)%7), "month":((this.month+1)%12), "year": this.year}
-          this.active_date.push(false)
-          this.week.push(day)
-        }
+        var day = {"number" :day_number + i - this.months_days[month], "week_day" : ((today+i-1)%7), "month":this.month+1 }
+        this.active_date.push(false)
+        this.week.push(day)
       }
   }
     await this.getservices()
@@ -155,15 +164,14 @@ export class BookModalPage implements OnInit {
     }
   
   }
-  async closeModal(){
-    await this.modalController.dismiss();
+  async goHome(){
+    await this.nav.navigateBack('tabs/tab1')
   }
   getservices(){
     if(this.plt.is('hybrid')) {
       this.apiNative.getStoreservicebyStore(this.id).then(
         async data => {
           this.services =  await data
-        
           Notiflix.Block.Remove('.service');
         }).catch(
           err => {
@@ -332,10 +340,9 @@ export class BookModalPage implements OnInit {
       for (let indd in this.active_date){
         this.active_date[indd]=false
       }
-      this.today= `${date_avi.number} ${this.months[date_avi.month]} ${date_avi.year}`
+      this.today= `${date_avi.number} ${this.months[date_avi.month]} ${this.year}`
       this.day = date_avi.number
       this.month = date_avi.month
-      this.year = date_avi.year
       this.active_date[ind] = true
       this.getAppointments(this.day)
       var date = new Date(this.year, this.month, this.day)
@@ -374,8 +381,6 @@ export class BookModalPage implements OnInit {
         }
         this.unique= [...new Set(x)];
         this.unique.sort(function(a, b){
-          if (a.year < b.year) return -1;
-          if (a.year > b.year) return 1;
           if (a.month < b.month) return -1;
           if (a.month > b.month) return 1;
           if (a.number > b.number) return 1;
@@ -405,8 +410,6 @@ export class BookModalPage implements OnInit {
       }
       this.unique= [...new Set(x)];
       this.unique.sort(function(a, b){
-        if (a.year < b.year) return -1;
-        if (a.year > b.year) return 1;
         if (a.month < b.month) return -1;
         if (a.month > b.month) return 1;
         if (a.number > b.number) return 1;
@@ -1243,18 +1246,9 @@ async book(){
                 this.sendEmailConfirmation(this.user.email,this.user.first_name,this.user.last_name,this.day,this.months_names[this.month],this.year,this.times[this.app_to_book[ind].start],this.service[ind].name,this.name)
               }
           Notiflix.Block.Remove('.cont');
-          Notiflix.Report.Init(
-            {success: 
-              {svgColor:'#0061d5',
-              titleColor:'#1e1e1e',
-              messageColor:'#242424',
-              buttonBackground:'#0061d5',
-              buttonColor:'#fff'
-              ,backOverlayColor:'rgba(#00479d,0.2)',},
-            })
            Notiflix.Report.Success("L'appuntamento è stato prenotato", 'Controlla la tua email per ulteriori informazioni', 'OK');
            var ok_btn = document.getElementById('NXReportButton')
-          ok_btn.addEventListener("click",async ()=>{await this.closeModal();    await this.nav.navigateRoot('tabs/tab2')},false) 
+          ok_btn.addEventListener("click",async ()=>{   await this.nav.navigateRoot('tabs/tab2')},false) 
           var x = this.timeslot.split(":")
           var month = this.month
           var day = this.day
@@ -1313,18 +1307,9 @@ async book(){
             this.sendEmailConfirmation(this.user.email,this.user.first_name,this.user.last_name,this.day,this.months_names[this.month],this.year,this.times[this.app_to_book[ind].start],this.service[ind].name,this.name)
           }
       Notiflix.Block.Remove('.cont');
-      Notiflix.Report.Init(
-        {success: 
-          {svgColor:'#0061d5',
-          titleColor:'#1e1e1e',
-          messageColor:'#242424',
-          buttonBackground:'#0061d5',
-          buttonColor:'#fff'
-          ,backOverlayColor:'rgba(#00479d,0.2)',},
-        })
        Notiflix.Report.Success("L'appuntamento è stato prenotato", 'Controlla la tua email per ulteriori informazioni', 'OK');
        var ok_btn = document.getElementById('NXReportButton')
-       ok_btn.addEventListener("click",async ()=>{await this.closeModal();    await this.nav.navigateRoot('tabs/tab2')},false) 
+       ok_btn.addEventListener("click",async ()=>{   await this.nav.navigateRoot('tabs/tab2')},false) 
     },
       err=>{
         Notiflix.Report.Failure("Errore, prenotazione fallita", 'Controlla la tua connessione o prova a cambiare orario', 'Annulla');
@@ -1361,18 +1346,9 @@ async book(){
               this.sendEmailConfirmation(email,first_name,last_name,this.day,this.months_names[this.month],this.year,this.times[this.app_to_book[ind].start],this.service[ind].name,this.name)
             }
         Notiflix.Block.Remove('.cont');
-        Notiflix.Report.Init(
-          {success: 
-            {svgColor:'#0061d5',
-            titleColor:'#1e1e1e',
-            messageColor:'#242424',
-            buttonBackground:'#0061d5',
-            buttonColor:'#fff'
-            ,backOverlayColor:'rgba(#00479d,0.2)',},
-          })
          Notiflix.Report.Success("L'appuntamento è stato prenotato", 'Controlla la tua email per ulteriori informazioni', 'OK');
          var ok_btn = document.getElementById('NXReportButton')
-         ok_btn.addEventListener("click",async ()=>{await this.closeModal();    await this.nav.navigateRoot('tabs/tab2')},false) 
+         ok_btn.addEventListener("click",async ()=>{   await this.nav.navigateRoot('tabs/tab2')},false) 
         var x = this.timeslot.split(":")
         var month = this.month
         var day = this.day
@@ -1432,18 +1408,10 @@ async book(){
           }
           // await this.storage.setAppointment(appointment)
       Notiflix.Block.Remove('.cont');
-      Notiflix.Report.Init(
-        {success: 
-          {svgColor:'#0061d5',
-          titleColor:'#1e1e1e',
-          messageColor:'#242424',
-          buttonBackground:'#0061d5',
-          buttonColor:'#fff'
-          ,backOverlayColor:'rgba(#00479d,0.2)',},
-        })
        Notiflix.Report.Success("L'appuntamento è stato prenotato", 'Controlla la tua email per ulteriori informazioni', 'OK');
        var ok_btn = document.getElementById('NXReportButton')
-          ok_btn.addEventListener("click",async ()=>{await this.closeModal();    await this.nav.navigateRoot('tabs/tab2')},false) 
+          ok_btn.addEventListener("click",async ()=>{
+               await this.nav.navigateRoot('tabs/tab2')},false) 
    
       //  await this.pay()
    
@@ -1479,7 +1447,7 @@ async book(){
     }
 }
 async presentRegisterModal() {
-  // this.confirm='none'
+
     const modal = await this.modalController.create({
       component:RegisterPage,
       swipeToClose: true,

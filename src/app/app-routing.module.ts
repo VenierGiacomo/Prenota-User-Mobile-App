@@ -26,9 +26,18 @@ const routes: Routes = [
     path: 'payment-success',
     loadChildren: () => import('./payment-success/payment-success.module').then( m => m.PaymentSuccessPageModule)
   },
+  {
+    path: 'business/:id',
+    loadChildren: () => import('./business/business.module').then( m => m.BusinessPageModule)
+  },
   {path: '**', 
   redirectTo: '/tabs/tab1',
-}
+},
+  {
+    path: 'bus-ticket',
+    loadChildren: () => import('./bus-ticket/bus-ticket.module').then( m => m.BusTicketPageModule)
+  },
+  
 ];
 @NgModule({
   imports: [

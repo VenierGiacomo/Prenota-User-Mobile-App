@@ -16,8 +16,12 @@ import { Deeplinks } from '@ionic-native/deeplinks/ngx';
 import { CodePush } from '@ionic-native/code-push/ngx';
 import { AppCenterAnalytics } from '@ionic-native/app-center-analytics/ngx';
 import { Stripe } from '@ionic-native/stripe/ngx';
+import { PopoverComponent } from './popover/popover.component';
+// import { ApplePay } from '@ionic-native/apple-pay/ngx';
+import { PayPal } from '@ionic-native/paypal/ngx';
+import { Braintree} from '@ionic-native/braintree/ngx';
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [AppComponent,PopoverComponent],
   entryComponents: [],
   imports: [
     BrowserModule,
@@ -33,7 +37,10 @@ import { Stripe } from '@ionic-native/stripe/ngx';
     SafariViewController,
     LocalNotifications,
     HTTP,
+    // ApplePay,
+    PayPal,
     Stripe,
+    Braintree,
     Deeplinks,
     SplashScreen,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }

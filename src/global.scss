@@ -61,32 +61,44 @@ ion-toolbar{
   --background: transparent;
 }
 ion-header{
-  background: #fafafa;
-   --background: #fafafa;
-    color:#0061d5;
+  background: #fff;
+   --background: #fff;
+    color:#343a40;
     font-family: 'Comfortaa Bold';
     border-bottom: 1px solid #ccc;;
 }
 ion-tab-bar{
-  --background: #fafafa;
+  --background: #fff;
 }
 
 // .header-ios ion-toolbar:last-of-type {
 //   --border-width: 0 0 !important;
 // }
+html{
+  scroll-behavior: smooth;
+}
+
 .select-modal{
     background: transparent;
     .modal-wrapper { border-top-left-radius: 15px; border-top-right-radius: 15px;}
-    padding-top:80px!important;
+    padding-top:50px!important;
   }
-
+  .ticket-modal{
+    background: transparent;
+    .modal-wrapper { border-top-left-radius: 15px; border-top-right-radius: 15px;}
+    padding-top:50vh!important;
+    
+  }
   ion-title {
     color:#0061d5;
     font-size: 21px;
     font-family: 'Comfortaa Bold';
-    --background: #fafafa;
+    --background: #fff;
     background: #fff;
   }
   .crisp-client .crisp-1rjpbb7[data-full-view=true] .crisp-1rf4xdh .crisp-ewasyx{
     height: calc(100vh - 50px) !important;
   }
+  .braintree-option__card{
+    display: none !important;
+ }

@@ -1,5 +1,5 @@
-<ion-header class="ion-no-border">
-    <ion-toolbar>
+<ion-header class="ion-no-border bar-header">
+    <ion-toolbar style=" background: transparent !important;">
         <ion-icon slot="end" name="close-outline"  (click)='closeModal(false)'></ion-icon>
     </ion-toolbar>
   </ion-header>
@@ -8,38 +8,38 @@
 <ion-content  *ngIf="registerpage">
   <h1>Registati</h1>
    <div class="input-cont">
-      <ion-item >
+      <ion-item lines='none' >
    <ion-label position="stacked">Nome</ion-label>
     <ion-input [(ngModel)]='first_name' type="text" name="first_name" placeholder="{{first_name_err}}"></ion-input>
     <!-- <p *ngIf='first_name_err!=""'>{{first_name_err}}</p> -->
   </ion-item>
-  <ion-item >
+  <ion-item lines='none' >
     <ion-label position="stacked">Cognome</ion-label>
     <ion-input [(ngModel)]='last_name' type="text" name="last_name" placeholder="{{last_name_err}}"></ion-input>
     <!-- <p *ngIf='last_name_err!=""'>{{last_name_err}}</p> -->
   </ion-item>
-  <ion-item >
+  <ion-item lines='none' >
     <ion-label position="stacked">Email</ion-label>
     <ion-input [(ngModel)]='email' type="email" name="email" placeholder="{{email_err}}"></ion-input>
     <!-- <p *ngIf='email_err!=""'>{{email_err}}</p> -->
   </ion-item>
-  <ion-item >
+  <ion-item lines='none' >
       <ion-label position="stacked">Cellulare</ion-label>
       <ion-input inputmode="tel" type="tel" [(ngModel)]='phone' placeholder="{{phone_err}}"></ion-input>
       <!-- <p *ngIf='phone_err!=""'>{{phone_err}}</p> -->
     </ion-item>
-  <ion-item >
+  <ion-item lines='none' >
     <ion-label position="stacked">Password</ion-label>
     <ion-input [(ngModel)]='password'  type="password" placeholder="{{password_err}}"></ion-input>
     <!-- <p *ngIf='password_err!=""'>{{password_err}}</p> -->
   </ion-item>
-  <!-- <ion-item lines=none>
+  <!-- <ion-item lines='none' lines=none>
       <ion-label style="text-align: right; margin: 0px;">Uomo</ion-label>
       <ion-toggle (click)='switchSex()'></ion-toggle>
       <ion-label style="text-align: left;margin: 0px;">Donna</ion-label>
     </ion-item> -->
     <div class="login-btn">
-      <ion-button fill=outline (click)='register()'>Registrati</ion-button>
+      <ion-button fill=outline color='light' (click)='register()'>Registrati</ion-button>
       <p >Iscrivendoti accetti i nostri <a href="https:prenota.cc/termofuse">Termi di Utilizzo</a> e <a href="https:prenota.cc/privacy">Privacy Policy</a></p>
     </div>
     <p class='err' *ngIf='error!=""' >{{error}}</p>  
@@ -49,19 +49,19 @@
 <ion-content *ngIf="!registerpage">
    <h1>Login</h1>
    <div class="input-cont">
-  <ion-item >
+  <ion-item lines='none' >
     <ion-label position="stacked">Email</ion-label>
     <ion-input [(ngModel)]='email' type="email" name="email" placeholder="{{email_err}}"></ion-input>
   </ion-item>
-  <ion-item >
+  <ion-item lines='none' >
     <ion-label position="stacked">Password</ion-label>
     <ion-input [(ngModel)]='password'  type="password" placeholder="{{password_err}}"></ion-input>
   </ion-item>
     <div class="login-btn">
-    <ion-button fill=outline (click)='login()'>Login</ion-button>
+    <ion-button fill=outline color='light'(click)='login()'>Login</ion-button>
     </div>
     <p class='err' *ngIf='error!=""' >{{error}}</p>
-    <p class="login">Hai dimenticato la password? <a (click)='changePassword()'>Cambiala</a></p>
+    <p class="login">Hai dimenticato la password? <a (click)='changePassword()'>Cambiala</a> <br></p>
     <p class="login">Non hai un profilo? Creane uno! <a (click)='goRegister()'>Registrati</a></p>
    </div>
    

@@ -42,10 +42,12 @@ export class AppComponent {
     //     }
 
     //   });
-    
-       
-    this.codePush.sync({ installMode: InstallMode.ON_NEXT_RESUME, mandatoryInstallMode: InstallMode.IMMEDIATE}).subscribe((syncStatus) => {
+    if(this.platform.is('hybrid')){
+      this.codePush.sync({ installMode: InstallMode.ON_NEXT_RESUME, mandatoryInstallMode: InstallMode.IMMEDIATE}).subscribe((syncStatus) => {
       })
+    }
+       
+    
 
       // document.addEventListener("resume", function () {
         // this.codePush.sync({ updateDialog: {

@@ -283,4 +283,14 @@ getStores(){
 getStores1(){
   return this.http.get(BASE_URL+'store/list1',{headers: this.httpheader})
 }
+getStoresDetails(id){
+  return this.http.get(BASE_URL+'store/id/'+id,{headers: this.httpheader})
+}
+stripeBusTicket(service,logged){
+  if(logged){
+    return this.http.post(BASE_URL+'webhooks/ticket', {services:service},{headers: this.newheader()})
+  }else{
+    return this.http.post(BASE_URL+'webhooks/ticket', {services:service},{headers: this.httpheader})
+  }
+}
 }

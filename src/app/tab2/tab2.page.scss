@@ -7,14 +7,16 @@ h2{
     margin:0px 5px;
 }
 .appintment{
-    padding: 10px;
+    padding:  10px;
     position: relative;
     display: block;
-    margin: 15px auto;
-    width: 96vw;
+    margin: 15px 0vw;
+    width: 88vw;
     background: white;
     border-radius: 5px;
-    box-shadow: 0 5px 7px rgba(#2c59ac, 0.3);
+    -webkit-box-shadow: 0px 0px 15px 0px rgba(0,0,50,0.17);
+    -moz-box-shadow: 0px 0px 15px 0px rgba(0,0,0,50.17);
+    box-shadow: 0px 0px 15px 0px rgba(0,0,50,0.17);
     border-left: 5px solid #2c59ac;
     .app-Shop{
         color: #48466d;
@@ -91,3 +93,65 @@ ion-item{
 //     --background: #0061d5;
 //     background: #0061d5;
 // }
+
+.confirm-tab{
+    width: 100vw;
+    height: 100vh;
+    
+    display: block;
+    position: fixed;
+    overflow: hidden;
+    top: 50px;
+    z-index: 20;
+    background: rgba($color: rgb(1, 28, 83), $alpha: 0.5);
+    backdrop-filter: blur(4px);
+    .cont{
+    width: 80vw;
+    padding:20px;
+    background: rgba(#000000, 0.5);
+    backdrop-filter: blur(16px);
+    display: block;
+    border-radius: 10px;
+    margin-top: 20vh;
+    margin-left: 10vw;
+    text-align: center;
+    // background: #efefef;
+    }
+    h3{
+        font-size: 18px;
+        text-align: center;
+        padding: 0px 0px 0px 0px;
+        color: #ffffff;
+    }f
+    div{
+        width: 100%;
+        display: block;
+        font-size:15px;
+        padding: 10px;
+        color: #343a40;
+        div{
+            padding: 5px;
+        }
+    }
+    .buttons{
+    width: 100%;
+    text-align: center;
+    div{
+        padding-top:20px;
+    }
+    }
+    button{
+        margin: 10%;
+        padding: 5px 10px;
+        width: 80%;
+        font-size: 18px;
+        color:#0061d5;
+        border-radius: 10px;
+        margin-bottom: 0px;
+    }
+    .confirm{
+        background: #0061d5;
+        color: white;
+        font-family: 'Comfortaa Bold';
+    }
+    }

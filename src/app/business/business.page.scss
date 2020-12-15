@@ -153,8 +153,11 @@ ion-content{
         }
     }
 }
+.braintree-option__card{
+    display: none !important;
+ }
 .service{
-    max-height: 230px;
+    max-height: 300px;
     bottom: 0px;
     border-radius: 4px;
     // margin: 10px 0px;
@@ -176,7 +179,7 @@ ion-content{
     }
 }  
 
-.item .sc-ion-label-ios-h, .item .sc-ion-label-ios-h, .sc-ion-label-md-h, .item .sc-ion-label-md-h{
+.item .sc-ion-label-ios-h, .item .sc-ion-label-ios-h{
 white-space: normal !important;
 }
 .date{

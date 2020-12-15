@@ -7,7 +7,7 @@
         </ion-buttons> -->
         <ion-buttons slot="end">
           <ion-button  mode=ios (click)='logout()'>
-             <p style="color: #0061d5; margin: 0px;">{{text_top_right}}</p>
+             <p style="color: #343a40; margin: 0px;">{{text_top_right}}</p>
           </ion-button>
         </ion-buttons>
         <ion-title mode=ios>prenota</ion-title>
@@ -16,9 +16,9 @@
   <ion-content >
   <h2 *ngIf='appointments_list.length!=0'>I tuoi appuntamenti</h2>
   <!-- <div class="appintment" >Al momento non hai appuntamenti prenotati</div> -->
-  <div *ngIf='appointments_list.length==0' style="width: 100vw; padding: 0px 50px; top: 30vh;text-align: center;">
+  <div *ngIf='appointments_list.length==0' style="width: 100vw; padding: 0px 4vw; top: 30vh;text-align: center;">
   <h2 style="margin-top: 40px"> Non hai ancora fissato un appuntamento!</h2>
-  <img src='../assets/icon/undraw_Booking_re_gw4j.svg' style="width: 100%; margin: 40px;">
+  <img src='../assets/icon/undraw_Booking_re_gw4j.svg' style="width: 100%; margin: 40px;" >
   <p style="color:#888">Una volta fatta la prima prenotazione, qui troverai i tuoi appuntamenti</p>
   <div class="login-btn">
       <p><a (click)='infoModal("https:prenota.cc/termofuse")'>Termini di Utilizzo</a> - <a (click)='infoModal("https:prenota.cc/privacy")'>Privacy Policy</a> <br> <br><a href='https://wa.me/393404526854'>Contatta l'assistenza 24/7</a></p>
@@ -36,17 +36,25 @@
       <ion-item-option color="danger">Delete</ion-item-option>
     </ion-item-options> -->
   
-  <ion-item-sliding *ngFor="let appointment of appointments_list">
-   <ion-item lines='none'>
+  <!-- <ion-item-sliding *ngFor="let appointment of appointments_list" (click)='presentPopover($event)'> -->
+   <ion-item lines='none' *ngFor="let appointment of appointments_list"(click)='presentPopover($event,appointment)'>
     <div  class="appintment">
       <div class='app-Shop'>{{appointment.store_name}}</div>
       <div class='app-service'>{{appointment.details}}</div>
       <div class='app-date'>  <ion-icon name="today-outline"></ion-icon> {{appointment.day}} {{months_names[appointment.month]}} {{appointment.year}} ore {{rows[appointment.start]}} </div>
     </div>
   </ion-item>
-    <ion-item-options side="end" (click)='deletestorage(appointment)'>
+    <!-- <ion-item-options side="end" (click)='deletestorage(appointment)'>
       <ion-item-option color="danger">Elimina</ion-item-option>
     </ion-item-options>
-</ion-item-sliding>
-  
+</ion-item-sliding> -->
+<div class="confirm-tab" [style.display]='confirm'>
+  <div class="cont">
+    <h3>Sei sicuro di voler cancellare l'appuntmaento?</h3>
+        <div class="buttons">  
+          <button (click)='deletestorage()' class='confirm'>cancella</button> 
+          <div (click)='confirm="none"' style="color: #fff;">Indietro</div>
+        </div>
+  </div>
+</div>
 </ion-content>

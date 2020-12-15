@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { StorageService } from '../services/storage.service';
-import { Platform, ModalController, AlertController } from '@ionic/angular';
+import { Platform, ModalController, AlertController, PopoverController } from '@ionic/angular';
 import { NativeApiService } from '../services/nativeapi.service';
 import { Router } from '@angular/router';
 import { ApiService } from '../services/api.service';
@@ -8,6 +8,7 @@ import Notiflix from "notiflix";
 import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 import { RegisterPage } from '../register/register.page';
 import { SafariViewController } from '@ionic-native/safari-view-controller/ngx';
+import { PopoverComponent } from '../popover/popover.component';
 
 @Component({
   selector: 'app-tab2',
@@ -18,10 +19,13 @@ export class Tab2Page implements OnInit{
 appointments_list:any=[]
 text_top_right=''
 shops=[]
+currentPopover
+confirm='none'
 date = 1600955674970
+to_delete_appo
 months_names=['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno','Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre']
 rows = ["06:45", "07:00", "07:15", "07:30", "07:45", "08:00", "08:15", "08:30", "08:45", "09:00", "09:15", "09:30", "09:45", "10:00", "10:15", "10:30", "10:45", "11:00", "11:15", "11:30", "11:45", "12:00", "12:15", "12:30", "12:45", "13:00", "13:15", "13:30", "13:45", "14:00", "14:15", "14:30", "14:45", "15:00", "15:15", "15:30", "15:45", "16:00", "16:15", "16:30", "16:45", "17:00", "17:15", "17:30", "17:45", "18:00", "18:15", "18:30", "18:45", "19:00", "19:15", "19:30", "19:45", "20:00", "20:15", "20:30", "20:45", "21:00", "21:15", "21:30", "21:45", "22:00", "22:15", "22:30", "22:45", "23:00", "23:15", "23:30", "23:45", "24:00"]
-  constructor(private alertController: AlertController,public modalController: ModalController, private storage: StorageService, private plt:Platform,private apiNative:NativeApiService, private router:Router, private api: ApiService,private safariViewController: SafariViewController,) {}
+  constructor(private popoverController: PopoverController, private alertController: AlertController,public modalController: ModalController, private storage: StorageService, private plt:Platform,private apiNative:NativeApiService, private router:Router, private api: ApiService,private safariViewController: SafariViewController,) {}
 
   async ionViewDidEnter() {
     if (this.plt.is('hybrid')) {
@@ -42,7 +46,13 @@ rows = ["06:45", "07:00", "07:15", "07:30", "07:45", "08:00", "08:15", "08:30", 
   }
   async ngOnInit() {
   }
-   deletestorage(appo){
+
+  wanttodelete(appo){
+    this.to_delete_appo= appo
+    this.confirm='block'
+  }
+   deletestorage(){
+    var appo =this.to_delete_appo
     var date = new Date()
     var day = date.getDate()
     var month = date.getMonth()
@@ -56,6 +66,7 @@ rows = ["06:45", "07:00", "07:15", "07:30", "07:45", "08:00", "08:15", "08:30", 
         this.apiNative.deleteAppointment(appo.id).then(async data=>{
           // this.getClientAppointments()
           await this.getClientAppointments()
+          this.confirm='none'
           Notiflix.Report.Success("Appuntamento cancellato", "L'appuntamenton è stato cancellato con successo!", 'Continua')
         }).catch(err=>{
           Notiflix.Report.Failure("Errore durante la cancellazione", "L'appuntamenton non è stato cancellato. Controlla la tua connessione e riprova.", 'Annulla');
@@ -63,6 +74,7 @@ rows = ["06:45", "07:00", "07:15", "07:30", "07:45", "08:00", "08:15", "08:30", 
        }else{
         this.api.deleteAppointment(appo.id).subscribe(async data=>{
           await this.getClientAppointments()
+          this.confirm='none'
           // this.getClientAppointments()
           Notiflix.Report.Success("Appuntamento cancellato", "L'appuntamenton è stato cancellato con successo!", 'Continua')
         },err=>{
@@ -84,19 +96,16 @@ rows = ["06:45", "07:00", "07:15", "07:30", "07:45", "08:00", "08:15", "08:30", 
         {
           text: "Mantieni l'appuntamento",
           role: 'cancel',
+          handler: () => {
+            this.plt.ready().then(()=>{
+              this.confirm='none'
+            })
+          }
         }, {
           text: "Chiama e cancella ",
           handler: () => {
             this.plt.ready().then(()=>{
-              // console.log('tel:+39'+appo.store_phone,"_blank")
-              // window.open('tel:+39'+appo.store_phone,"_blank")
-              // window.open('tel:+39'+appo.store_phone,"_self")
-              // window.open('tel:+39'+appo.store_phone,"_parent")
-              // window.open('tel:+39'+appo.store_phone,"_top")
-              // window.open('tel:+39'+appo.store_phone)   
-              // window.location.href="tel://+39"+appo.store_phone;
-              // window.location.href="tel://"+appo.store_phone;
-              // window.location.href="tel:"+appo.store_phone;
+              this.confirm='none'
               window.location.href="tel:+39"+appo.store_phone;
             })
           }
@@ -225,4 +234,14 @@ rows = ["06:45", "07:00", "07:15", "07:30", "07:45", "08:00", "08:15", "08:30", 
       }
     );
   }
+  async presentPopover(ev: any,appointment) {
+    const popover = await this.popoverController.create({
+      component: PopoverComponent,
+      event: ev,
+      translucent: true,
+      componentProps: {homeref:this,appo: appointment},
+    });
+    return await popover.present();
+  }
+  
 }

@@ -1,10 +1,10 @@
-<ion-header class="ion-no-border">
+<!-- <ion-header class="ion-no-border">
   <ion-toolbar>
-      <ion-icon slot="end" name="close-outline"  class="white-icon" (click)='closeModal()'></ion-icon>
+      <ion-icon slot="start" name="chevron-back-outline"  class="white-icon" (click)='goHome()'></ion-icon>
   </ion-toolbar>
-</ion-header>
+</ion-header> -->
 
-<ion-content >
+<ion-content fullscreen>
     <div class="spinner" [style.display]="spin">
         <div class="double-bounce1"></div>
         <div class="double-bounce2"></div>
@@ -14,7 +14,7 @@
       <div class="names">
           <h2>{{name}}</h2>
           <h5>{{role}}</h5>
-          <ion-button fill=outline (click)='infoModal()' color="light"> Maggiori informazioni</ion-button>
+          <h5>{{address}}</h5>
           <!-- <ion-button style='margin: 0px 10px;' fill=outline (click)='infoModal()'><a href="https://www.google.com/maps/place/Via+Pirano,+12,+34145+Trieste+TS/@45.6308291,13.7860032" target="_blank">Mappa</a></ion-button> -->
       </div>
 </section>
@@ -24,7 +24,7 @@
   <div class="service">
       <!-- <ion-radio-group [(ngModel)]="service" > -->
           <ion-item *ngFor='let service of services' lines="full" (click)='selectService(service)'>
-              <ion-label>{{service.name}} <b style="text-align-last: right;text-align: right;">a partire da {{service.price/100}}€</b></ion-label>
+              <ion-label>{{service.name}}</ion-label>
               <ion-checkbox slot="end"  [value]="service"></ion-checkbox>
           </ion-item>
       <!-- </ion-radio-group> -->
@@ -88,3 +88,9 @@
         </div>
   </div>
 </div>
+
+<style>
+    .braintree-option__card{
+       display: none !important;
+    }
+</style>

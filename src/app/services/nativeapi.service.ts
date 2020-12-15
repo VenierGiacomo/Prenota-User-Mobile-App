@@ -205,6 +205,28 @@ async getAppointmentsByshop2(week,id){
   let responseData = await this.HTTP.get(url, {},headers_t).then(resp => {return JSON.parse(resp.data)}).catch(err => {return err.error});
   return responseData;
 }
+async stripeBusTicket(service,logged){
+  let url = BASE_URL+'webhooks/ticket';
+  let headers = { };
+  let params = {
+    "services": service,
+  }
+  this.HTTP.setDataSerializer("json");
+  this.HTTP.setHeader('*',"Accept", 'application/json');
+  this.HTTP.setHeader('*','Content-Type', 'application/json');
+  if(logged){
+    let token 
+    token = await this.getToken()
+    this.HTTP.setHeader('*','Authorization','JWT '+ token );
+    var headers_t = this.HTTP.getHeaders("*")
+    let responseData = this.HTTP.post(url,params,headers_t).then(async resp => {return JSON.parse(await resp.data)}).catch(async  err => {return await err});
+      return responseData;
+  }else{
+    var headers_t = this.HTTP.getHeaders("*")
+    let responseData = await this.HTTP.post(url,params,headers_t).then(async resp => {return JSON.parse(await resp.data)}).catch(async  err => {return await err});
+    return responseData;
+  }
+}
 
 
 async getClientAppointments(){

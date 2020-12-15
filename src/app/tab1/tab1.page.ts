@@ -10,6 +10,7 @@ import { StorageService } from '../services/storage.service';
 import { SafariViewController } from '@ionic-native/safari-view-controller/ngx';
 import { CodePush, InstallMode, SyncStatus } from '@ionic-native/code-push/ngx';
 import { AppCenterAnalytics } from '@ionic-native/app-center-analytics/ngx';
+import { element } from 'protractor';
 @Component({
   selector: 'app-tab1',
   templateUrl: 'tab1.page.html',
@@ -21,6 +22,7 @@ salute:any=[]
 capelli:any=[]
 grouped:any=[]
 spin='block'
+initialoffsetTop
   constructor( private nav: NavController ,private appCenterAnalytics:AppCenterAnalytics, private codePush: CodePush, private safariViewController: SafariViewController, private storage: StorageService, public modalController: ModalController,private api:ApiService, private plt:Platform,private apiNative:NativeApiService) {
     this.plt.ready().then(
       () =>{
@@ -55,7 +57,6 @@ spin='block'
   }
  
   ngOnInit() {
-
   }
   // safari(){
   //   this.safariViewController.isAvailable()
@@ -87,7 +88,6 @@ spin='block'
   async presentModal(shop) {
     this.appCenterAnalytics.setEnabled(true).then(() => {
       this.appCenterAnalytics.trackEvent("shop_app_open", { TEST: shop.store_name }).then(() => {
-          console.log('Custom event tracked');
       });
    });
     const modal = await this.modalController.create({
@@ -107,5 +107,25 @@ spin='block'
   }
   gopay(){
     this.nav.navigateRoot('/payments') 
+  }
+  openList(){
+  var list = document.getElementById('multi-profile')
+  window.scrollTo(0, 0);
+  if(list.style.top == '0px'){
+    list.style.top = '-'+list.offsetTop +'px'
+    list.style.left = '0px'
+    list.style.width = '100vw'
+    list.style.height = '100vh'    
+  }else{
+    list.style.top = '0px'
+    list.style.left = '0px'
+    list.style.width = '86vw'
+    list.style.height = 'min-content'
+  }
+ 
+
+  }
+ async  navBusiness(store){
+    await this.nav.navigateForward('business/'+store.id)
   }
 }
