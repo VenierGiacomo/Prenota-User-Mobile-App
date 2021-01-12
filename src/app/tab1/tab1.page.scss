@@ -102,6 +102,8 @@ box-shadow: 0px 0px 15px 0px rgba(0,0,50,0.17);
     line-height: 12px;
     color: #00479D;
     img{
+      margin-top: -3px;
+      margin-right: 5px;
       height: 12px;
     }
 }
@@ -147,7 +149,7 @@ box-shadow: 0px 0px 15px 0px rgba(0,0,50,0.17);
   }
 }
 ion-content{
-
+  --padding-bottom: 70px;
   text-align: center;
   --background: #fff;
 }
@@ -213,6 +215,7 @@ ion-content{
     font-size: 21px;
     line-height: 21px;
     // font-size: 15px;
+    margin-top:2px;
     color: #011D37;
     margin-bottom: 10px;
   }

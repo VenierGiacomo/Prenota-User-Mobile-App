@@ -1,4 +1,4 @@
-<ion-header  mode=ios>
+<ion-header  mode=ios >
     <ion-toolbar  mode=ios>
         <!-- <ion-buttons slot="start">
           <ion-button>
@@ -6,7 +6,7 @@
           </ion-button>
         </ion-buttons> -->
         <ion-buttons slot="end">
-          <ion-button  mode=ios (click)='logout()'>
+          <ion-button  mode=ios (click)='settings()'>
              <p style="color: #343a40; margin: 0px;">{{text_top_right}}</p>
           </ion-button>
         </ion-buttons>
@@ -21,7 +21,7 @@
   <img src='../assets/icon/undraw_Booking_re_gw4j.svg' style="width: 100%; margin: 40px;" >
   <p style="color:#888">Una volta fatta la prima prenotazione, qui troverai i tuoi appuntamenti</p>
   <div class="login-btn">
-      <p><a (click)='infoModal("https:prenota.cc/termofuse")'>Termini di Utilizzo</a> - <a (click)='infoModal("https:prenota.cc/privacy")'>Privacy Policy</a> <br> <br><a href='https://wa.me/393404526854'>Contatta l'assistenza 24/7</a></p>
+      <p><a (click)='infoModal("https:prenota.cc/termofuse")'>Termini di Utilizzo</a> - <a (click)='infoModal("https:prenota.cc/privacy")'>Privacy Policy</a> <br> <br><a href='https://wa.me/393404526854'>Contatta il centro assistenza 24/7</a></p>
     </div>
 </div>
     <!-- <ion-item>
@@ -41,6 +41,7 @@
     <div  class="appintment">
       <div class='app-Shop'>{{appointment.store_name}}</div>
       <div class='app-service'>{{appointment.details}}</div>
+      <div class='app-date'> <ion-icon name="location-outline"></ion-icon> {{appointment.location}}</div>
       <div class='app-date'>  <ion-icon name="today-outline"></ion-icon> {{appointment.day}} {{months_names[appointment.month]}} {{appointment.year}} ore {{rows[appointment.start]}} </div>
     </div>
   </ion-item>

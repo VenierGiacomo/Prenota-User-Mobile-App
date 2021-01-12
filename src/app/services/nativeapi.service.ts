@@ -56,10 +56,6 @@ async getToken(){
      if( data==null){
        resolve(false)
       }else{
-        var now = +new Date()
-        if ((now - res.last_resfresh)> 14400000){  // 7.200.000 it's 2 hours
-          this.refreshToken(res.token)
-        }
         resolve(res.token)}
     }).catch(err=>{
       console.log('empty',err)});    
@@ -68,23 +64,23 @@ async getToken(){
 }
 
 
-refreshToken(token){
-  let url = BASE_URL+'auth/refresh/';
-      let params = {
-        'token': token
-      }
-      let headers = { };
-      this.HTTP.setDataSerializer("json");
-      this.HTTP.setHeader("prenotaApp","Accept", "application/json");
-      this.HTTP.setHeader("prenotaApp","Content-Type", "application/json");
-      this.HTTP.post(url, params,headers)
-  .then((response:HTTPResponse) => {
-    this.storeToken(response.data.token)
-  })
-  .catch((error:any) => {
-    console.error(`POST ${url} ${error.error}`)
-  });
-}
+// refreshToken(token){
+//   let url = BASE_URL+'auth/refresh/';
+//       let params = {
+//         'token': token
+//       }
+//       let headers = { };
+//       this.HTTP.setDataSerializer("json");
+//       this.HTTP.setHeader("prenotaApp","Accept", "application/json");
+//       this.HTTP.setHeader("prenotaApp","Content-Type", "application/json");
+//       this.HTTP.post(url, params,headers)
+//   .then((response:HTTPResponse) => {
+//     this.storeToken(response.data.token)
+//   })
+//   .catch((error:any) => {
+//     console.error(`POST ${url} ${error.error}`)
+//   });
+// }
 
 login(email, password){
   let url = BASE_URL+'auth/';
@@ -199,6 +195,14 @@ async getAppointmentsByshop(week,id){
 }
 async getAppointmentsByshop2(week,id){
   let url = BASE_URL+'bookings/week/'+week+'/2shop/?shop='+id;
+  this.HTTP.setHeader('*',"Accept", 'application/json');
+  this.HTTP.setHeader('*','Content-Type', 'application/json');
+  var headers_t = this.HTTP.getHeaders("*")
+  let responseData = await this.HTTP.get(url, {},headers_t).then(resp => {return JSON.parse(resp.data)}).catch(err => {return err.error});
+  return responseData;
+}
+async getAppointmentsByshop5(week,id){
+  let url = BASE_URL+'bookings/week/'+week+'/5shop/?shop='+id;
   this.HTTP.setHeader('*',"Accept", 'application/json');
   this.HTTP.setHeader('*','Content-Type', 'application/json');
   var headers_t = this.HTTP.getHeaders("*")

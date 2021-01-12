@@ -10,7 +10,7 @@
         <div class="double-bounce2"></div>
       </div>
 <section class="profile">
-      <div class="cont-img"><img [src]='image'></div>
+      <div class="cont-img" ><img [src]='image'></div>
       <div class="names">
           <h2>{{name}}</h2>
           <h5>{{role}}</h5>
@@ -35,11 +35,11 @@
         <div class="double-bounce1"></div>
         <div class="double-bounce2"></div>
       </div>
-<section class="date" [style.visibility]="spin_spots_neg">
+<section class="date" [style.visibility]="date_vis">
   <h5 *ngIf='uniques.length!=0'>Seleziona una data</h5>
 
   <div class='x-scroller'>
-      <div class="time-slot" *ngFor='let date_avi of uniques, let ind = index' (click)="DatePicker(date_avi, ind)" [class.active]='active_date[ind]'>{{week_name[date_avi.week_day]}} {{date_avi.number}} {{months_short[date_avi.month]}}</div>
+      <span *ngFor='let date_avi of uniques, let ind = index'><div class="time-slot"  (click)="DatePicker(date_avi, ind, true)" [class.active]='active_date[ind]' *ngIf='available_days[ind]'>{{week_name[date_avi.week_day]}} {{date_avi.number}} {{months_short[date_avi.month]}}</div></span>
     </div>
 </section>
 <section class="time" *ngIf='uniques.length!=0' [style.visibility]="spin_spots_neg">
@@ -48,18 +48,21 @@
         <div class="double-bounce2"></div>
       </div> -->
       <span *ngIf='employees_list.length>1'>
-      <ion-item  class="item-class" *ngFor='let serv of service, let i = index 'lines="none">
-          <ion-label>{{serv.name}} </ion-label>
-          <ion-select interface="popover"  [(ngModel)]="filtr[i]"   (ionChange)='filter_serv()' placeholder='{{place_holder[i]}}' >
-              <ion-select-option  *ngFor='let empl of empl_for_service[i]' value={{empl.id}}>{{empl.name}}</ion-select-option>
-            
-          </ion-select>
-        </ion-item>
+        <span *ngIf='has_spot'>
+            <ion-item  class="item-class" *ngFor='let serv of service, let i = index 'lines="none">
+                <ion-label>{{serv.name}} </ion-label>
+                <ion-select interface="popover"  [(ngModel)]="filtr[i]"   (ionChange)='filter_serv()' placeholder='{{place_holder[i]}}' >
+                    <ion-select-option  *ngFor='let empl of empl_for_service[i]' value={{empl.id}}>{{empl.name}}</ion-select-option>
+                  
+                </ion-select>
+              </ion-item>
+        </span>
+     
       </span>
     <h5 style="color: #fff;" >Seleziona un orario</h5>
     
-    <p  *ngIf='final_spots_displ.length==0' style="color: #efefef; font-size: 15px;"  [style.visibility]="spin_spots_neg">Nessuna disponibilita, prova in un' altra data</p>
-    <div  style="position: relative;"   [style.visibility]="spin_spots_neg">
+    <p  *ngIf='!has_spot' style="color: #efefef; font-size: 15px;"  [style.visibility]="spin_spots_neg">Nessuna disponibilita, prova in un' altra data</p>
+    <div  style="position: relative;"   [style.visibility]="spin_spots_neg" *ngIf='has_spot'>
       <!-- <span  *ngIf='emplo_show[ix]'> -->
         <!-- <h6 style="color: #fff;" >Disponibilità di {{empl.name}}:</h6> -->
           <div class='x-scroller'>
@@ -88,3 +91,15 @@
         </div>
   </div>
 </div>
+<!-- 
+<div class="confirm-tab" [style.display]='show_not_req'>
+    <div class="cont">
+      <h3>Ti possiamo ricordare noi l'appuntamnto</h3>
+          <div>Permetti a Prenota di inviarti una notifica il giorno prima dell'appuntamento e la mattina spessa. </div>
+
+          <div class="buttons">  
+            <button (click)='show_not=trues' class='confirm'>Ricordamelo</button> 
+            <div (click)='show_not=false'>Non sono interessato</div>
+          </div>
+    </div>
+  </div> -->

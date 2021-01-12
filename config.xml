@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="io.prenota.client" version="0.2.12" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="io.prenota.client" version="0.2.13" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>Prenota</name>
     <description>Prenota parrucchieri e molto altro</description>
     <author email="hi@ionicframework.com" href="http://ionicframework.com/">Giacomo Venier</author>
@@ -60,16 +60,6 @@
         <allow-intent href="itms-apps:*" />
         <preference name="CodePushDeploymentKey" value="Tq9zYPC518FHsWGYVLEIfrpP4JOzR_7QRpt4m" />
         <preference name="APP_SECRET" value="0ef8fa1b-e828-4699-b9a4-4d28fb236122" />
-        <config-file parent="com.apple.developer.in-app-payments" target="*-Debug.plist">
-            <array>
-                <string>merchant.stripe.prenota.cc</string>
-            </array>
-        </config-file>
-        <config-file parent="com.apple.developer.in-app-payments" target="*-Release.plist">
-            <array>
-                <string>merchant.stripe.prenota.cc</string>
-            </array>
-        </config-file>
         <icon height="57" src="resources/ios/icon/icon.png" width="57" />
         <icon height="114" src="resources/ios/icon/icon@2x.png" width="114" />
         <icon height="29" src="resources/ios/icon/icon-small.png" width="29" />

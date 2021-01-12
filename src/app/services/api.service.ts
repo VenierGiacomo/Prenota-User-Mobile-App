@@ -56,7 +56,7 @@ getToken(){
   var storedtoken = JSON.parse(localStorage.getItem('token'));
   var now = +new Date()
   if(storedtoken != undefined  || storedtoken != null){
-    if ((now - storedtoken.last_resfresh)> 7200000){  // 7.200.000 it's 2 hours
+    if ((now - storedtoken.last_resfresh)> 7200000000){  // 7.200.000 it's 2 hours
       this.refreshToken(storedtoken.token).subscribe(
         data=>{
           this.storeToken(data.token)
@@ -202,6 +202,9 @@ getAppointmentsByshop(week,id):Observable<any>{
 }
 getAppointmentsByshop2(week,id):Observable<any>{
   return this.http.get(BASE_URL+'bookings/week/'+week+'/2shop/?shop='+id, {headers: this.httpheader})
+}
+getAppointmentsByshop5(week,id):Observable<any>{
+  return this.http.get(BASE_URL+'bookings/week/'+week+'/5shop/?shop='+id, {headers: this.httpheader})
 }
 getMonthAppointments(month):Observable<any>{
   return this.http.get(BASE_URL+'bookings/month/'+month,{headers: this.newheader()})

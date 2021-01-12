@@ -30,7 +30,10 @@
     </ion-item>
   <ion-item lines='none' >
     <ion-label position="stacked">Password</ion-label>
-    <ion-input [(ngModel)]='password'  type="password" placeholder="{{password_err}}"></ion-input>
+    <ion-input id='input_reg'[(ngModel)]='password'  type="password" placeholder="{{password_err}}"  (click)='toggleShowReg()'>
+            <ion-icon class="show-option" [hidden]="showPassword" name="eye-off-outline"></ion-icon>
+            <ion-icon class="hide-option" [hidden]="!showPassword" name="eye-outline"></ion-icon>
+    </ion-input>
     <!-- <p *ngIf='password_err!=""'>{{password_err}}</p> -->
   </ion-item>
   <!-- <ion-item lines='none' lines=none>
@@ -38,11 +41,12 @@
       <ion-toggle (click)='switchSex()'></ion-toggle>
       <ion-label style="text-align: left;margin: 0px;">Donna</ion-label>
     </ion-item> -->
+    <p class='err' *ngIf='error!=""' >{{error}}</p>  
     <div class="login-btn">
       <ion-button fill=outline color='light' (click)='register()'>Registrati</ion-button>
       <p >Iscrivendoti accetti i nostri <a href="https:prenota.cc/termofuse">Termi di Utilizzo</a> e <a href="https:prenota.cc/privacy">Privacy Policy</a></p>
     </div>
-    <p class='err' *ngIf='error!=""' >{{error}}</p>  
+   
     <p class="login">Hai già un profilo? Vai al <a (click)='goLogin()'>Login</a></p>
    </div>
 </ion-content>
@@ -55,7 +59,12 @@
   </ion-item>
   <ion-item lines='none' >
     <ion-label position="stacked">Password</ion-label>
-    <ion-input [(ngModel)]='password'  type="password" placeholder="{{password_err}}"></ion-input>
+    <ion-input id='input' [(ngModel)]='password'  type="password" placeholder="{{password_err}}" (click)='toggleShow()'>
+            
+      <ion-icon class="show-option" [hidden]="showPassword" name="eye-off-outline" (click)="toggleShow()"></ion-icon>
+            <ion-icon class="hide-option" [hidden]="!showPassword" name="eye-outline" (click)="toggleShow()"></ion-icon>
+          
+    </ion-input>
   </ion-item>
     <div class="login-btn">
     <ion-button fill=outline color='light'(click)='login()'>Login</ion-button>

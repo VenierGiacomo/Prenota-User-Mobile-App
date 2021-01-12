@@ -7,7 +7,7 @@ import { ApiService } from '../services/api.service';
 import { PayPal, PayPalPayment, PayPalConfiguration, PayPalPaymentDetails } from '@ionic-native/paypal/ngx';
 import { Braintree, ApplePayOptions, PaymentUIOptions, PaymentUIResult } from '@ionic-native/braintree/ngx';
 declare var Stripe ;
-declare var ApplePay;
+// declare var ApplePay;
 
 @Component({
   selector: 'app-bus-ticket',
@@ -305,54 +305,60 @@ export class BusTicketPage implements OnInit {
     // This block is optional -- only if you need to update order items/shipping
     // methods in response to shipping method selections
   
-     ApplePay.canMakePayments().then( (message) => {
-       this.payWithApplePay()
-    }).catch((error) => {
+    //  ApplePay.canMakePayments().then( (message) => {
+    //    this.payWithApplePay()
+    // }).catch((error) => {
      
-    });
+    // });
   
   }
-   async payWithApplePay() {
+    payWithApplePay() {
     try {
-      let order: any = {
-        items: [{
-          label: 'Biglietto del bus 60 minuti',
-          amount: 1.35
-        }],
-        shippingMethods: [{    
-          label: "Consenga istantanea",
-          detail: "Consenga istantanea",
-          amount: "0.00",
-          identifier: "FreeShip"
-      }],
-      currencyCode: 'EUR',
-        countryCode: 'IT',
-        billingAddressRequirement: 'none',
-        shippingAddressRequirement: 'none',
-        shippingType: 'shipping',  
+      // let order: any = {
+      //   items: [{
+      //     label: 'Biglietto del bus 60 minuti',
+      //     amount: 1.35
+      //   }],
+      //   shippingMethods: [{    
+      //     label: "Consenga istantanea",
+      //     detail: "Consenga istantanea",
+      //     amount: "0.00",
+      //     identifier: "FreeShip"
+      // }],
+      // currencyCode: 'EUR',
+      //   countryCode: 'IT',
+      //   billingAddressRequirement: 'none',
+      //   shippingAddressRequirement: 'none',
+      //   shippingType: 'shipping',  
         
-      }
-      await ApplePay.makePaymentRequest(order).then(async message => {
-        console.log(message,'cazzoooooooooooo')
-        await ApplePay.completeLastTransaction('success').then( ()=>{
-          setTimeout(async () => {
-            await this.closeModal()
-          Notiflix.Report.Init(
-            {success: 
-              {svgColor:'#0061d5',
-              titleColor:'#1e1e1e',
-              messageColor:'#242424',
-              buttonBackground:'#0061d5',
-              buttonColor:'#fff'
-              ,backOverlayColor:'rgba(#00479d,0.4)',},
-            })
-    Notiflix.Report.Success("Biglietto acquistato", 'Il biglietto è stato acquistato con successo', 'OK');
-          }, 1100); 
-        });
-      }).catch((error) => {
-        console.log(error)
-        // ApplePay.completeLastTransaction('failure');
-      });
+      // }
+      // ApplePay.setMerchantId('merchant.stripe.prenota.cc').then(()=>{
+      //   ApplePay.setPublishableKey('pk_test_f3m2iNJqa6UdyuD9Ey8O7ZiH00eSjJ4lEt').then(()=>{
+      //     ApplePay.setPublishableKey('pk_test_f3m2iNJqa6UdyuD9Ey8O7ZiH00eSjJ4lEt')
+      //     ApplePay.makePaymentRequest(order).then( (message) => {
+      //      console.log(message,'cazzoooooooooooo')
+      //       ApplePay.completeLastTransaction('success').then( ()=>{
+      //        setTimeout( () => {
+      //           this.closeModal()
+      //        Notiflix.Report.Init(
+      //          {success: 
+      //            {svgColor:'#0061d5',
+      //            titleColor:'#1e1e1e',
+      //            messageColor:'#242424',
+      //            buttonBackground:'#0061d5',
+      //            buttonColor:'#fff'
+      //            ,backOverlayColor:'rgba(#00479d,0.4)',},
+      //          })
+      //  Notiflix.Report.Success("Biglietto acquistato", 'Il biglietto è stato acquistato con successo', 'OK');
+      //        }, 1100); 
+      //      });
+      //    }).catch((error) => {
+      //      console.log(error)
+      //      // ApplePay.completeLastTransaction('failure');
+      //    });
+      //   })
+      // })
+      
 
       // In real payment, this step should be replaced by an actual payment call to payment provider
       // Here is an example implementation:
@@ -402,41 +408,41 @@ export class BusTicketPage implements OnInit {
   //       })
   // }
   payWithBrainTree() {
-    const BRAINTREE_TOKEN = 'sandbox_8h6bnq59_3fz888h6rvxzvznd';
+    // const BRAINTREE_TOKEN = 'sandbox_8h6bnq59_3fz888h6rvxzvznd';
 
-    // NOTE: Do not provide this unless you have configured your Apple Developer account
-    // as well as your Braintree merchant account, otherwise the Braintree module will fail.
-    const appleOptions: ApplePayOptions = {
-      merchantId: 'merchant.stripe.prenota.cc',
-      currency: 'EUR',
-      country: 'IT'
-    }
+    // // NOTE: Do not provide this unless you have configured your Apple Developer account
+    // // as well as your Braintree merchant account, otherwise the Braintree module will fail.
+    // const appleOptions: ApplePayOptions = {
+    //   merchantId: 'merchant.stripe.prenota.cc',
+    //   currency: 'EUR',
+    //   country: 'IT'
+    // }
     
-    const paymentOptions: PaymentUIOptions = {
-      amount: '1.35',
-      primaryDescription: 'Biglietto 1 ora intera rete',
-    }
+    // const paymentOptions: PaymentUIOptions = {
+    //   amount: '1.35',
+    //   primaryDescription: 'Biglietto 1 ora intera rete',
+    // }
     
-    this.braintree.initialize(BRAINTREE_TOKEN)
-      .then(() => this.braintree.presentDropInPaymentUI(paymentOptions))
-      .then( (result: PaymentUIResult) => {
-        if (result.userCancelled) {
-          console.log("User cancelled payment dialog.");
-        } else {
-          this.closeModal()
-          Notiflix.Report.Init(
-            {success: 
-              {svgColor:'#0061d5',
-              titleColor:'#1e1e1e',
-              messageColor:'#242424',
-              buttonBackground:'#0061d5',
-              buttonColor:'#fff'
-              ,backOverlayColor:'rgba(#00479d,0.4)',},
-            })
-    Notiflix.Report.Success("Biglietto acquistato", 'Il biglietto è stato acquistato con successo', 'OK');
-        }
-      })
-      .catch((error: string) => console.error(error));
+    // this.braintree.initialize(BRAINTREE_TOKEN)
+    //   .then(() => this.braintree.presentDropInPaymentUI(paymentOptions))
+    //   .then( (result: PaymentUIResult) => {
+    //     if (result.userCancelled) {
+    //       console.log("User cancelled payment dialog.");
+    //     } else {
+    //       this.closeModal()
+    //       Notiflix.Report.Init(
+    //         {success: 
+    //           {svgColor:'#0061d5',
+    //           titleColor:'#1e1e1e',
+    //           messageColor:'#242424',
+    //           buttonBackground:'#0061d5',
+    //           buttonColor:'#fff'
+    //           ,backOverlayColor:'rgba(#00479d,0.4)',},
+    //         })
+    // Notiflix.Report.Success("Biglietto acquistato", 'Il biglietto è stato acquistato con successo', 'OK');
+    //     }
+    //   })
+      // .catch((error: string) => console.error(error));
 }
   pay(){
     this.nav.navigateRoot('payments')

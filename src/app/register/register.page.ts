@@ -1,5 +1,5 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { ModalController, NavController, Platform } from '@ionic/angular';
+import { Component, OnInit, Input, ContentChild } from '@angular/core';
+import { ModalController, NavController, Platform, ToastController, IonInput } from '@ionic/angular';
 import { ApiService } from '../services/api.service';
 import Notiflix from "notiflix";
 import { HTTP, HTTPResponse } from '@ionic-native/http/ngx';
@@ -16,7 +16,7 @@ export class RegisterPage implements OnInit {
   error
 BASE_URL = 'https://giacomovenier.pythonanywhere.com/api/'
   registerpage =true
-  constructor(private safariViewController: SafariViewController,private plt: Platform, private nativeApi: NativeApiService, private http: HTTP, public modalController: ModalController,private api: ApiService, private nav: NavController) { }
+  constructor(private toastController: ToastController,private safariViewController: SafariViewController,private plt: Platform, private nativeApi: NativeApiService, private http: HTTP, public modalController: ModalController,private api: ApiService, private nav: NavController) { }
   first_name = ''
   last_name = ''
   email = ''
@@ -29,8 +29,22 @@ BASE_URL = 'https://giacomovenier.pythonanywhere.com/api/'
   email_err= ''
   phone_err= ''
   password_err=''
+  showPassword=false
+  showPassword_reg=false
+  
   ngOnInit() {
   }
+  toggleShow() {
+    var password_input:any = document.getElementById('input')
+    password_input.type = password_input.type === 'password' ?  'text' : 'password';
+    this.showPassword = !this.showPassword;
+  }
+  toggleShowReg() {
+    var password_input_reg:any = document.getElementById('input_reg')
+    password_input_reg.type = password_input_reg.type === 'password' ?  'text' : 'password';
+    this.showPassword_reg = !this.showPassword_reg;
+  }
+
   async closeModal(bool){
     await this.modalController.dismiss(bool);
   }
@@ -61,7 +75,6 @@ BASE_URL = 'https://giacomovenier.pythonanywhere.com/api/'
       if (this.plt.is('hybrid')) {
         await this.nativeApi.register(this.first_name, this.last_name, this.email, 'm', this.phone, this.password).then(
           async data=>{
-            console.log(data, 'efverfvgr')
             await this.nativeApi.storeToken(data.token)
             Notiflix.Block.Remove('.wrapper');
             await this.closeModal(true)
@@ -73,18 +86,18 @@ BASE_URL = 'https://giacomovenier.pythonanywhere.com/api/'
           err => {
             Notiflix.Block.Remove('.wrapper');
             if (err.error.email != undefined){
-              this.error = 'Questa email è già stata utilizzata'
+              this.error = 'Questa email è invalida o è già stata utilizzata'
             }
             if (err.error.password != undefined){
               this.error = 'Questa password è troppo semplice. Prova ad aggiungere dei numeri'
             }
-            console.log(err.error.password)
-            console.log(err.error,'NOOOOefverfvgr')
           }
         )
       }else{
       this.api.register(this.first_name, this.last_name, this.email, 'm', this.phone, this.password).subscribe(
         data=>{
+          console.log(this.first_name, this.last_name, this.email, 'm', this.phone, this.password)
+          console.log(data, 'efverfvgr')
          this.api.storeToken(data.token)
           Notiflix.Block.Remove('.wrapper');
           this.closeModal(true)
@@ -93,12 +106,16 @@ BASE_URL = 'https://giacomovenier.pythonanywhere.com/api/'
           // this.homeref.closeModal()
         },
         err => {
+      
           Notiflix.Block.Remove('.wrapper');
           if (err.error.email != undefined){
+           
             this.error = 'Questa email è già stata utilizzata'
+            this.presentToast(this.error)
           }
           if (err.error.password != undefined){
-            this.error = 'Questa password è troppo semplice. Prova ad aggiungere dei numeri'
+            this.error = 'La password deve avere più di 6 caratteri e non può essere di soli numeri'
+            this.presentToast(this.error)
           }
           console.log(err.error.password)
           console.log(err.error,'err')
@@ -126,6 +143,7 @@ BASE_URL = 'https://giacomovenier.pythonanywhere.com/api/'
         "email": this.email,
         "password": this.password,
       }
+      console.log(this.email, this.password)
       let headers = { };
       this.http.setDataSerializer("json");
       this.http.setHeader("prenotaApp","Accept", "application/json");
@@ -143,13 +161,15 @@ BASE_URL = 'https://giacomovenier.pythonanywhere.com/api/'
   })
   .catch((error:any) => {
     Notiflix.Notify.Init({ position:"center-bottom"}); 
-    Notiflix.Notify.Warning('Le credenziali inserite non sono valide')
+    
+   this.presentToast('Email e Password non combaciano')
     this.error = 'La password o la email che hai inserito non sono valide'
   });
       
     } else {
       this.api.login(this.email, this.password).subscribe(
         data =>{
+          console.log(data)
           this.api.storeToken(data.token)
           this.api.getUser().subscribe(
             data =>{
@@ -159,13 +179,15 @@ BASE_URL = 'https://giacomovenier.pythonanywhere.com/api/'
               // this.homeref.closeModal()
               
             },err =>{
+              console.log(err)
               Notiflix.Notify.Init({ position:"center-bottom"}); 
-              Notiflix.Notify.Warning('Le credenziali inserite non sono valide')
+             this.presentToast('Email e Password non combaciano')
               this.error = 'La password o la email che hai inserito non sono valide'
             })
         },err =>{
+          console.log(err)
           Notiflix.Notify.Init({ position:"center-bottom"}); 
-          Notiflix.Notify.Warning('Le credenziali inserite non sono valide')
+         this.presentToast('Email e Password non combaciano')
           this.error = 'La password o la email che hai inserito non sono valide'
         })
     }
@@ -203,4 +225,13 @@ BASE_URL = 'https://giacomovenier.pythonanywhere.com/api/'
   )
   }
   
+  async presentToast(text) {
+    const toast = await this.toastController.create({
+      message: text,
+      position: 'top',
+      duration: 5000,
+      cssClass:'toast-class-light',
+    });
+    toast.present();
+  }
 }

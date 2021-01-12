@@ -1,16 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { ModalController, Platform, NavController } from '@ionic/angular';
+import { ModalController, Platform, NavController, ActionSheetController } from '@ionic/angular';
 import { BookModalPage } from '../book-modal/book-modal.page';
 import Notiflix from "notiflix";
-import { RouterLink } from '@angular/router';
 import { ApiService } from '../services/api.service';
-import { NgControlStatus } from '@angular/forms';
 import { NativeApiService } from '../services/nativeapi.service';
 import { StorageService } from '../services/storage.service';
 import { SafariViewController } from '@ionic-native/safari-view-controller/ngx';
-import { CodePush, InstallMode, SyncStatus } from '@ionic-native/code-push/ngx';
-import { AppCenterAnalytics } from '@ionic-native/app-center-analytics/ngx';
-import { element } from 'protractor';
+import { CodePush} from '@ionic-native/code-push/ngx';
 @Component({
   selector: 'app-tab1',
   templateUrl: 'tab1.page.html',
@@ -23,7 +19,7 @@ capelli:any=[]
 grouped:any=[]
 spin='block'
 initialoffsetTop
-  constructor( private nav: NavController ,private appCenterAnalytics:AppCenterAnalytics, private codePush: CodePush, private safariViewController: SafariViewController, private storage: StorageService, public modalController: ModalController,private api:ApiService, private plt:Platform,private apiNative:NativeApiService) {
+  constructor(public actionSheetController: ActionSheetController, private nav: NavController , private codePush: CodePush, private safariViewController: SafariViewController, private storage: StorageService, public modalController: ModalController,private api:ApiService, private plt:Platform,private apiNative:NativeApiService) {
     this.plt.ready().then(
       () =>{
         if (this.plt.is('hybrid')) {
@@ -86,10 +82,7 @@ initialoffsetTop
   // );
   // }
   async presentModal(shop) {
-    this.appCenterAnalytics.setEnabled(true).then(() => {
-      this.appCenterAnalytics.trackEvent("shop_app_open", { TEST: shop.store_name }).then(() => {
-      });
-   });
+    
     const modal = await this.modalController.create({
       component:BookModalPage,
       swipeToClose: true,
@@ -100,7 +93,8 @@ initialoffsetTop
         role: shop.business_description,
         id: shop.id,
         max_spots: shop.max_spots,
-        website: shop.website
+        website: shop.website,
+        address: shop.address
       }
     });
     return await modal.present();
@@ -127,5 +121,34 @@ initialoffsetTop
   }
  async  navBusiness(store){
     await this.nav.navigateForward('business/'+store.id)
+  }
+  async assistenzaActionSheet() {
+    const actionSheet = await this.actionSheetController.create({
+      header: 'Assistenza',
+      buttons: [{
+        text: 'Email',
+        // icon: 'share',
+        handler: () => {
+          window.location.href="mailto:business@prenota.cc"
+        }
+      }, {
+        text: 'Whatsapp',
+        // icon: 'caret-forward-circle',
+        handler: () => {
+          window.location.href="https://wa.me/393404526854"
+        }
+      }, {
+        text: 'Chiama',
+        // icon: 'heart',
+        handler: () => {
+          window.location.href="tel:+393404526854";
+        }
+      }, {
+        text: 'Annulla',
+        // icon: 'close',
+        role: 'cancel',
+      }]
+    });
+    await actionSheet.present();
   }
 }

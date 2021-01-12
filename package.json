@@ -13,6 +13,7 @@
   },
   "private": true,
   "dependencies": {
+    "@adyen/adyen-web": "^3.19.0",
     "@angular/common": "~9.1.6",
     "@angular/core": "~9.1.6",
     "@angular/forms": "~9.1.6",
@@ -41,7 +42,6 @@
     "cordova-plugin-appcenter-analytics": "^0.5.1",
     "cordova-plugin-appcenter-crashes": "^0.5.1",
     "cordova-plugin-appcenter-shared": "^0.5.1",
-    "cordova-plugin-applepay-stripe": "2.2.6",
     "cordova-plugin-badge": "^0.8.8",
     "cordova-plugin-code-push": "^1.13.1",
     "cordova-plugin-dialogs": "^2.0.2",
@@ -123,12 +123,7 @@
       },
       "cordova-plugin-code-push": {},
       "cordova-plugin-appcenter-analytics": {},
-      "cordova-plugin-appcenter-crashes": {},
-      "cordova-plugin-applepay-stripe": {
-        "STRIPE_LIVE_PUBLISHABLE_KEY": "pk_live_kb4i70qfPxeWXXYfjImvx64f00Et58vNmC",
-        "STRIPE_TEST_PUBLISHABLE_KEY": "pk_test_f3m2iNJqa6UdyuD9Ey8O7ZiH00eSjJ4lEt",
-        "APPLE_MERCHANT_IDENTIFIER": "merchant.stripe.prenota.cc"
-      }
+      "cordova-plugin-appcenter-crashes": {}
     },
     "platforms": [
       "android",
