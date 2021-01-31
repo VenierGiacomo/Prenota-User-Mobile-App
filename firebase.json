@@ -6,6 +6,13 @@
       "**/.*",
       "**/node_modules/**"
     ],
+    "headers": [{
+      "source": "apple-app-site-association",
+      "headers": [{
+        "key": "Content-Type",
+        "value": "application/pkcs7-mime"
+      }]
+    }],
     "rewrites": [
       {
         "source": "**",

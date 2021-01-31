@@ -1,6 +1,6 @@
 
-
-<ion-header class="ion-no-border bar-header">
+<!-- 
+<ion-header class="ion-no-border bar-header" >
   <ion-toolbar style=" background: transparent !important; height: 50px !important;">
     <ion-title>Trieste trasporti</ion-title>
     <ion-buttons slot="end">
@@ -10,10 +10,12 @@
     </ion-buttons>
 
   </ion-toolbar>
-</ion-header>
+</ion-header> -->
 
-<ion-content>
-  <div class="prof-profile" (click)='buy()'>
+<ion-content scrollY=false >
+  <div class="cont_payments">
+    <div class="select-ticket" [style.left]='pos_ticket' [style.top]='pos_ticket_top'>
+  <div class="prof-profile" (click)='paySingleCorse()'>
     <div class="cont_img_text">
             <div class="prof-img"> <img src='../assets/Trieste_Trasporti_logo.svg.png'></div>
             <div class="text_widg">
@@ -24,7 +26,7 @@
 
     </div>
 </div>          
-<div class="prof-profile" (click)='pay()'>
+<div class="prof-profile" (click)='payDailyCorse()'>
   <div class="cont_img_text">
           <div class="prof-img"> <img src='../assets/Trieste_Trasporti_logo.svg.png'></div>
           <div class="text_widg">
@@ -34,9 +36,63 @@
           </div>
 
   </div>
-</div>    
+</div>   
+<div class="prof-profile" (click)='show_monthly()'>
+  <div class="cont_img_text">
+          <div class="prof-img"> <img src='../assets/Trieste_Trasporti_logo.svg.png'></div>
+          <div class="text_widg">
+              <h4>Abbonamenti</h4>
+              <h5>Intera rete</h5>
+              <!-- <div class="location"><img src='../assets/icon/location.svg'>{{shop.address}}</div>  -->
+          </div>
 
-<div class="confirm-tab" [style.display]='confirm'>
+  </div>
+</div>  
+    </div>
+<div class="card-int"  [style.left]='pos_pay'>
+  <div style="color: #000; text-align: center; font-weight: 700;">Tesserino N. {{code}}</div>
+<label class='label_c'>{{product_buying.name}}<br>Importo dovuto:<br> <span class="money_due">{{product_buying.price}}€</span></label>
+  <div class="apple_pay_btn" (click)='applePayment()'>  <ion-icon name="logo-apple"></ion-icon>Pay </div>
+  <div class="confirm-pay"> <button  type='submit' (click)='goCard()'><ion-icon name="card-outline"></ion-icon> Carta di Credito</button></div>
+</div>
+<div class="card-int"  [style.left]='pos_card'>
+    <div style="color: #000; text-align: center; font-weight: 700;">Tesserino N. {{code}}</div>
+    <label class='label_c'>{{product_buying.name}}<br>Importo dovuto:<br> <span class="money_due">{{product_buying.price}}€</span></label>
+      <label class='label' for="card-number"> Carta di credito</label>
+      <input class='input_bg' placeholder="1234 1234 1234 1234" pattern="[0-9]*" name='card-number' type="tel" maxlength="19"  id='card_number'>
+
+      <div style="display: inline-block; width: 50vw; margin: 0px;">
+      <label  class='label'for="card-number">Scadenza</label>
+      <input class='input_sm1'  placeholder="MM/AA" maxlength="5" pattern="[0-9]*" name="scadenza" type="tel" id='expiry' >
+    </div>
+
+          <div style="display: inline-block; width: 50vw; margin: 0px;">
+      <label class='label1' for="card-number">CVV</label>
+      <input class='input_sm2'  placeholder="CVV" pattern="[0-9]*" maxlength="4" type="tel"  name='cvv' id='cvv'>
+    </div>
+    <div style='margin-top: 20px;' class="confirm-pay" (click)='buywithCard()'> <button  type='submit' > <span *ngIf="!payment_loading"><ion-icon name="card-outline"></ion-icon>Acquista ora </span><div class="loader-5 center" *ngIf="payment_loading"><span></span></div></button></div>
+</div>
+<div class="conti" [style.top]="pos_scan_top">
+<div class="container"  >
+      <h1>Tesserino identificativo Trieste Trasporti</h1>
+      <div style="width: 100%; text-align: center" (click)="presentAlert()">Cos'è?</div>
+      <div class="form__group form__pincode">
+        <label>Inserisci il codice a 6 cifre del tuo tesserino</label>
+        <input  type="tel" id="0" maxlength="1"  (keyup)="type_num(0,$event)" placeholder="·" autocomplete="off" (focus)="roll_top()" (blur)='roll_bottom()'>
+        <input  type="tel" id="1" maxlength="1"  (keyup)="type_num(1,$event)" placeholder="·" autocomplete="off" (focus)="roll_top()" (blur)='roll_bottom()'>
+        <input  type="tel" id="2" maxlength="1"  (keyup)="type_num(2,$event)" placeholder="·" autocomplete="off" (focus)="roll_top()" (blur)='roll_bottom()'>
+        <input  type="tel" id="3" maxlength="1"  (keyup)="type_num(3,$event)" placeholder="·" autocomplete="off" (focus)="roll_top()" (blur)='roll_bottom()'>
+        <input  type="tel" id="4" maxlength="1"  (keyup)="type_num(4,$event)" placeholder="·" autocomplete="off" (focus)="roll_top()" (blur)='roll_bottom()'>
+        <input  type="tel" id="5" maxlength="1"  (keyup)="type_num(5,$event)" placeholder="·" autocomplete="off" (focus)="roll_top()" (blur)='roll_bottom()'>
+      </div>
+      <div class="form__buttons">
+          <button (click)="scanbarcode()" class="button button--secondary" >Scannerizza</button>
+        <button (click)="confirm_code()" class="button button--primary" [disabled]='disabled_btn'>Conferma</button>
+      </div>
+  </div>
+</div>
+</div>
+<div class="confirm-tab" [style.display]='confirm' > 
   <div class="cont" [style.display]='sure_confirm'>
     <h3>Desideri acquistare il biglietto?</h3>
         <div class="buttons">  
@@ -47,25 +103,5 @@
   <div [style.display]='loading' style="z-index: 10000;"><div class="loader-5 center"><span></span></div></div>
 </div>
 <div class="confirm-load" [style.display]='loading'><div class="loader-5 center"><span></span></div></div>
-<div class="card-int" [style.display]='card'>
-    <form  id='payment-form-card' >
-  <h3>Seleziona un metodo di pagamento</h3>
- 
- 
-<label class='label' for="card-number"> Carta di credito</label>
-        <div id='card-element'>
-          
-          </div>
-      
-      
-    <div id="card-errors" role="alert"></div>
-    <div class="confirm-pay"> <button  type='submit'><ion-icon name="card-outline"></ion-icon> Carta di Credito</button></div>
-    <div id="component-container"></div>
-    <div class="paypal_pay_btn" (click)='payWithBrainTree()'>  <img src='../assets/logo-paypal.svg'> PayPal</div>
-    <div class="apple_pay_btn" (click)='applePayment()'>  <ion-icon name="logo-apple"></ion-icon>Pay </div>
-  </form>
-   
-    
 
-</div>
 </ion-content>

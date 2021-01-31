@@ -34,11 +34,22 @@ async setAppointment(service){
 deletestorage(){
   this.storage.clear()
 }
-setShops(shops){
-  this.storage.set('shops_list',shops)
+async setShops(shops){
+  await this.storage.set('shops_list',shops)
 }
 async getShops(){
   var shops = await  this.storage.get('shops_list')
+  return shops == null ? [] : shops;
+}
+async setPaymentMethods(data){
+  await this.storage.set('payment_methods',data)
+}
+async getPaymentMethods(){
+  var shops = await  this.storage.get('payment_methods')
+  return shops == null ? [] : shops;
+}
+async clearPaymentMethods(){
+  var shops = await  this.storage.remove('payment_methods')
   return shops == null ? [] : shops;
 }
 }

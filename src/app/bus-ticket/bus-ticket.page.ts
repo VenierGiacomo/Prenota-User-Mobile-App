@@ -1,13 +1,19 @@
 import { Component, OnInit } from '@angular/core';
-import { ModalController, Platform, NavController } from '@ionic/angular';
+import { ModalController, Platform, NavController, ToastController, AlertController } from '@ionic/angular';
 import Notiflix from "notiflix";
 import { NativeApiService } from '../services/nativeapi.service';
 import { ApiService } from '../services/api.service';
-// import { ApplePay } from '@ionic-native/apple-pay/ngx';
-import { PayPal, PayPalPayment, PayPalConfiguration, PayPalPaymentDetails } from '@ionic-native/paypal/ngx';
-import { Braintree, ApplePayOptions, PaymentUIOptions, PaymentUIResult } from '@ionic-native/braintree/ngx';
-declare var Stripe ;
-// declare var ApplePay;
+import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
+import { Keyboard } from '@ionic-native/keyboard/ngx';
+
+
+//capcitor plugins
+import { Plugins } from '@capacitor/core';
+import '@capacitor-community/stripe'; 
+import { StripePlugin } from '@capacitor-community/stripe';
+const StripeCap = Plugins.Stripe as StripePlugin;
+const { Http } = Plugins;
+const { Browser } = Plugins;
 
 @Component({
   selector: 'app-bus-ticket',
@@ -17,61 +23,64 @@ declare var Stripe ;
 export class BusTicketPage implements OnInit {
   confirm='none'
   loading='none'
+  payment_loading=false
   sure_confirm='block'
-  card='none'
+  card='block'
   paymentAmount: string = '1.35';
   currency: string = 'EUR';
   currencyIcon: string = '€';
-  constructor(private braintree: Braintree,private payPal: PayPal,private nav: NavController, private modalController: ModalController, private plt:Platform,private apiNative:NativeApiService,private api: ApiService,) {
+  pos_ticket="0px"
+  pos_pay="100vw"
+  pos_card="100vw"
+  pos_ticket_top="0px"
+  pos_scan_top='420px'
+  disabled_btn=true
+  code
+  event_listener
+  scroll_cont=false
+  product_buying={name:"",price:0}
+  listner_1
+  listner_2
+  fast_pay = true
+  client_secret:any
+  products_list=[{name:"Biglietto 1 ora intera rete", price:1.35},{name:"Biglietto giornaliero intera rete",price:4.60}, {name:"Abbonamento mensile intera rete", price:35.75}]
+  constructor(private keyboard: Keyboard,public alertController: AlertController,private toastController:ToastController,private barcodeScanner: BarcodeScanner,private nav: NavController, private modalController: ModalController, private plt:Platform,private apiNative:NativeApiService,private api: ApiService,) {
     // Render the PayPal button into #paypal-button-container
     // 
-    
-   }
-
+    this.plt.ready().then(async ()=>{
+      StripeCap.setPublishableKey({ key: 'pk_live_kb4i70qfPxeWXXYfjImvx64f00Et58vNmC' })
+      this.event_listener =document.getElementsByClassName("modal-shadow")[0].addEventListener('click',async()=>{
+       await  this.closeModal()      
+      })
+      StripeCap.isApplePayAvailable().then(res=>{
+        StripeCap.isGooglePayAvailable().then(res1=>{
+         this.fast_pay = res.available || res1.available
+       })
+      })
+      await this.getCLientSecret()
+   })
+   
+  }
+  //  ngOnDestroy(){
+  //    this.event_listener.
+  //  }
+  
   ngOnInit() {
+    
   }
-  rederPay(){
-    var self = this
-    setTimeout(() => {
-      <any>window['paypal'].Buttons({
-        style: {
-          layout: 'horizontal'
-      },
-        // Set up the transaction
-        createOrder: function (data, actions) {
-          return actions.order.create({
-            purchase_units: [{
-              amount: {
-                value: '1.35'
-              }
-            }]
-          });
-        },
+  ionViewDidEnter() {
+    this.plt.ready().then(() => {    
+      this.keyboard.disableScroll(true);
+      this.keyboard.hideFormAccessoryBar(true)
+    });
+}
 
-        // Finalize the transaction
-        onApprove: function (data, actions) {
-          return actions.order.capture()
-            .then(function (details) {
-              // Show a success message to the buyer
-               self.closeModal()
-              Notiflix.Report.Init(
-                {success: 
-                  {svgColor:'#0061d5',
-                  titleColor:'#1e1e1e',
-                  messageColor:'#242424',
-                  buttonBackground:'#0061d5',
-                  buttonColor:'#fff'
-                  ,backOverlayColor:'rgba(#00479d,0.4)',},
-                })
-              Notiflix.Report.Success("Biglietto acquistato", 'Il biglietto è stato acquistato con successo', 'OK');
-            })
-            .catch(err => {
-              console.log(err);
-            })
-        }
-  }).render('#paypal-button-container');
-}, 500);
-  }
+ionViewDillLeave() {
+    this.plt.ready().then(() => {
+      this.keyboard.disableScroll(false);
+    });
+}
+ 
   confirmBuy(){
     this.loading='block'
           setTimeout(async () => {
@@ -94,291 +103,114 @@ export class BusTicketPage implements OnInit {
                   ,backOverlayColor:'rgba(#00479d,0.4)',},
                 })
               Notiflix.Report.Success("Biglietto acquistato", 'Il biglietto è stato acquistato con successo', 'OK');
+               setTimeout(async () => {  var ok_btn = document.getElementById('NXReportButton')
+              ok_btn.addEventListener("click",async ()=>{   await this.nav.navigateRoot('tabs/tab2')
+               ;},false)}, 200); 
             }, 1800);
    
   }
-  async buy(){
-    this.rederPay()
-    if (this.plt.is('hybrid')) {
-      var token: any = await this.apiNative.isvalidToken()
-      if(token){
-        this.confirm='block'
-      }else{
-          this.card='block'
-          this.sure_confirm='none'
-          // this.loading='block'
-          const stripe = Stripe('pk_test_f3m2iNJqa6UdyuD9Ey8O7ZiH00eSjJ4lEt',{locale: 'it'});
-          const elements = stripe.elements();
-          const style = {
-            base: {
-              color: '#343a40',
-              fontSize: '16px',
-              lineHeight: '50px',
-              '::placeholder': {
-                color: '#333'
-              },
-              ':-webkit-autofill': {
-                color: '#32325d',
-              },
-            },
-            invalid: {
-              color: '#fa755a',
-              iconColor: '#fa755a',
-              ':-webkit-autofill': {
-                color: '#fa755a',
-              },
-            },
-          };
-      
-          var card = elements.create('card', {style: style});
-      
-      // Add an instance of the card Element into the `card-element` <div>.
-      card.mount('#card-element');
-      
-      // Handle real-time validation errors from the card Element.
-      card.on('change', function(event) {
-        var displayError = document.getElementById('card-errors');
-        if (event.error) {
-          displayError.textContent = event.error.message;
-        } else {
-          displayError.textContent = '';
-        }
-      });
-      
-      // Handle form submission.
-      var form1 = document.getElementById('payment-form-card');
-
-      var self= this
-      form1.addEventListener('submit', function(event) {
-        self.loading='block'
-        self.card='none'
-        event.preventDefault();
-  
-      self.apiNative.stripeBusTicket('daily',false).then(async data=>{
-        const res:any = await data
-        console.log(data)
-        confirmpayment(res.client_secret,card)
-      }).catch(err=>{
-        console.log(err)
-      })
-      })
-      function confirmpayment(clientSecret,card){
-        stripe.confirmCardPayment(clientSecret, {
-          payment_method: {
-            card: card,
-          },
-          setup_future_usage: 'off_session'
-        }).then(async function(result) {
-          if (result.error) {
-            self.loading='none'
-            // Show error to your customer
-            console.log(result.error.message);
-          } else {
-            if (result.paymentIntent.status === 'succeeded') {
-              await self.closeModal()
-              Notiflix.Report.Init(
-                {success: 
-                  {svgColor:'#0061d5',
-                  titleColor:'#1e1e1e',
-                  messageColor:'#242424',
-                  buttonBackground:'#0061d5',
-                  buttonColor:'#fff'
-                  ,backOverlayColor:'rgba(#00479d,0.4)',},
-                })
-              Notiflix.Report.Success("Biglietto acquistato", 'Il biglietto è stato acquistato con successo', 'OK');
-              // Show a success message to your customer
-              // There's a risk of the customer closing the window before callback execution
-              // Set up a webhook or plugin to listen for the payment_intent.succeeded event
-              // to save the card to a Customer
-        
-              // The PaymentMethod ID can be found on result.paymentIntent.payment_method
+  async buy(product){
+    this.product_buying = product
+    this.pos_ticket="-110vw"
+    if(this.fast_pay){
+      var x:any = document.getElementsByClassName('ticket-modal')[0]
+      x.style.transition="400ms"
+      x.style.paddingTop ="calc(100vh - 300px)"
+      this.pos_pay="0vw"
+    }else{
+      var x:any = document.getElementsByClassName('ticket-modal')[0]
+      x.style.transition="400ms"
+      x.style.paddingTop ="calc(100vh - 440px)"
+      this.pos_card="0vw"
+      setTimeout(()=>{
+        this.listner_1= document.getElementById('card_number').addEventListener('input', function (e:any) {
+          e.target.value = e.target.value.replace(/[^\dA-Z]/g, '').replace(/(.{4})/g, '$1 ').trim();
+          var key = e.keyCode || e.charCode;
+          if( key!= 8 || key != 46 ){
+            if(e.target.value.length==19){
+              document.getElementById('expiry').focus()
             }
           }
+         
         });
-        }
-      }
-      }else{
-        if(this.api.isvalidToken()){
-          this.confirm='block'
-        }else{
-          this.card='block'
-          this.sure_confirm='none'
-          // this.loading='block'
-          const stripe = Stripe('pk_test_f3m2iNJqa6UdyuD9Ey8O7ZiH00eSjJ4lEt',{locale: 'it'});
-          const elements = stripe.elements();
-          const style = {
-            base: {
-              color: '#343a40',
-              fontSize: '16px',
-              lineHeight: '50px',
-              '::placeholder': {
-                color: '#333'
-              },
-              ':-webkit-autofill': {
-                color: '#32325d',
-              },
-            },
-            invalid: {
-              color: '#fa755a',
-              iconColor: '#fa755a',
-              ':-webkit-autofill': {
-                color: '#fa755a',
-              },
-            },
-          };
-      
-          var card = elements.create('card', {style: style});
-      
-      // Add an instance of the card Element into the `card-element` <div>.
-      card.mount('#card-element');
-      
-      // Handle real-time validation errors from the card Element.
-      card.on('change', function(event) {
-        var displayError = document.getElementById('card-errors');
-        if (event.error) {
-          displayError.textContent = event.error.message;
-        } else {
-          displayError.textContent = '';
-        }
-      });
-      
-      // Handle form submission.
-      var form1 = document.getElementById('payment-form-card');
-
-      var self= this
-      form1.addEventListener('submit', function(event) {
-        self.loading='block'
-        self.card='none'
-        event.preventDefault();
-  
-      self.api.stripeBusTicket('daily',false).subscribe(async data=>{
-        const res:any = await data
-        confirmpayment(res.client_secret,card)
-        self
-      },err=>{
-        console.log(err)
-      })
-      })
-      function confirmpayment(clientSecret,card){
-        stripe.confirmCardPayment(clientSecret, {
-          payment_method: {
-            card: card,
-          },
-          setup_future_usage: 'off_session'
-        }).then(async function(result) {
-          if (result.error) {
-            self.loading='none'
-            // Show error to your customer
-            console.log(result.error.message);
-          } else {
-            if (result.paymentIntent.status === 'succeeded') {
-              await self.closeModal()
-              Notiflix.Report.Init(
-                {success: 
-                  {svgColor:'#0061d5',
-                  titleColor:'#1e1e1e',
-                  messageColor:'#242424',
-                  buttonBackground:'#0061d5',
-                  buttonColor:'#fff'
-                  ,backOverlayColor:'rgba(#00479d,0.4)',},
-                })
-              Notiflix.Report.Success("Biglietto acquistato", 'Il biglietto è stato acquistato con successo', 'OK');
-              // Show a success message to your customer
-              // There's a risk of the customer closing the window before callback execution
-              // Set up a webhook or plugin to listen for the payment_intent.succeeded event
-              // to save the card to a Customer
-        
-              // The PaymentMethod ID can be found on result.paymentIntent.payment_method
+        this.listner_2 =document.getElementById('expiry').addEventListener('keyup', function (e:any) {
+          var key = e.keyCode || e.charCode;
+          if( key == 8 || key == 46 ){
+          }else{
+            if(e.target.value.length==5){
+              document.getElementById('cvv').focus()
             }
+            e.target.value = e.target.value.replace(/[^\dA-Z]/g, '').replace(/(.{2})/g, '$1/').trim();
+            e.target.value = e.target.value.substring(0,5)
           }
         });
-        }
-     
-
-      }
-
-}
-  
-    
-  }
-   applePayment() {
-    // This block is optional -- only if you need to update order items/shipping
-    // methods in response to shipping method selections
-  
-    //  ApplePay.canMakePayments().then( (message) => {
-    //    this.payWithApplePay()
-    // }).catch((error) => {
-     
-    // });
-  
-  }
-    payWithApplePay() {
-    try {
-      // let order: any = {
-      //   items: [{
-      //     label: 'Biglietto del bus 60 minuti',
-      //     amount: 1.35
-      //   }],
-      //   shippingMethods: [{    
-      //     label: "Consenga istantanea",
-      //     detail: "Consenga istantanea",
-      //     amount: "0.00",
-      //     identifier: "FreeShip"
-      // }],
-      // currencyCode: 'EUR',
-      //   countryCode: 'IT',
-      //   billingAddressRequirement: 'none',
-      //   shippingAddressRequirement: 'none',
-      //   shippingType: 'shipping',  
-        
-      // }
-      // ApplePay.setMerchantId('merchant.stripe.prenota.cc').then(()=>{
-      //   ApplePay.setPublishableKey('pk_test_f3m2iNJqa6UdyuD9Ey8O7ZiH00eSjJ4lEt').then(()=>{
-      //     ApplePay.setPublishableKey('pk_test_f3m2iNJqa6UdyuD9Ey8O7ZiH00eSjJ4lEt')
-      //     ApplePay.makePaymentRequest(order).then( (message) => {
-      //      console.log(message,'cazzoooooooooooo')
-      //       ApplePay.completeLastTransaction('success').then( ()=>{
-      //        setTimeout( () => {
-      //           this.closeModal()
-      //        Notiflix.Report.Init(
-      //          {success: 
-      //            {svgColor:'#0061d5',
-      //            titleColor:'#1e1e1e',
-      //            messageColor:'#242424',
-      //            buttonBackground:'#0061d5',
-      //            buttonColor:'#fff'
-      //            ,backOverlayColor:'rgba(#00479d,0.4)',},
-      //          })
-      //  Notiflix.Report.Success("Biglietto acquistato", 'Il biglietto è stato acquistato con successo', 'OK');
-      //        }, 1100); 
-      //      });
-      //    }).catch((error) => {
-      //      console.log(error)
-      //      // ApplePay.completeLastTransaction('failure');
-      //    });
-      //   })
-      // })
-      
-
-      // In real payment, this step should be replaced by an actual payment call to payment provider
-      // Here is an example implementation:
-
-      // MyPaymentProvider.authorizeApplePayToken(token.paymentData)
-      //    .then((captureStatus) => {
-      //        // Displays the 'done' green tick and closes the sheet.
-      //        ApplePay.completeLastTransaction('success');
-      //    })
-      //    .catch((err) => {
-      //        // Displays the 'failed' red cross.
-      //        ApplePay.completeLastTransaction('failure');
-      //    });
-
-    } catch {
-      console.log('errrrkjgjfg cathch 2')
-      // handle payment request error
-      // Can also handle stop complete transaction but these should normally not occur
+      },600)
     }
-  }
+    
+    // if (this.plt.is('hybrid')) {
+    //   var token: any = await this.apiNative.isvalidToken()
+    //   if(token){
+    //     this.confirm='block'
+    //   }   
+    // }else{
+    //   if(this.api.isvalidToken()){
+    //     this.confirm='block'
+    //   }
+    // }
+}
+async getCLientSecret(){
+  var res = await Http.request({
+    method: 'POST',
+    url: 'https://giacomovenier.pythonanywhere.com/api/webhooks/ticket',
+    headers: {
+      "Accept": 'application/json',
+      'Content-Type': 'application/json'
+    },
+    data: {
+      "services": 'daily',
+    }
+  })
+ this.client_secret = res.data.client_secret
+}
+  async  applePayment() {
+    var clientSecret = this.client_secret
+        var cc = await StripeCap.confirmPaymentIntent({
+          clientSecret,
+          applePayOptions:{
+            merchantId: 'merchant.stripe.prenota.cc',
+            country: 'IT',
+            currency: 'EUR',
+            items: [{ label: "Abbonamento mensile intera rete",
+              amount: 35.75}],
+          },
+          // card: {
+          //     number: card_number,
+          //     exp_month: Number(date[0]),
+          //     exp_year: 2000+ Number(date[1]),
+          //     cvc: cvv,
+          // },
+          redirectUrl: 'https://prenota.cc/', // Required for Android
+      }).then(async ()=>{
+        await this.closeModal()
+        Notiflix.Report.Init(
+          {success: 
+            {svgColor:'#0061d5',
+            titleColor:'#1e1e1e',
+            messageColor:'#242424',
+            buttonBackground:'#0061d5',
+            buttonColor:'#fff'
+            ,backOverlayColor:'rgba(#00479d,0.4)',},
+          })
+        Notiflix.Report.Success("Biglietto acquistato", 'Il biglietto è stato acquistato con successo', 'OK');
+         setTimeout(async () => {  var ok_btn = document.getElementById('NXReportButton')
+        ok_btn.addEventListener("click",async ()=>{   await this.nav.navigateRoot('tabs/tab2')
+         ;},false)}, 200); 
+      }).catch(()=>{
+        this.presentToast("C'è stato un problema durante il pagamento. La spesa non è stata addebitata.")})
+      this.payment_loading=false 
+    }
+
+    
 
   //  payWithPaypal() {
     // this.payPal.init({
@@ -444,10 +276,230 @@ export class BusTicketPage implements OnInit {
     //   })
       // .catch((error: string) => console.error(error));
 }
-  pay(){
-    this.nav.navigateRoot('payments')
-  }
+ 
   async closeModal(){
+    clearInterval(this.event_listener) 
+    clearInterval(this.listner_1) 
+    clearInterval(this.listner_2) 
     await this.modalController.dismiss();
   }
+  show_monthly(){
+    this.pos_ticket_top='-400px'
+    this.pos_scan_top="0px"
+    var x:any = document.getElementsByClassName('ticket-modal')[0]
+    x.style.transition="400ms"
+    x.style.paddingTop ="calc(100vh - 480px)"
+    this.getCLientSecret()
+    // setTimeout(() => {
+    //   this.presentAlert()
+    // }, 600);
+
+  }
+
+  roll_top(){
+      var x:any = document.getElementsByClassName('ticket-modal')[0]
+      x.style.transition="400ms"
+      // x.style.paddingTop ="calc(100vh - 730px)"
+  }
+  roll_bottom(){
+    var x:any = document.getElementsByClassName('ticket-modal')[0]
+    x.style.transition="400ms"
+    // x.style.paddingTop ="calc(100vh - 480px)"
+  }
+    type_num(i,ev){ 
+      ev.preventDefault() 
+      var key = ev.keyCode || ev.charCode;
+      var ind_selected:any = document.getElementById(i)
+      var pre = i-1
+      var ind_prev:any = document.getElementById(pre.toString())
+      var next = i+1
+      var ind_next:any = document.getElementById(next)
+  
+      // if(ind_selected.value.toString().length>1){
+      //   ind_selected.value=ind_selected.value.toString()[0]
+       
+      // }
+      if( key == 8 || key == 46 ){
+        if(i>0){
+          ind_selected.value=null
+          ind_prev.focus()
+        }else{
+          ind_selected.value=null
+        }
+      }else{      
+        if(i<5){
+          ind_selected.value=ev.key
+          ind_next.focus()
+        }else{
+          ind_selected.value=ev.key
+          ind_selected.blur()
+        }
+      this.code=""
+      for(let ind=0; ind<6;ind++){
+        var doc:any =document.getElementById(ind.toString())
+  
+        this.code = this.code+doc.value.toString()
+      }
+      if(this.code.length==6){
+        this.disabled_btn=false
+      }else{
+        this.disabled_btn=true
+      }
+      }
+     
+      }
+      confirm_code(){
+        this.pos_scan_top='-520px'
+        this.pos_ticket_top='0px'
+        this.scroll_cont=false
+        var x:any = document.getElementsByClassName('ticket-modal')[0]
+        x.style.transition="400ms"
+        x.style.paddingTop ="calc(100vh - 380px)"
+     
+        setTimeout(()=>{
+          this.buy(this.products_list[2])
+        },600)
+      }
+      goCard(){
+        var x:any = document.getElementsByClassName('ticket-modal')[0]
+        x.style.transition="400ms"
+        x.style.paddingTop ="calc(100vh - 440px)"
+        this.pos_pay="-100vw"
+        this.pos_card="0vw"
+        setTimeout(()=>{
+          this.listner_1= document.getElementById('card_number').addEventListener('input', function (e:any) {
+            e.target.value = e.target.value.replace(/[^\dA-Z]/g, '').replace(/(.{4})/g, '$1 ').trim();
+            var key = e.keyCode || e.charCode;
+            if( key!= 8 || key != 46 ){
+              if(e.target.value.length==19){
+                document.getElementById('expiry').focus()
+              }
+            }
+           
+          });
+          this.listner_2 =document.getElementById('expiry').addEventListener('keyup', function (e:any) {
+            var key = e.keyCode || e.charCode;
+            if( key == 8 || key == 46 ){
+            }else{
+              if(e.target.value.length==5){
+                document.getElementById('cvv').focus()
+              }
+              e.target.value = e.target.value.replace(/[^\dA-Z]/g, '').replace(/(.{2})/g, '$1/').trim();
+              e.target.value = e.target.value.substring(0,5)
+            }
+          });
+        },600)
+      }
+     
+      async presentAlert() {
+        const alert = await this.alertController.create({
+          cssClass: 'my-custom-class',
+          header: 'Attenzione',
+          subHeader: 'Regolamento Trieste Trasporti',
+          message: '<p>Secondo il regolamento di Trieste Trasporti, non è possibile acquistare un abbonamento senza possedere un tesserino identificativo.<br><br><b>Se ne sei in possesso, inserisci il numero a 6 cifre in alto a destra</b>. <br><br>Altrimenti puoi richiederlo presso i tabacchini o sul sito di Trieste Trasporti<p>',
+          buttons: ['OK']
+        });
+    
+        await alert.present();
+      }
+      async scanbarcode(){
+        await this.barcodeScanner.scan({showTorchButton:true,disableAnimations:false}).then(barcodeData => {
+          if(!barcodeData.cancelled && barcodeData.text.length==6){
+            this.code =barcodeData.text
+            for(let ind=0; ind< barcodeData.text.length; ind++){
+                var doc:any =document.getElementById(ind.toString())
+                doc.value=barcodeData.text[ind]
+                
+              }
+              this.disabled_btn=false
+          }else{
+            if(!barcodeData.cancelled){
+              this.presentToast(barcodeData.text+" non è un codice a barre valido! ")
+              this.code=''
+              for(let ind=0; ind<6;ind++){
+                var doc:any =document.getElementById(ind.toString())
+          
+                this.code = this.code+doc.value.toString()
+              }
+              if(this.code.length==6){
+                this.disabled_btn=false
+              }else{
+                this.disabled_btn=true
+              }
+            }else{
+              this.code=''
+              this.presentToast("Scansione annullata")
+              for(let ind=0; ind<6;ind++){
+                var doc:any =document.getElementById(ind.toString())
+          
+                this.code = this.code+doc.value.toString()
+              }
+              if(this.code.length==6){
+                this.disabled_btn=false
+              }else{
+                this.disabled_btn=true
+              }
+            }
+          
+          }
+         
+         }).catch(err => {
+          this.presentToast("Problema dutante la scansione. Inserisci il codice a mano o riprova")
+             console.log('Error', err);
+         });
+      }
+    
+      async presentToast(text) {
+        const toast = await this.toastController.create({
+          message: text,
+          position: 'top',
+          duration: 5000,
+        });
+        toast.present();
+      }
+
+  async buywithCard(){
+    this.payment_loading=true
+  var card_number:any = document.getElementById('card_number')
+  card_number = card_number.value.replaceAll(' ','')
+  var date:any = document.getElementById('expiry')
+  date = date.value.split('/')
+  var cvv:any = document.getElementById('cvv')
+  cvv = cvv.value
+  var clientSecret = this.client_secret
+      var cc = await StripeCap.confirmPaymentIntent({
+        clientSecret,
+        card: {
+            number: card_number,
+            exp_month: Number(date[0]),
+            exp_year: 2000+ Number(date[1]),
+            cvc: cvv,
+        },
+        redirectUrl: 'https://prenota.cc/', // Required for Android
+    }).then(async ()=>{
+      await this.closeModal()
+      Notiflix.Report.Init(
+        {success: 
+          {svgColor:'#0061d5',
+          titleColor:'#1e1e1e',
+          messageColor:'#242424',
+          buttonBackground:'#0061d5',
+          buttonColor:'#fff'
+          ,backOverlayColor:'rgba(#00479d,0.4)',},
+        })
+      Notiflix.Report.Success("Biglietto acquistato", 'Il biglietto è stato acquistato con successo', 'OK');
+       setTimeout(async () => {  var ok_btn = document.getElementById('NXReportButton')
+      ok_btn.addEventListener("click",async ()=>{   await this.nav.navigateRoot('tabs/tab2')
+       ;},false)}, 200); 
+    }).catch(()=>{
+      this.presentToast("C'è stato un problema durante il pagamento. La spesa non è stata addebitata.")})
+    this.payment_loading=false 
+  }
+  async paySingleCorse(){
+    await Browser.open({ url: "https://pay.sumup.io/b2c/QNA1F93X" })
+  }
+  async payDailyCorse(){
+    await Browser.open({ url: "https://pay.sumup.io/b2c/QCXCI205" })
+  }
+ 
 }

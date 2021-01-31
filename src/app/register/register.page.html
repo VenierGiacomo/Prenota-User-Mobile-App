@@ -30,9 +30,9 @@
     </ion-item>
   <ion-item lines='none' >
     <ion-label position="stacked">Password</ion-label>
-    <ion-input id='input_reg'[(ngModel)]='password'  type="password" placeholder="{{password_err}}"  (click)='toggleShowReg()'>
-            <ion-icon class="show-option" [hidden]="showPassword" name="eye-off-outline"></ion-icon>
-            <ion-icon class="hide-option" [hidden]="!showPassword" name="eye-outline"></ion-icon>
+    <ion-input id='input_reg'[(ngModel)]='password'  type="text" placeholder="{{password_err}}"  (click)='toggleShowReg()'>
+            <ion-icon class="show-option" [hidden]="showPassword_reg" name="eye-off-outline"></ion-icon>
+            <ion-icon class="hide-option" [hidden]="!showPassword_reg" name="eye-outline"></ion-icon>
     </ion-input>
     <!-- <p *ngIf='password_err!=""'>{{password_err}}</p> -->
   </ion-item>
@@ -59,7 +59,7 @@
   </ion-item>
   <ion-item lines='none' >
     <ion-label position="stacked">Password</ion-label>
-    <ion-input id='input' [(ngModel)]='password'  type="password" placeholder="{{password_err}}" (click)='toggleShow()'>
+    <ion-input id='input' [(ngModel)]='password'  type="text" placeholder="{{password_err}}" (click)='toggleShow()'>
             
       <ion-icon class="show-option" [hidden]="showPassword" name="eye-off-outline" (click)="toggleShow()"></ion-icon>
             <ion-icon class="hide-option" [hidden]="!showPassword" name="eye-outline" (click)="toggleShow()"></ion-icon>

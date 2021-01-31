@@ -1,11 +1,15 @@
 import { Component, NgZone } from '@angular/core';
 import { Storage } from '@ionic/storage';
-import { Platform, NavController } from '@ionic/angular';
-import { SplashScreen } from '@ionic-native/splash-screen/ngx';
+import { Platform, NavController, ModalController, ToastController } from '@ionic/angular';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
-import { Deeplinks } from '@ionic-native/deeplinks/ngx';
-import { CodePush, InstallMode, SyncStatus } from '@ionic-native/code-push/ngx';
 
+
+import { Plugins } from '@capacitor/core';
+import { RegisterPage } from './register/register.page';
+import { NativeApiService } from './services/nativeapi.service';
+const { SplashScreen } = Plugins;
+const { App } = Plugins;
+// import { CodePush, InstallMode } from '@ionic-native/code-push/ngx';
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
@@ -14,13 +18,13 @@ import { CodePush, InstallMode, SyncStatus } from '@ionic-native/code-push/ngx';
 export class AppComponent {
   constructor(
     private platform: Platform,
-    private splashScreen: SplashScreen,
-    private statusBar: StatusBar,
-    private storage: Storage,
+    private statusBar: StatusBar,    
     private nav: NavController,
-    public deeplinks: Deeplinks,
+    private modalController: ModalController,
     private zone: NgZone,
-    private codePush: CodePush
+    private toastController: ToastController,
+    private apiNative: NativeApiService
+    // private codePush: CodePush
   ) {
     this.initializeApp();
   }
@@ -28,59 +32,60 @@ export class AppComponent {
   initializeApp() {
     this.platform.ready().then(() => {
       this.statusBar.styleDefault();
-      this.splashScreen.hide();
-    //   this.storage.get('introShown').then((result) => 
-    // {
-    //     // If it is set, then skip that page
-    //     if(result){
-    //       this.nav.navigateRoot('tabs/tab1');
-    //     }
-    //     // Otherwise if property is not set, then show that page for once and then set property to true
-    //     else {
-    //       this.nav.navigateRoot('onboarding');
-    //       this.storage.set('introShown', true);
-    //     }
-
-    //   });
-    if(this.platform.is('hybrid')){
-      this.codePush.sync({ installMode: InstallMode.ON_NEXT_RESUME, mandatoryInstallMode: InstallMode.IMMEDIATE}).subscribe((syncStatus) => {
-      })
-    }
-       
-    
-
-      // document.addEventListener("resume", function () {
-        // this.codePush.sync({ updateDialog: {
-        //   appendReleaseDescription: true,
-        //   descriptionPrefix: "\n\nChange log:\n"   
-        //  },
-        //  installMode: InstallMode.IMMEDIATE}).subscribe(
-        //   (data) => {
-        //    console.log('CODE PUSH SUCCESSFUL: ' + data);
-           
-        //   },
-        //   (err) => {
-        //    console.log('CODE PUSH ERROR: ' + err);
-           
-        //   }
-        // );
-     
- 
+      setTimeout(() => {
+        SplashScreen.hide();
+      }, 800);
     });
+    App.addListener('appUrlOpen', (data: any) => {
+      this.zone.run(async () => {
+          const slug = data.url.split(".cc/").pop();
+          console.log(slug)
+          if (slug) {
+            var slug_parts =slug.split('/')
+            console.log(slug_parts)
+            if(slug_parts[0] == 'register'){
+              var token: any = await this.apiNative.isvalidToken()
+              if(token){
+                await this.presentToast('Per registrare un nuovo account devi prima effetuare il logout')
+              }else{
+                data = {
+                  first_name: slug_parts[1],
+                  last_name :  slug_parts[2],
+                  email : slug_parts[3],
+                  phone : slug_parts[4],
+                }
+                await this.presentRegisterModal(data)
+              }
+            } 
+              
+          }
+          // If no match, do nothing - let regular routing
+          // logic take over
+      });
+  });
   }
-  setUpDeepLinks(){
-    this.deeplinks.route({
-      '': 'home',
-    }).subscribe(match => {
-      this.zone.run(()=>{
-        this.nav.navigateRoot("")
-      })
-      console.log('Successfully matched route', match);
-    }, nomatch => {
-      this.zone.run(()=>{
-        this.nav.navigateRoot("")
-      })
-      console.error('Got a deeplink that didn\'t match', nomatch);
+async presentRegisterModal(reg_data) {
+      const modal = await this.modalController.create({
+        component:RegisterPage,
+        swipeToClose: true,
+        cssClass: 'select-modal' ,
+        componentProps: { 
+          first_name: reg_data.first_name,
+           last_name :  reg_data.last_name,
+           email : reg_data.email,
+           phone : reg_data.phone
+        }
+      });
+      return await modal.present();
+  } 
+  
+  async presentToast(text) {
+    const toast = await this.toastController.create({
+      message: text,
+      position: 'top',
+      duration: 5000,
+      cssClass:'toast-class',
     });
+    toast.present();
   }
 }

@@ -19,10 +19,6 @@ const routes: Routes = [
     loadChildren: () => import('./onboarding/onboarding.module').then( m => m.OnboardingPageModule)
   },
   {
-    path: 'payments',
-    loadChildren: () => import('./payments/payments.module').then( m => m.PaymentsPageModule)
-  },
-  {
     path: 'payment-success',
     loadChildren: () => import('./payment-success/payment-success.module').then( m => m.PaymentSuccessPageModule)
   },
@@ -36,6 +32,22 @@ const routes: Routes = [
   {
     path: 'bus-ticket',
     loadChildren: () => import('./bus-ticket/bus-ticket.module').then( m => m.BusTicketPageModule)
+  },
+  {
+    path: 'pay-modal',
+    loadChildren: () => import('./pay-modal/pay-modal.module').then( m => m.PayModalPageModule)
+  },
+  {
+    path: 'not-modal',
+    loadChildren: () => import('./not-modal/not-modal.module').then( m => m.NotModalPageModule)
+  },
+  {
+    path: 'cancel-modal',
+    loadChildren: () => import('./cancel-modal/cancel-modal.module').then( m => m.CancelModalPageModule)
+  },
+  {
+    path: 'profile',
+    loadChildren: () => import('./profile/profile.module').then( m => m.ProfilePageModule)
   },
   
 ];

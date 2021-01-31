@@ -11,7 +11,7 @@
       </ion-button>
     </ion-buttons>
 
-    <ion-title mode=ios >prenota</ion-title>
+    <ion-title mode=ios  >prenota</ion-title>
   </ion-toolbar>
 </ion-header>
   <ion-content >
@@ -22,18 +22,22 @@
           <div class="double-bounce2"></div>
         </div>
 
+        
         <!-- <div class="prof-profile" *ngFor='let shop of shops' (click)="navBusiness(shop)"> -->
             <div class="prof-profile" *ngFor='let shop of shops' (click)="presentModal(shop)">
                 <div class="cont_img_text">
                         <div class="prof-img"><img src='{{shop.img_url}}'></div>
                         <div class="text_widg">
                             <h4>{{shop.store_name}}</h4>
-                            <h5>{{shop.business_description}}</h5>
-                            <div class="location"><img src='../assets/icon/location.svg'>{{shop.address}}</div> 
+                            <h5 >{{shop.business_description}}</h5>
+                            <p *ngIf='shop.closed'>Al momento chiuso</p>
+                            <div class="location" *ngIf='!shop.closed'><img src='../assets/icon/location.svg'>{{shop.address}}</div> 
                         </div>
             
                 </div>
-</div>          
+        </div>             
+       
+       
 <!-- <div id='multi-profile' class="multi-profile" (click)='openList()'>
 <h5>Salone parrucchieri</h5>
 <img src="../assets/Screenshot 2020-06-10 12.07.30.png"/>

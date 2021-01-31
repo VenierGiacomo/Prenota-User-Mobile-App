@@ -1,15 +1,21 @@
 import { Component, OnInit } from '@angular/core';
 import { StorageService } from '../services/storage.service';
-import { Platform, ModalController, AlertController, PopoverController, ToastController } from '@ionic/angular';
+import { Platform, ModalController, AlertController, ToastController } from '@ionic/angular';
 import { NativeApiService } from '../services/nativeapi.service';
 import { Router } from '@angular/router';
 import { ApiService } from '../services/api.service';
-import Notiflix from "notiflix";
-import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
+
 import { RegisterPage } from '../register/register.page';
-import { SafariViewController } from '@ionic-native/safari-view-controller/ngx';
-import { PopoverComponent } from '../popover/popover.component';
 import { ActionSheetController } from '@ionic/angular';
+import QRCode from 'qrcode';
+import { Plugins } from '@capacitor/core';
+import { NotModalPage } from '../not-modal/not-modal.page';
+import { CancelModalPage } from '../cancel-modal/cancel-modal.page';
+import { ProfilePage } from '../profile/profile.page';
+const { Browser } = Plugins;
+const { LocalNotifications } = Plugins;
+const { Share } = Plugins;
+
 
 @Component({
   selector: 'app-tab2',
@@ -18,112 +24,35 @@ import { ActionSheetController } from '@ionic/angular';
 })
 export class Tab2Page implements OnInit{
 appointments_list:any=[]
-text_top_right=''
+page ='tab2'
 shops=[]
 currentPopover
 confirm='none'
 date = 1600955674970
-to_delete_appo
 actionSheet:any
+code = 'A456d0of'
+generated = '';
+backdrop_active =false
+activated_ticket =false
+today_ticket
+ticket_list=[,] ////// da modificare quando downloaderà veramente i biglietti ==> è analogo ad appoinment list ma per i bus
+displayQrCode() {
+  return this.generated !== '';
+}
+active_time=''
+load_width='0vw'
 months_names=['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno','Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre']
 rows = ["06:45", "07:00", "07:15", "07:30", "07:45", "08:00", "08:15", "08:30", "08:45", "09:00", "09:15", "09:30", "09:45", "10:00", "10:15", "10:30", "10:45", "11:00", "11:15", "11:30", "11:45", "12:00", "12:15", "12:30", "12:45", "13:00", "13:15", "13:30", "13:45", "14:00", "14:15", "14:30", "14:45", "15:00", "15:15", "15:30", "15:45", "16:00", "16:15", "16:30", "16:45", "17:00", "17:15", "17:30", "17:45", "18:00", "18:15", "18:30", "18:45", "19:00", "19:15", "19:30", "19:45", "20:00", "20:15", "20:30", "20:45", "21:00", "21:15", "21:30", "21:45", "22:00", "22:15", "22:30", "22:45", "23:00", "23:15", "23:30", "23:45", "24:00"]
-  constructor(private toastController: ToastController, private localNotifications: LocalNotifications,public actionSheetController: ActionSheetController, private popoverController: PopoverController, private alertController: AlertController,public modalController: ModalController, private storage: StorageService, private plt:Platform,private apiNative:NativeApiService, private router:Router, private api: ApiService,private safariViewController: SafariViewController,) {}
+  constructor(private toastController: ToastController, public actionSheetController: ActionSheetController,  private alertController: AlertController,public modalController: ModalController, private storage: StorageService, private plt:Platform,private apiNative:NativeApiService, private router:Router, private api: ApiService,) {}
 
   async ionViewDidEnter() {
-    if (this.plt.is('hybrid')) {
-    var token: any = await this.apiNative.isvalidToken()
-    if(token){
-      this.text_top_right='Esci'
-    }else{
-      this.text_top_right='Accedi'
-    }
-    }else{
-      if(this.api.isvalidToken()){
-        this.text_top_right='Esci'
-      }else{
-        this.text_top_right='Accedi'
-      }
-    }
-      await this.getClientAppointments()    
+    this.activated_ticket=false
+    await this.getClientAppointments()    
   }
   async ngOnInit() {
   }
 
-  // async not_test(){ 
-  //  var nots = await  this.localNotifications.getAll()
-  //  console.log(nots)
-  // }
-  wanttodelete(appo){
-    this.to_delete_appo= appo
-    this.confirm='block'
-  }
-   deletestorage(){
-    Notiflix.Block.Standard('.cont', "Stiamo cancellando l'appuntamento...");
-    var appo =this.to_delete_appo
-    var date = new Date()
-    var day = date.getDate()
-    var month = date.getMonth()
-    var year = date.getFullYear()
-    const date1:any = new Date(year,month,day,0,0,0,0);
-    const date2:any = new Date(appo.year, appo.month, appo.day,0,0,0,0);
-    const diffTime = Math.abs(date2 - date1);
-    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)); 
-    if(diffDays>=3){
-      if (this.plt.is('hybrid')) {
-        this.apiNative.deleteAppointment(appo.id).then(async data=>{
-          await this.getClientAppointments()
-          this.confirm='none'
-          await Notiflix.Block.Remove('.cont')
-          Notiflix.Report.Init(
-            {success: 
-              {svgColor:'#0061d5',
-              titleColor:'#1e1e1e',
-              messageColor:'#242424',
-              buttonBackground:'#0061d5',
-              buttonColor:'#fff'
-              ,backOverlayColor:'rgba(#00479d,0.2)',},
-            })
-            var nots =await this.localNotifications.getAll()
-            console.log(nots)
-            var to_be_deleted = nots.filter((val,ind,arr)=>{ return val.id == appo.id ||val.id == appo.id+1000 })
-            console.log(to_be_deleted)
-            for(let el of to_be_deleted){
-              await this.localNotifications.cancel(el.id)
-            }
-            nots =await this.localNotifications.getAll()
-            console.log("new",nots)
-          Notiflix.Report.Success("Appuntamento cancellato", "L'appuntamenton è stato cancellato con successo!", 'Continua')
-        }).catch(async err=>{
-          await Notiflix.Block.Remove('.cont')
-          Notiflix.Report.Failure("Errore durante la cancellazione", "L'appuntamenton non è stato cancellato. Controlla la tua connessione e riprova.", 'Annulla');
-        })
-       }else{
-        this.api.deleteAppointment(appo.id).subscribe(async data=>{
-          await this.getClientAppointments()
-          this.confirm='none'
-          // this.getClientAppointments()
-          await Notiflix.Block.Remove('.cont')
-          Notiflix.Report.Init(
-            {success: 
-              {svgColor:'#0061d5',
-              titleColor:'#1e1e1e',
-              messageColor:'#242424',
-              buttonBackground:'#0061d5',
-              buttonColor:'#fff'
-              ,backOverlayColor:'rgba(#00479d,0.2)',},
-            })
-          Notiflix.Report.Success("Appuntamento cancellato", "L'appuntamenton è stato cancellato con successo!", 'Continua')
-        },async err=>{
-          await Notiflix.Block.Remove('.cont')
-          Notiflix.Report.Failure("Errore durante la cancellazione", "L'appuntamenton non è stato cancellato. Controlla la tua connessione e riprova.", 'Annulla');
-        })
-       }
-    }else{
-    this.handelNotdelete(appo)
-    }
-   
-    
-  }
+ 
   async  handelNotdelete(appo) {
     // console.log(this.shops)
     const alert = await this.alertController.create({
@@ -176,16 +105,13 @@ rows = ["06:45", "07:00", "07:15", "07:30", "07:45", "08:00", "08:15", "08:30", 
         swipeToClose: true,
         cssClass: 'select-modal' ,
         componentProps: { 
-          homeref: this
+          homeref: this,
         }
       });
       modal.onDidDismiss().then(async data => {
        if(data.data){
-         this.presentToast("Benvenuto su Prenota")
+        //  this.presentToast("Benvenuto su Prenota")
         await this.getClientAppointments()
-        this.text_top_right='Esci'
-       }else{
-        this.text_top_right='Accedi'
        }
       
        
@@ -205,7 +131,7 @@ rows = ["06:45", "07:00", "07:15", "07:30", "07:45", "08:00", "08:15", "08:30", 
           // for(let appo of this.appointments_list ){
           //   await this.storage.setAppointment(appo)
           // }
-          this.text_top_right='Esci'
+          
         }).catch(err=>{
           console.log(err)
         })
@@ -214,7 +140,7 @@ rows = ["06:45", "07:00", "07:15", "07:30", "07:45", "08:00", "08:15", "08:30", 
       this.api.getClientAppointmentsweek(week,year).subscribe(async data=>{
         this.appointments_list = await data
         // await this.storage.deleteappointments()
-        this.text_top_right='Esci'
+      
         // for(let appo of this.appointments_list ){
         //   await this.storage.setAppointment(appo)
         // }
@@ -240,49 +166,43 @@ rows = ["06:45", "07:00", "07:15", "07:30", "07:45", "08:00", "08:15", "08:30", 
   }
 
   async infoModal(site) {
-    this.safariViewController.isAvailable()
-    .then((available: boolean) => {
-        if (available) {
-  
-          this.safariViewController.show({
-            url: site,
-            hidden: false,
-            animated: true,
-            transition: 'curl',
-            enterReaderModeIfAvailable: false,
-            // tintColor: '#0061d5'
-          })
-          .subscribe((result: any) => {
-            },
-            (error: any) => console.error(error)
-          );
-  
-        } else {
-          console.log('no available')
-        }
-      }
-    );
+    await Browser.open({ url: site })
+ 
   }
   async presentPopover(ev: any,appointment) {
-    const popover = await this.popoverController.create({
-      component: PopoverComponent,
-      event: ev,
-      translucent: true,
-      componentProps: {homeref:this,appo: appointment},
+    var modal = await this.modalController.create({
+      component:CancelModalPage,    
+      cssClass: 'pay-customer-modal' ,
+      backdropDismiss: true,
+      swipeToClose: true,
+      componentProps: {
+        homeref: this,
+        appointment:appointment
+      }
     });
-    return await popover.present();
+    return await  modal.present();
+    // const popover = await this.popoverController.create({
+    //   component: PopoverComponent,
+    //   event: ev,
+    //   translucent: true,
+    //   componentProps: {homeref:this,appo: appointment},
+    // });
+    // return await popover.present();
   }
   async logout(){
     if (this.plt.is('hybrid')) {
-      await this.localNotifications.clearAll()
+      var not = await  LocalNotifications.getPending()
+      if(not.notifications!=undefined && not.notifications.length>0){
+        await LocalNotifications.cancel(not)
+      }
+     
       await this.apiNative.deleteStorage()
-      this.text_top_right='Accedi'
       this.presentToast('Logout effettuato con successo')
       this.appointments_list=[]
     }else{
       await this.api.deleteStorage()
+      await this.apiNative.deleteStorage()
       localStorage.clear()
-      this.text_top_right='Accedi'
       this.presentToast('Logout effettuato con successo')
       this.appointments_list=[]   
     }
@@ -291,12 +211,26 @@ rows = ["06:45", "07:00", "07:15", "07:30", "07:45", "08:00", "08:15", "08:30", 
   async presentActionSheet() {
     this.actionSheet = await this.actionSheetController.create({
       header: 'Impostazioni',
-      buttons: [{
-        text: 'Logout',
-        role: 'destructive',
-        // icon: 'trash',
+      buttons: [ 
+      {
+        text: 'Profilo',
+        // icon: 'share',
         handler: () => {
-        this.logout()
+          this.closeActionsheet()
+          this.presentProfileData()
+        }
+      },{
+        text: 'Condividi',
+        // icon: 'share',
+        handler: async () => {
+          var emoji = String.fromCodePoint(0x1F60A)
+          var text = `Hey! Ho utilizzato questa app per prenotare ed è stato facilissimo. Te la consiglio ${emoji}!`
+          let shareRet = await Share.share({
+            title: 'Fantastico prenotare così',
+            text: text,
+            url: 'https://prenota.cc/',
+            dialogTitle: 'Condivi prenota con i tuoi amici'
+          });
         }
       }, {
         text: 'Assistenza',
@@ -306,12 +240,21 @@ rows = ["06:45", "07:00", "07:15", "07:30", "07:45", "08:00", "08:15", "08:30", 
           this.assistenzaActionSheet()
         }
       },{
+        text: 'Logout',
+        role: 'destructive',
+        // icon: 'trash',
+        handler: () => {
+        this.logout()
+        }
+      },
+     
+     
+      
+      {
         text: 'Annulla',
         // icon: 'close',
         role: 'cancel',
-        handler: () => {
-          console.log('Cancel clicked');
-        }
+ 
       }]
     });
    
@@ -319,6 +262,16 @@ rows = ["06:45", "07:00", "07:15", "07:30", "07:45", "08:00", "08:15", "08:30", 
   }
   async closeActionsheet(){
     await this.actionSheet.dismiss()
+  }
+  async presentProfileData(){
+
+      const modal = await this.modalController.create({
+        component:ProfilePage,
+        swipeToClose: true,
+        cssClass: 'select-modal' ,
+    });
+      return await modal.present();
+  
   }
   async assistenzaActionSheet() {
     const actionSheet = await this.actionSheetController.create({
@@ -358,4 +311,76 @@ rows = ["06:45", "07:00", "07:15", "07:30", "07:45", "08:00", "08:15", "08:30", 
     });
     toast.present();
   }
+
+  
+  async activate_ticket() {
+    var date = new Date() 
+    var min:any = date.getMinutes()
+    var hour:any = date.getHours()
+    var hour_plus:any = hour+1
+    if(min<10){
+      min= '0'+min.toString()
+    }
+    if(hour<10){
+      hour= '0'+hour.toString()
+    }
+    if(hour_plus<10){
+      hour_plus= '0'+hour_plus.toString()
+    }
+    const alert = await this.alertController.create({
+      header: 'Attiva il biglietto',
+      subHeader: 'Stai per attivere il biglietto',
+      message: `Cliccando su Attiva, attiverai il bilietto. Una volta attivato, non sarà più possibile tornare indietro. <br><br><b>Validità<br>${hour}:${min} - ${hour_plus}:${min}</b>.<br><br> Per tornare indietro senza attivare il biglietto clicca su Annulla` ,
+      buttons: [{
+        text: 'Annulla',
+        role: 'cancel',
+      },{
+        text: 'Attiva',
+        handler: ()=>{
+          this.load_width ='100vw'
+          this.active_time=`${hour_plus}:${min}`
+          setTimeout(() => {
+            this.activated_ticket=true
+          }, 900);
+         
+         
+        },
+      }]
+    });
+    await alert.present();
+  }
+  process() {
+    const qrcode = QRCode;
+    const self = this;
+    qrcode.toString(self.code, { errorCorrectionLevel: 'H' }, function (err, url) {
+      self.generated = url;
+    })
+    var today = new Date();
+    var dd = String(today.getDate()).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+    var yyyy = today.getFullYear();
+    
+    this.today_ticket = dd + '/' + mm + '/' + yyyy;
+    this.backdrop_active =true
+    setTimeout(() => {
+      var qr:any =document.getElementById('qr-card')
+      var sm_data:any =document.getElementById('sm_data')
+      var parser = new DOMParser();
+      var doc = parser.parseFromString(this.generated, "image/svg+xml");
+      document.getElementById('qr-card').appendChild(doc.documentElement)
+      qr.style.top = 'calc(50vh - 40vw - 50px)'
+      sm_data.style.top = 'calc(50vh + 50vw - 50px )'
+   
+  },100);
+}
+  closeQR(){
+    var qr:any =document.getElementById('qr-card')
+    var sm_data:any =document.getElementById('sm_data')
+      sm_data.style.top = '120vh'
+      qr.style.top = '110vh'
+      setTimeout(() => {
+      this.backdrop_active =false
+    }, 500);
+  }
+ 
 }

@@ -1,0 +1,11 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "583R5U3VX5.io.prenota.client",
+        "paths": ["*"]
+      }
+    ]
+  }
+}

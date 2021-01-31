@@ -1,0 +1,36 @@
+{
+  "appId": "io.prenota.client",
+  "appName": "Prenota",
+  "bundledWebRuntime": false,
+  "npmClient": "npm",
+  "webDir": "www",
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 3000,
+      "backgroundColor": "#ffffffff",
+      "androidSplashResourceName": "splash",
+      "androidScaleType": "CENTER_CROP",
+      "androidSpinnerStyle": "small",
+      "iosSpinnerStyle": "small",
+      "spinnerColor": "#999999",
+      "showSpinner": false,
+      "splashFullScreen": true,
+      "splashImmersive": true
+    }
+  },
+  "cordova": {
+    "preferences": {
+      "ScrollEnabled": "false",
+      "android-minSdkVersion": "19",
+      "BackupWebStorage": "none",
+      "WKWebViewOnly": "true",
+      "KeyboardResize": "true",
+      "HideKeyboardFormAccessoryBar": "false",
+      "AndroidLaunchMode": "singleTask"
+    }
+  },
+  "server": {
+    "url": "http://192.168.1.168:8101",
+    "cleartext": true
+  }
+}

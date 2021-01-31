@@ -80,16 +80,6 @@
 </ion-content>
 
 <div class="confirm-tab" [style.display]='confirm'>
-  <div class="cont">
-    <h3>Riassunto prenotazione</h3>
-        <div><b>Servizio:</b> {{total_service.name}}</div>
-        <div><b>Data:</b> {{today}}</div>
-        <div><b>Orario:</b> {{timeslot}}</div>
-        <div class="buttons">  
-          <button (click)='book()' class='confirm'>prenota</button> 
-          <div (click)='confirm="none"'>Annulla</div>
-        </div>
-  </div>
 </div>
 <!-- 
 <div class="confirm-tab" [style.display]='show_not_req'>

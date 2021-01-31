@@ -1,35 +1,36 @@
 h2{
     padding: 10px 0px 0px 10px;
-    color: #48466d;
+    color: #040041;
     font-size: 21px;
     font-weight: 600;
     font-family:  'Open Sans', sans-serif !important;
-    margin:0px 5px;
+    margin:0px 5vw;
 }
 .appintment{
     padding:  10px;
     position: relative;
     display: block;
-    margin: 15px 0vw;
+    margin: 15px 6vw;
     width: 88vw;
+    
     background: white;
     border-radius: 5px;
     -webkit-box-shadow: 0px 0px 15px 0px rgba(0,0,50,0.17);
-    -moz-box-shadow: 0px 0px 15px 0px rgba(0,0,0,50.17);
-    box-shadow: 0px 0px 15px 0px rgba(0,0,50,0.17);
-    border-left: 5px solid #2c59ac;
+-moz-box-shadow: 0px 0px 15px 0px rgba(0,0,0,50.17);
+box-shadow: 0px 0px 15px 0px rgba(0,0,50,0.17);
     .app-Shop{
-        color: #48466d;
+        color: #040041;
         font-weight: 600;
         font-size: 18px;
         line-height: 18px;
     }
     .app-service{
+        text-transform: capitalize;
     color: #00479D ;
     font-size: 15px;
     }
     .app-date{
-        color: #48466d;
+        color: #040041;
 
         font-size: 15px;
         ion-icon{
@@ -65,7 +66,7 @@ h2{
     padding:0vw 10vw;
  p{
      font-size: 10px;
-     color: #48466d;
+     color: #040041;
     
      a{
          color: #0061D5;
@@ -73,9 +74,6 @@ h2{
  }
 
 }
-ion-item{
-    --background:#fff
- }
 
  
 //   }
@@ -157,4 +155,125 @@ ion-item{
     }
 ion-content{
     --padding-bottom: 70px;
+}
+
+
+//////// ticket
+
+.ticket{
+    display: block;
+    width: 90vw;
+    margin: 20px 5vw;
+    border-radius: 5px;
+    -webkit-box-shadow: 0px 0px 15px 0px rgba(0,0,50,0.17);
+    -moz-box-shadow: 0px 0px 15px 0px rgba(0,0,0,50.17);
+    box-shadow: 0px 0px 15px 0px rgba(0,0,50,0.17);
+    padding: 15px 10px;
+    background: #fff;
+    position: relative;
+    overflow: hidden;
+    p{
+        color:#353232;
+        font-size:13px;
+        margin:  0px;
+    }
+    .ticket-text{
+        
+        width: 70%;
+        overflow: hidden;
+        display: inline-block;
+        margin:0px;
+        margin-left: 30%;
+        color:#051938;
+        font-size: 15px;
+        padding-left: 10%;
+    }
+    .ticket-image{
+        width: 30%;
+        display: inline-block;
+         margin: 0;
+            position: absolute;
+            top: 50%;
+            -ms-transform: translateY(-50%);
+            transform: translateY(-50%);
+        // vertical-align: middle;
+        // padding-bottom: auto 0px;
+        img{
+            vertical-align: middle;
+            display: inline-block;
+            object-fit: cover;
+            width: 100%;
+            top: 0;
+        }
+    }
+}
+
+#qr-card{
+    top:110vh;
+    position: absolute;
+    background: white;
+    width: 80vw;
+    margin-left:10vw;
+    height: 80vw;
+    transition: 600ms;
+    border-radius:10px;
+    overflow: hidden;
+    svg{
+        width: 70vw;
+        height: 70vw;
+        margin: 5vw;
+    }
+}
+
+
+
+.back_qr{
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.8);
+    backdrop-filter: blur(16px);
+    z-index: 10;
+}
+
+.bg_load{
+    height: 100%;
+    width: 0vw;
+    top: 0px;
+    left:0px;
+    z-index: 1;
+    position: absolute;
+    background: rgba(#000000, 0.2);
+    // background: rgb(4,0,65);
+    // background: -moz-linear-gradient(90deg, rgba(4,0,65,1) 0%, rgba(0,97,213,1) 45%, rgba(0,212,255,1) 100%);
+    // background: -webkit-linear-gradient(90deg, rgba(4,0,65,1) 0%, rgba(0,97,213,1) 45%, rgba(0,212,255,1) 100%);
+    // background: linear-gradient(90deg, rgba(4,0,65,1) 0%, rgba(0,97,213,1) 45%, rgba(0,212,255,1) 100%);
+    // filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#040041",endColorstr="#00d4ff",GradientType=1);
+    transition: 1000ms;
+    ;
+}
+#sm_data{
+    position: absolute;
+    width: 80vw;
+    left: 10vw;
+    color: #353232;
+    background: white;
+    border-radius:10px;
+    top:120vh;
+    transition: 600ms;
+    padding: 20px;
+    p{
+        width: 50%;
+        margin:0px;
+        padding:5px 0px;
+        display: inline-block;
+        font-size: 13px;
+    }
+}
+ion-header{
+    ion-icon{
+        padding-right: 10px;
+        font-size: 26px;
+        color: #929da7;
+    }
 }

@@ -4,7 +4,7 @@
     --ion-background-color: linear-gradient(0deg,  rgb(33, 182, 202) 0%, rgb(48, 111, 170) 40%,  rgb(17, 31, 45)85%) !important;
       margin-top: 0 !important; // for ios 11.1
       margin-top: 0 !important;  // for ios 11.2 and onwards
-      margin-bottom: env(safe-area-inset-bottom);
+    //   margin-bottom: env(safe-area-inset-bottom);
   }
 .swiper-slide {
     display: block;

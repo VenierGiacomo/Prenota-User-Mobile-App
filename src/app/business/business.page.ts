@@ -7,10 +7,11 @@ import { Router } from '@angular/router';
 import { NativeApiService } from '../services/nativeapi.service';
 import { ApiService } from '../services/api.service';
 import { RegisterPage } from '../register/register.page';
-import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
 import { combineLatest } from 'rxjs';
 import { CodeNode } from 'source-list-map';
-import { SafariViewController } from '@ionic-native/safari-view-controller/ngx';
+import { Plugins } from '@capacitor/core';
+const { Browser } = Plugins;
+
 @Component({
   selector: 'app-business',
   templateUrl: './business.page.html',
@@ -81,7 +82,7 @@ export class BusinessPage implements OnInit {
   empl_for_service =[]
   place_holder
   address
-  constructor(private route: Router, private safariViewController: SafariViewController, private localNotifications: LocalNotifications, private apiNative:NativeApiService, private plt: Platform,private api: ApiService, private nav: NavController, private storage: StorageService, public modalController: ModalController, private pickerController: PickerController,) {}
+  constructor(private route: Router,  private apiNative:NativeApiService, private plt: Platform,private api: ApiService, private nav: NavController, private storage: StorageService, public modalController: ModalController, private pickerController: PickerController,) {}
 // private apiNative: NativeApiService,
   async ngOnInit() {
     this.spin='block'
@@ -1258,19 +1259,19 @@ async book(){
               day = this.months_days[this.month-1]
               month=month-1
           }
-          this.localNotifications.schedule({
-            text: `Ricordati il tuo appuntamento presso ${this.name}.\n${this.total_service.name} il ${this.today} alle ${this.timeslot}`,
-            trigger: {at: new Date(this.year, month, day, 11)},
-            led: 'FF0000',
-            sound: null
-          });
+        //   this.localNotifications.schedule({
+        //     text: `Ricordati il tuo appuntamento presso ${this.name}.\n${this.total_service.name} il ${this.today} alle ${this.timeslot}`,
+        //     trigger: {at: new Date(this.year, month, day, 11)},
+        //     led: 'FF0000',
+        //     sound: null
+        //   });
           
-          this.localNotifications.schedule({
-          text: `Ricordati il tuo appuntamento presso ${this.name}.\n${this.total_service.name} oggi alle ${this.timeslot}`,
-          trigger: {at: new Date(this.year, this.month, this.day, x[0]-2)},
-          led: 'FF0000',
-          sound: null
-        });
+        //   this.localNotifications.schedule({
+        //   text: `Ricordati il tuo appuntamento presso ${this.name}.\n${this.total_service.name} oggi alle ${this.timeslot}`,
+        //   trigger: {at: new Date(this.year, this.month, this.day, x[0]-2)},
+        //   led: 'FF0000',
+        //   sound: null
+        // });
           }).catch(
           err=>{
             Notiflix.Report.Failure("Errore, prenotazione fallita", 'Controlla la tua connessione o prova a cambiare orario', 'Annulla');
@@ -1358,19 +1359,19 @@ async book(){
             day = this.months_days[this.month-1]
             month=month-1
         }
-        this.localNotifications.schedule({
-          text: `Ricordati il tuo appuntamento presso ${this.name}.\n${this.total_service.name} il ${this.today} alle ${this.timeslot}`,
-          trigger: {at: new Date(this.year, month, day, 11)},
-          led: 'FF0000',
-          sound: null
-        });
+      //   this.localNotifications.schedule({
+      //     text: `Ricordati il tuo appuntamento presso ${this.name}.\n${this.total_service.name} il ${this.today} alle ${this.timeslot}`,
+      //     trigger: {at: new Date(this.year, month, day, 11)},
+      //     led: 'FF0000',
+      //     sound: null
+      //   });
         
-        this.localNotifications.schedule({
-        text: `Ricordati il tuo appuntamento presso ${this.name}.\n${this.total_service.name} oggi alle ${this.timeslot}`,
-        trigger: {at: new Date(this.year, this.month, this.day, x[0]-2)},
-        led: 'FF0000',
-        sound: null
-      });
+      //   this.localNotifications.schedule({
+      //   text: `Ricordati il tuo appuntamento presso ${this.name}.\n${this.total_service.name} oggi alle ${this.timeslot}`,
+      //   trigger: {at: new Date(this.year, this.month, this.day, x[0]-2)},
+      //   led: 'FF0000',
+      //   sound: null
+      // });
         }).catch(
         err=>{
           Notiflix.Report.Failure("Errore, prenotazione fallita", 'Controlla la tua connessione o prova a cambiare orario', 'Annulla');
@@ -1461,29 +1462,7 @@ async presentRegisterModal() {
  
 }
 async infoModal() {
-  this.safariViewController.isAvailable()
-  .then((available: boolean) => {
-      if (available) {
-        this.safariViewController.show({
-          url: this.website,
-          hidden: false,
-          animated: true,
-          transition: 'curl',
-          enterReaderModeIfAvailable: false,
-          // tintColor: '#0061d5'
-        })
-        .subscribe((result: any) => {
-           
-          },
-          (error: any) => console.error(error)
-        );
-
-      } else {
-        console.log('no available')
-        window.open(this.website,'_blank')
-      }
-    }
-  );
+  await Browser.open({ url: this.website })
 }
 logScrolling(ev){
   if (ev.detail.scrollTop>100){
@@ -1492,8 +1471,5 @@ this.text_c='#fff'
     this.text_c='#0061d5'
   }
 }
-async pay(){
-  // await this.closeModal()
-  await this.nav.navigateRoot('/payments')
-}
+
 }

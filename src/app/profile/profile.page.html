@@ -1,0 +1,41 @@
+<ion-header class="ion-no-border bar-header">
+  <ion-toolbar style=" background: transparent !important;">
+      <ion-icon slot="end" name="close-outline"  (click)='closeModal(false)'></ion-icon>
+  </ion-toolbar>
+</ion-header>
+
+
+<ion-content >
+<h1>I tuoi dati</h1>
+ <div class="input-cont">
+    <ion-item lines='none' >
+ <ion-label position="stacked">Nome</ion-label>
+  <ion-input [(ngModel)]='first_name' type="text" name="first_name" placeholder="{{first_name_err}}"></ion-input>
+  <!-- <p *ngIf='first_name_err!=""'>{{first_name_err}}</p> -->
+</ion-item>
+<ion-item lines='none' >
+  <ion-label position="stacked">Cognome</ion-label>
+  <ion-input [(ngModel)]='last_name' type="text" name="last_name" placeholder="{{last_name_err}}"></ion-input>
+  <!-- <p *ngIf='last_name_err!=""'>{{last_name_err}}</p> -->
+</ion-item>
+<ion-item lines='none' >
+  <ion-label position="stacked">Email</ion-label>
+  <ion-input [(ngModel)]='email' type="email" name="email" placeholder="{{email_err}}"></ion-input>
+  <!-- <p *ngIf='email_err!=""'>{{email_err}}</p> -->
+</ion-item>
+<ion-item lines='none' >
+    <ion-label position="stacked">Cellulare</ion-label>
+    <ion-input inputmode="tel" type="tel" [(ngModel)]='phone' placeholder="{{phone_err}}"></ion-input>
+    <!-- <p *ngIf='phone_err!=""'>{{phone_err}}</p> -->
+  </ion-item>
+<!-- <ion-item lines='none' lines=none>
+    <ion-label style="text-align: right; margin: 0px;">Uomo</ion-label>
+    <ion-toggle (click)='switchSex()'></ion-toggle>
+    <ion-label style="text-align: left;margin: 0px;">Donna</ion-label>
+  </ion-item> -->
+  <p class='err' *ngIf='error!=""' >{{error}}</p>  
+  <div class="login-btn">
+    <ion-button fill=outline color='light' (click)='register()'>Salva modifche</ion-button>
+  </div> 
+ </div>
+</ion-content>

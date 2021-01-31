@@ -289,6 +289,16 @@ getStores1(){
 getStoresDetails(id){
   return this.http.get(BASE_URL+'store/id/'+id,{headers: this.httpheader})
 }
+
+payBusiness(list_ids){
+    return this.http.post(BASE_URL+'webhooks/pay/business/', {list_ids:list_ids},{headers: this.newheader()})
+}
+
+paymentMethods(){
+  return this.http.post(BASE_URL+'webhooks/payment_methods/', {},{headers: this.newheader()})
+}
+
+
 stripeBusTicket(service,logged){
   if(logged){
     return this.http.post(BASE_URL+'webhooks/ticket', {services:service},{headers: this.newheader()})

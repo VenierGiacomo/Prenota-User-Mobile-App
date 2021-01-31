@@ -1,14 +1,9 @@
 .ios.platform-mobile ion-menu.menu-enabled, .ios.platform-mobile ion-menu.menu-enabled, .ios.platform-mobile ion-modal.show-page{
-      margin-top: constant(safe-area-inset-top); // for ios 11.1
-      margin-top: env(safe-area-inset-top); // for ios 11.2 and onwards
-      margin-bottom: env(safe-area-inset-bottom);
-      height: calc(100% - constant(safe-area-inset-top));
-      height: calc(100% - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+    //   margin-top: constant(safe-area-inset-top); // for ios 11.1
+    //   margin-top: env(safe-area-inset-top); // for ios 11.2 and onwards
+    //   margin-bottom: env(safe-area-inset-bottom);
+    //   height: calc(100% - constant(safe-area-inset-top));
+    //   height: calc(100% - env(safe-area-inset-top) - env(safe-area-inset-bottom));
   }
 
-  .crisp-client .crisp-1rjpbb7[data-full-view=true] .crisp-1rf4xdh .crisp-ewasyx {
-    height: calc(100vh - 50px) !important;
-  }
-  .braintree-option__card{
-    display: none !important;
- }
+ 

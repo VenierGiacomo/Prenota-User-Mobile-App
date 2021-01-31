@@ -46,7 +46,11 @@ body{
     color: #0061d5 ;
     font-family:  'Open Sans', sans-serif !important;
 }
-
+// body{
+//   margin-bottom: constant(safe-area-inset-bottom);
+//   margin-bottom: env(safe-area-inset-bottom);
+ 
+// }
 ion-content{
   width: 100vw;
   font-family:  'Open Sans', sans-serif !important;
@@ -86,8 +90,19 @@ html{
   .ticket-modal{
     background: transparent;
     .modal-wrapper { border-top-left-radius: 15px; border-top-right-radius: 15px;}
-    padding-top:50vh!important;
+    padding-top:calc(100vh - 380px)
     
+  }
+  .pay-customer-modal{
+    background: transparent;
+    .modal-wrapper { border-top-left-radius: 15px; border-top-right-radius: 15px;}
+    padding-top:calc(100vh - 300px)
+    
+  }
+.not-modal{
+    background: transparent;
+    .modal-wrapper { border-radius: 15px; }
+    padding:15vh 5vw!important;
   }
   ion-title {
     color:#0061d5;
@@ -110,10 +125,22 @@ html{
    text-align: center!important;
  }
 
- .toast-class-ligth{
+ .toast-closed-class{
+  --background: #c23535;
+  --color:white;
+  font-size: 13px!important;
+  font-weight: 500!important;
+   text-align: center!important;
+ }
+
+ .light-toast-class{
   --background: white;
   --color:#424242;
   font-size: 15px!important;
   font-weight: 500!important;
    text-align: center !important;
+ }
+
+ .card-action-class .action-sheet-button-inner{
+    font-size: 13px;
  }

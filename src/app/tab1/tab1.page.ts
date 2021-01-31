@@ -1,12 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { ModalController, Platform, NavController, ActionSheetController } from '@ionic/angular';
-import { BookModalPage } from '../book-modal/book-modal.page';
+import { ModalController, Platform, NavController, ActionSheetController, ToastController } from '@ionic/angular';
 import Notiflix from "notiflix";
 import { ApiService } from '../services/api.service';
 import { NativeApiService } from '../services/nativeapi.service';
 import { StorageService } from '../services/storage.service';
-import { SafariViewController } from '@ionic-native/safari-view-controller/ngx';
-import { CodePush} from '@ionic-native/code-push/ngx';
+import { BookModalPage } from '../book-modal/book-modal.page';
 @Component({
   selector: 'app-tab1',
   templateUrl: 'tab1.page.html',
@@ -19,15 +17,22 @@ capelli:any=[]
 grouped:any=[]
 spin='block'
 initialoffsetTop
-  constructor(public actionSheetController: ActionSheetController, private nav: NavController , private codePush: CodePush, private safariViewController: SafariViewController, private storage: StorageService, public modalController: ModalController,private api:ApiService, private plt:Platform,private apiNative:NativeApiService) {
+  constructor(private toastController: ToastController,public actionSheetController: ActionSheetController, private nav: NavController ,  private storage: StorageService, public modalController: ModalController,private api:ApiService, private plt:Platform,private apiNative:NativeApiService) {
     this.plt.ready().then(
       () =>{
         if (this.plt.is('hybrid')) {
-          this.apiNative.getStores().then(data=>{
+          this.apiNative.getStores().then(async data=>{
             var shops:any =data
             this.storage.setShops(shops)
             this.shops = data
             this.spin='none'
+            var token = await this.apiNative.isvalidToken()
+            if(token){
+            this.apiNative.paymentMethods().then(async (res)=>{
+              await this.storage.clearPaymentMethods()
+                await this.storage.setPaymentMethods(res)
+            })
+          }
                     }).catch(err=>{
                       this.spin='none'
                       Notiflix.Report.Warning("Problemi di rete", 'Verifica che la tua connessione funzioni o riprova più tardi', 'OK');
@@ -42,6 +47,13 @@ initialoffsetTop
           
             this.shops = data
             this.spin='none'
+            if(this.api.isvalidToken()){
+            this.api.paymentMethods().subscribe(async (res)=>{
+              await this.storage.clearPaymentMethods()
+              await this.storage.setPaymentMethods(res)
+            },(err)=>{
+              console.log(err)
+            })}
                     },err=>{
                       this.spin='none'
                       Notiflix.Report.Warning("Problemi di rete", 'Verifica che la tua connessione funzioni o riprova più tardi', 'OK');
@@ -54,54 +66,31 @@ initialoffsetTop
  
   ngOnInit() {
   }
-  // safari(){
-  //   this.safariViewController.isAvailable()
-  // .then((available: boolean) => {
-  //     if (available) {
-
-  //       this.safariViewController.show({
-  //         url: 'http://ionic.io',
-  //         hidden: false,
-  //         animated: false,
-  //         transition: 'curl',
-  //         enterReaderModeIfAvailable: true,
-  //         tintColor: '#ff0000'
-  //       })
-  //       .subscribe((result: any) => {
-  //           if(result.event === 'opened') console.log('Opened');
-  //           else if(result.event === 'loaded') console.log('Loaded');
-  //           else if(result.event === 'closed') console.log('Closed');
-  //         },
-  //         (error: any) => console.error(error)
-  //       );
-
-  //     } else {
-  //       console.log('no available')
-  //     }
-  //   }
-  // );
-  // }
+  
   async presentModal(shop) {
+    if(shop.closed){
+      this.presentclosed(shop.closed_message)
+    }else{
+      const modal = await this.modalController.create({
+        component:BookModalPage,
+        swipeToClose: true,
+        cssClass: 'select-modal' ,
+        componentProps: {
+          image:  shop.img_url,
+          name: shop.store_name,
+          role: shop.business_description,
+          id: shop.id,
+          max_spots: shop.max_spots,
+          website: shop.website,
+          address: shop.address,
+          payable: shop.payable
+        }
+      });
+      return await modal.present();
+    }
     
-    const modal = await this.modalController.create({
-      component:BookModalPage,
-      swipeToClose: true,
-      cssClass: 'select-modal' ,
-      componentProps: {
-        image:  shop.img_url,
-        name: shop.store_name,
-        role: shop.business_description,
-        id: shop.id,
-        max_spots: shop.max_spots,
-        website: shop.website,
-        address: shop.address
-      }
-    });
-    return await modal.present();
   }
-  gopay(){
-    this.nav.navigateRoot('/payments') 
-  }
+
   openList(){
   var list = document.getElementById('multi-profile')
   window.scrollTo(0, 0);
@@ -122,9 +111,23 @@ initialoffsetTop
  async  navBusiness(store){
     await this.nav.navigateForward('business/'+store.id)
   }
+
+  async presentclosed(message){
+    const toast = await this.toastController.create({
+      message: message,
+      position: 'top',
+      duration: 3500,
+      cssClass:'toast-closed-class',
+    });
+    toast.present();
+  }
   async assistenzaActionSheet() {
+
+    
+
     const actionSheet = await this.actionSheetController.create({
       header: 'Assistenza',
+      
       buttons: [{
         text: 'Email',
         // icon: 'share',
@@ -151,4 +154,7 @@ initialoffsetTop
     });
     await actionSheet.present();
   }
+
+
+  
 }

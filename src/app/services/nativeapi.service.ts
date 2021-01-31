@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { Observable, of, throwError } from 'rxjs';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { HTTP, HTTPResponse } from '@ionic-native/http/ngx';
 import { Storage } from '@ionic/storage';
-import { reject } from 'q';
+import { Plugins } from '@capacitor/core';
+import { Platform } from '@ionic/angular';
+
+const { Http } = Plugins;
 
 const BASE_URL = 'https://giacomovenier.pythonanywhere.com/api/'
 // const BASE_URL = 'http://127.0.0.1:8000/api/'
@@ -13,16 +13,25 @@ const BASE_URL = 'https://giacomovenier.pythonanywhere.com/api/'
 })
 export class NativeApiService {
 
-httpheader = new HttpHeaders({'Content-type':'application/json'}) //'Access-Control-Allow-Origin':'*'
+simple_header= {
+  "Accept": 'application/json',
+  'Content-Type': 'application/json'
+}
+token_header
 res:any
 mailApi = 'https://mailthis.to/giacomo'
-constructor(private http: HttpClient, private HTTP: HTTP, private storage: Storage) {}
-//Should be in store but import problems
- async newheader(){
-  var token = await this.getToken()
-  var authheader = new HttpHeaders({"Content-type":"application/json","Authorization":"JWT "+ token})
- return authheader
+constructor(private plt: Platform,  private storage: Storage) {
+  this.plt.ready().then(async ()=>{
+    let token 
+    token = await this.getToken()    
+    this.token_header= {
+      "Accept": 'application/json',
+      'Content-Type': 'application/json',
+      'Authorization':'JWT '+ token 
+    }
+  })
 }
+
 deleteStorage(){
   this.storage.clear()
 }
@@ -48,6 +57,23 @@ storeToken(token){
     "last_resfresh":  +new Date()
   }
   this.storage.set('token', JSON.stringify(data))
+}
+storeUserData(user){
+
+  this.storage.set('user', JSON.stringify(user))
+}
+async getUserData(){
+  return new Promise(resolve => {
+    this.storage.get('user').then(data => {
+      var res:any  =JSON.parse(data)
+     if( data==null){
+       resolve(false)
+      }else{
+        resolve(res)}
+    }).catch(err=>{
+      console.log('empty',err)});    
+  })  
+
 }
 async getToken(){
   return new Promise(resolve => {
@@ -82,23 +108,16 @@ async getToken(){
 //   });
 // }
 
-login(email, password){
+async login(params){
   let url = BASE_URL+'auth/';
-      let params = {
-        "email": email,
-        "password": password,
-      }
-      let headers = { };
-      this.HTTP.setDataSerializer("json");
-      this.HTTP.setHeader("prenotaApp","Accept", "application/json");
-      this.HTTP.setHeader("prenotaApp","Content-Type", "application/json");
-      this.HTTP.post(url, params, headers)
-  .then((response:HTTPResponse) => {
-    this.storeToken(response.data.token)
-  })
-  .catch((error:any) => {
-    console.error(`POST ${url} ${error.error}`)
-  });
+  let res = await  this.postData(url,params,this.simple_header)
+  this.token_header= {
+    "Accept": 'application/json',
+    'Content-Type': 'application/json',
+    'Authorization':'JWT '+ res.token 
+  }
+  await this.storeToken(res.token)
+  return res
 }
 async register(first_name, last_name, email, sex,  phone, password){
   let url = BASE_URL+'auth/register/';
@@ -110,128 +129,75 @@ async register(first_name, last_name, email, sex,  phone, password){
         "phone": phone,
         "password": password,
       }
-
-      this.HTTP.setDataSerializer("json");
-      let headers = { };
-      this.HTTP.setHeader("prenotaApp","Accept", "application/json");
-      this.HTTP.setHeader("prenotaApp","Content-Type", "application/json");
-      let responseData = await this.HTTP.post(url,params,headers).then(resp => {return JSON.parse(resp.data)}).catch(err => {return err});
-      var c:any = responseData
-      this.storeToken(c.token)
-      return responseData;
+      let res = await  this.postData(url,params,this.simple_header)
+      this.token_header= {
+        "Accept": 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization':'JWT '+ res.token 
+      }
+      await this.storeToken(res.token)
+      
+      await this.storeUserData(res)
+      return res
 }
 async getemployeeHours(id){
       var url = BASE_URL+'employeehours/?employee='+id
-      this.HTTP.setHeader('*',"Accept", 'application/json');
-      this.HTTP.setHeader('*','Content-Type', 'application/json');
-      var headers_t = this.HTTP.getHeaders("*")
-     let responseData = await this.HTTP.get(url,{},headers_t).then(resp => {return JSON.parse(resp.data)}).catch(err => {return err});
-     return responseData;
+      return  await  this.getData(url,this.simple_header)
 }
 async getemployeeHoursByShop(id){
   var url = BASE_URL+'employeehours/shop/?shop='+id;
-      this.HTTP.setHeader('*',"Accept", 'application/json');
-      this.HTTP.setHeader('*','Content-Type', 'application/json');
-      var headers_t = this.HTTP.getHeaders("*")
-     let responseData = await this.HTTP.get(url,{},headers_t).then(resp => {return JSON.parse(resp.data)}).catch(err => {return err});
-     return responseData;
+  return  await  this.getData(url,this.simple_header)
 }
 
 async getEmployees(){
   let url = BASE_URL+'employees/'
-  let token 
-  token = await this.getToken()
-  this.HTTP.setHeader('*','Content-Type', 'application/json');
-  this.HTTP.setHeader('*','Authorization','JWT '+ token );
-  var headers_t = this.HTTP.getHeaders("*")
-  let responseData = await this.HTTP.get(url, {},headers_t).then(resp => {return JSON.parse(resp.data)}).catch(err => {return err});
-  return responseData;
+  return  await  this.getData(url,this.token_header)
 }
 
 async bookAppointment(start, end, day, month, year,name, details, employee, service){
   var week = this.getWeekNumber(new Date(year, month, day))
   var data = {'start': start , 'end': end, 'day': day, 'week':week, 'month':month, 'year' : year, 'employee': employee,  'client_name' :name, 'details': details, 'service_n': service}
   let url = BASE_URL+'bookings/'
-  let token 
-  token = await this.getToken()
-  this.HTTP.setDataSerializer("json");
-  this.HTTP.setHeader('*',"Accept", 'application/json');
-  this.HTTP.setHeader('*','Content-Type', 'application/json');
-  this.HTTP.setHeader('*','Authorization','JWT '+ token );
-  var headers_t = this.HTTP.getHeaders("*")
-  let responseData = await this.HTTP.post(url, data, headers_t).then(resp => {return JSON.parse(resp.data)}).catch(err => {return err});
-  return responseData;
+  return await this.postData(url,data,this.token_header)
+
 }
 async bookAppointmentNoOwner(start, end, day, month, year,name, phone, details, employee, service, shop){
   var week = this.getWeekNumber(new Date(year, month, day))
   var data = {'start': start , 'end': end, 'day': day, 'week':week, 'month':month, 'year' : year, 'employee': employee,  'client_name' :name, 'phone': phone, 'details': details, 'service_n': service, 'shop':shop}
   let url = BASE_URL+'bookings/'
-  let token 
-  token = await this.getToken()
-  this.HTTP.setDataSerializer("json");
-  this.HTTP.setHeader('*',"Accept", 'application/json');
-  this.HTTP.setHeader('*','Content-Type', 'application/json');
-  this.HTTP.setHeader('*','Authorization','JWT '+ token );
-  var headers_t = this.HTTP.getHeaders("*")
-  let responseData = await this.HTTP.post(url, data, headers_t).then(resp => {return JSON.parse(resp.data)}).catch(err => {return err});
-  return responseData;
+  return  await  this.postData(url,data,this.token_header)
 }
 
  async getAppointments(week){
   let url = BASE_URL+'bookings/week/'+week+'/'
-  this.HTTP.setHeader('*',"Accept", 'application/json');
-  this.HTTP.setHeader('*','Content-Type', 'application/json');
-  var headers_t = this.HTTP.getHeaders("*")
-  let responseData = await this.HTTP.get(url, {},headers_t).then(resp => {return JSON.parse(resp.data)}).catch(err => {return err.error});
-  return responseData;
+  return  await  this.getData(url,this.simple_header)
 }
+
 async getAppointmentsByshop(week,id){
   let url = BASE_URL+'bookings/week/'+week+'/shop/?shop='+id;
-  this.HTTP.setHeader('*',"Accept", 'application/json');
-  this.HTTP.setHeader('*','Content-Type', 'application/json');
-  var headers_t = this.HTTP.getHeaders("*")
-  let responseData = await this.HTTP.get(url, {},headers_t).then(resp => {return JSON.parse(resp.data)}).catch(err => {return err.error});
-  return responseData;
+  return  await  this.getData(url,this.simple_header)
 }
+
 async getAppointmentsByshop2(week,id){
   let url = BASE_URL+'bookings/week/'+week+'/2shop/?shop='+id;
-  this.HTTP.setHeader('*',"Accept", 'application/json');
-  this.HTTP.setHeader('*','Content-Type', 'application/json');
-  var headers_t = this.HTTP.getHeaders("*")
-  let responseData = await this.HTTP.get(url, {},headers_t).then(resp => {return JSON.parse(resp.data)}).catch(err => {return err.error});
-  return responseData;
+  return  await  this.getData(url,this.simple_header)
 }
+
 async getAppointmentsByshop5(week,id){
+  
   let url = BASE_URL+'bookings/week/'+week+'/5shop/?shop='+id;
-  this.HTTP.setHeader('*',"Accept", 'application/json');
-  this.HTTP.setHeader('*','Content-Type', 'application/json');
-  var headers_t = this.HTTP.getHeaders("*")
-  let responseData = await this.HTTP.get(url, {},headers_t).then(resp => {return JSON.parse(resp.data)}).catch(err => {return err.error});
-  return responseData;
+  return  await  this.getData(url,this.simple_header)
+
 }
 async stripeBusTicket(service,logged){
   let url = BASE_URL+'webhooks/ticket';
-  let headers = { };
-  let params = {
-    "services": service,
-  }
-  this.HTTP.setDataSerializer("json");
-  this.HTTP.setHeader('*',"Accept", 'application/json');
-  this.HTTP.setHeader('*','Content-Type', 'application/json');
+  let params = {"services": service}
   if(logged){
-    let token 
-    token = await this.getToken()
-    this.HTTP.setHeader('*','Authorization','JWT '+ token );
-    var headers_t = this.HTTP.getHeaders("*")
-    let responseData = this.HTTP.post(url,params,headers_t).then(async resp => {return JSON.parse(await resp.data)}).catch(async  err => {return await err});
-      return responseData;
+    return  await  this.postData(url,params,this.token_header)
   }else{
-    var headers_t = this.HTTP.getHeaders("*")
-    let responseData = await this.HTTP.post(url,params,headers_t).then(async resp => {return JSON.parse(await resp.data)}).catch(async  err => {return await err});
-    return responseData;
+    return  await  this.postData(url,params,this.simple_header)
   }
 }
-
 
 async getClientAppointments(){
   var l
@@ -239,14 +205,7 @@ async getClientAppointments(){
   token = await this.getToken()
   l = this.parseJwt(token) 
   let url = BASE_URL+'bookings/user/?user='+l.user_id
-  this.HTTP.setDataSerializer("json");
-  this.HTTP.setHeader('*',"Accept", 'application/json');
-  this.HTTP.setHeader('*','Content-Type', 'application/json');
-  this.HTTP.setHeader('*','Authorization','JWT '+ token );
-  var headers_t = this.HTTP.getHeaders("*")
-  let responseData = await this.HTTP.get(url, {},headers_t).then(resp => {return JSON.parse(resp.data)}).catch(err => {return err.error});
-  return responseData;
-  // throw throwError("error"); 
+  return  await  this.getData(url,this.token_header)
 }
 async getClientAppointmentsweek(week, year){
   var l
@@ -254,67 +213,41 @@ async getClientAppointmentsweek(week, year){
   token = await this.getToken()
   l = this.parseJwt(token) 
   let url = BASE_URL+'bookings/user/week/'+week+'/?user='+l.user_id+'&year='+year
-  this.HTTP.setDataSerializer("json");
-  this.HTTP.setHeader('*',"Accept", 'application/json');
-  this.HTTP.setHeader('*','Content-Type', 'application/json');
-  this.HTTP.setHeader('*','Authorization','JWT '+ token );
-  var headers_t = this.HTTP.getHeaders("*")
-  let responseData = await this.HTTP.get(url, {},headers_t).then(resp => {return JSON.parse(resp.data)}).catch(err => {return err.error});
-  return responseData;
+  return  await  this.getData(url,this.token_header)
+
 }
 
 async deleteAppointment(id){
   let url = BASE_URL+'bookings/'+id+'/'
-  let token 
-  token = await this.getToken()
-  this.HTTP.setDataSerializer("json");
-  this.HTTP.setHeader('*',"Accept", 'application/json');
-  this.HTTP.setHeader('*','Content-Type', 'application/json');
-  this.HTTP.setHeader('*','Authorization','JWT '+ token );
-  var headers_t = this.HTTP.getHeaders("*")
-  let responseData = await this.HTTP.delete(url, {},headers_t).then(resp => {return JSON.parse(resp.data)}).catch(err => {return err});
-  return responseData;
+  return  await  this.deleteData(url,this.token_header)
 }
 
 async getStoreservice(id){
   let url = BASE_URL+'services/?owner='+id
-  this.HTTP.setHeader('*',"Accept", 'application/json');
-  this.HTTP.setHeader('*','Content-Type', 'application/json');
-  var headers_t = this.HTTP.getHeaders("*")
-  let responseData = await this.HTTP.get(url, {},headers_t).then(resp => {return JSON.parse(resp.data)}).catch(err => {return err});
-  return responseData;
-  }
+  return  await  this.getData(url,this.simple_header)
+}
+
 async getStoreservicebyStore(id){
   let url = BASE_URL+'services/byshop/?shop='+id
-  this.HTTP.setHeader('*',"Accept", 'application/json');
-  this.HTTP.setHeader('*','Content-Type', 'application/json');
-  var headers_t = this.HTTP.getHeaders("*")
-  let responseData = await this.HTTP.get(url, {},headers_t).then(resp => {return JSON.parse(resp.data)}).catch(err => {return err});
-  return responseData;
+  return  await  this.getData(url,this.simple_header)
+}
+async getUser(){
+  const token = await this.getToken()
+  var l 
+  if (token) {
+      l = await this.parseJwt(token) 
   }
-  async getUser(){
-    const token = await this.getToken()
-    var l 
-    if (token) {
-       l = await this.parseJwt(token) 
-        this.HTTP.setHeader('*','Content-Type', 'application/json');
-        this.HTTP.setHeader('*','Authorization','JWT '+ token );
-        var headers_t = this.HTTP.getHeaders("*")
-        let responseData = await  this.HTTP.get(BASE_URL+'auth/'+l.user_id,{},headers_t).then(resp => {return JSON.parse(resp.data)}).catch(err => {return err});
-        return responseData
-    }else{
-      throw throwError("error");  
-    }
-   
-  }
+  let url = BASE_URL+'auth/'+l.user_id
+  var res = await  this.getData(url,this.token_header)
+  await this.storeUserData(res) 
+  return res
+}
+
 async getEmploservicebyStore(id){
   let url = BASE_URL+'employee/services/store/?store='+id
-  this.HTTP.setHeader('*',"Accept", 'application/json');
-  this.HTTP.setHeader('*','Content-Type', 'application/json');
-  var headers_t = this.HTTP.getHeaders("*")
-  let responseData = await this.HTTP.get(url,{},headers_t).then(resp => {return JSON.parse(resp.data)}).catch(err => {return err});
-  return responseData;
-  }
+  return  await  this.getData(url,this.simple_header)
+}
+
 getWeekNumber(d) {
   // Copy date so don't modify original
   d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
@@ -335,9 +268,10 @@ parseJwt = (token) => {
   } catch (e) {
   return null;
   }
-  };
-  async emailConfirmBooking(email,name,surname,day,month,year,time,service,shop){
-    const token = await this.getToken()
+};
+
+async emailConfirmBooking(email,name,surname,day,month,year,time,service,shop){
+    let url = BASE_URL+'email/bookingconfirm'
     var data ={
       "email":email,
       "name":name,
@@ -349,34 +283,57 @@ parseJwt = (token) => {
       "service":service,
       "shop":shop
     }
-    this.HTTP.setHeader('*','Content-Type', 'application/json');
-    this.HTTP.setHeader('*','Authorization','JWT '+ token );
-    var headers_t = this.HTTP.getHeaders("*")
-    let responseData = await this.HTTP.post(BASE_URL+'email/bookingconfirm', data,headers_t).then(resp => {return JSON.parse(resp.data)}).catch(err => {return err});
-    return responseData
-  }
+    return  await  this.postData(url,data,this.token_header)
+}
+
 async getStores(){
   let url = BASE_URL+'store/list'
-  this.HTTP.setHeader('*',"Accept", 'application/json');
-  this.HTTP.setHeader('*','Content-Type', 'application/json');
-  var headers_t = this.HTTP.getHeaders("*")
-  let responseData = await this.HTTP.get(url, {},headers_t).then(resp => {return JSON.parse(resp.data)}).catch(err => {return err.error});
-  return responseData
+  return  await  this.getData(url,this.simple_header)
 }
+
 async getStores1(){
   let url = BASE_URL+'store/list1'
-  this.HTTP.setHeader('*',"Accept", 'application/json');
-  this.HTTP.setHeader('*','Content-Type', 'application/json');
-  var headers_t = this.HTTP.getHeaders("*")
-  let responseData = await this.HTTP.get(url, {},headers_t).then(resp => {return JSON.parse(resp.data)}).catch(err => {return err.error});
-  return responseData
+  return  await  this.getData(url,this.simple_header)
 }
 async getEmployeesfromshop(shop){
   let url = BASE_URL+'employees/store/?shop='+shop
-  this.HTTP.setHeader('*',"Accept", 'application/json');
-  this.HTTP.setHeader('*','Content-Type', 'application/json');
-  var headers_t = this.HTTP.getHeaders("*")
-  let responseData = await this.HTTP.get(url, {},headers_t).then(resp => {return JSON.parse(resp.data)}).catch(err => {return err.error});
-  return responseData
+  return  await  this.getData(url,this.simple_header)
+}
+async payBusiness(list_ids){
+  let url = BASE_URL+'webhooks/pay/business/'
+  var data = {list_ids:list_ids}
+  return await  this.postData(url,data,this.token_header)
+}
+
+async paymentMethods(){
+  let url = BASE_URL+'webhooks/payment_methods/'
+  return await  this.postData(url,{},this.token_header)
+}
+
+
+async getData(url,headers){
+  let res = await Http.request({
+    method: 'GET',
+    url: url,
+    headers: headers
+  })
+  return res.data
+}
+async postData(url,data,headers){
+  let res = await Http.request({
+    method: 'POST',
+    url: url,
+    headers: headers,
+    data: data
+  })
+  return res.data
+}
+async deleteData(url,headers){
+  let res = await Http.request({
+    method: 'DELETE',
+    url: url,
+    headers: headers
+  })
+  return res.data
 }
   }
