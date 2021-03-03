@@ -1,24 +1,35 @@
 
 
-<ion-content>
+<ion-content scrollY='false'>
   <div class="book-int" [style.left]='potions_pos'> 
     <!-- <h3>Cancella prenotazione:</h3> -->
-    <p ><b>Servizio:</b> <span style="text-transform: capitalize;"> {{appointment.details}}</span><br>
+    <p id='cont'><b>Servizio:</b> <span style="text-transform: capitalize;"> {{appointment.details}}</span><br>
     <b>Data:</b> {{appointment.day}} {{months_names[appointment.month]}} {{appointment.year}} ore {{rows[appointment.start]}} <br>
     <b>Presso:</b> {{appointment.store_name}}</p>
     <div class="white_btn " (click)='openMap()' > <button><span > <ion-icon name="navigate-outline"></ion-icon> &nbsp; Mappa</span> </button></div>
+    <div class="note_btn " (click)='goNote()' > <button><span > <ion-icon name="document-text-outline"></ion-icon> &nbsp; {{button_text}}</span> </button></div>
     <div class="delete_btn " (click)='goDelete()' > <button><span > <ion-icon name="trash-outline"></ion-icon> &nbsp; Cancella</span> </button></div>
       <!-- <div class="loader-5 center" *ngIf="book_load"><span></span></div> </button> </div> -->
     <div class="separator" >
-        <p (click)='closeModal()'>Indietro</p>
+        <p (click)='closeModal()'>Chiudi</p>
       </div>
     </div>
     <div class="book-int" [style.left]='delete_pos' > 
       <h3>Sei sicuro di voler cancellare l'appuntamento?</h3>
-      <div class="delete_btn " (click)='deleteappo()' > <button><span *ngIf="!cancel_loading"> <ion-icon name="trash-outline"></ion-icon> &nbsp; Cancella</span> <div class="loader-5 center" *ngIf="cancel_loading"><span></span></div></button></div>
+      <div class="delete_btn " (click)='deleteappo()' > <button><span *ngIf="!_loading"> <ion-icon name="trash-outline"></ion-icon> &nbsp; Cancella</span> <div class="loader-5 center" *ngIf="_loading"><span></span></div></button></div>
         <!-- <div class="loader-5 center" *ngIf="book_load"><span></span></div> </button> </div> -->
       <div class="separator" >
-          <p (click)='closeModal()'>Indietro</p>
+          <p (click)='backToStart()'>Indietro</p>
         </div>
       </div>
+      <div class="book-int" [style.left]='note_pos' > 
+        <h3>Se devi darci qualche altra informazione aggiungila qui</h3>
+        
+          <ion-textarea placeholder="Inserisci qui la tua nota..." [(ngModel)]='note'></ion-textarea>
+        <div class="note_btn " (click)='setNote()' > <button><span *ngIf="!_loading"> <ion-icon name="document-text-outline"></ion-icon> &nbsp; {{button_text}}</span> <div class="loader-5 center" *ngIf="_loading"><span></span></div></button></div>
+          <!-- <div class="loader-5 center" *ngIf="book_load"><span></span></div> </button> </div> -->
+        <div class="separator" >
+            <p (click)='backToStart()'>Indietro</p>
+          </div>
+        </div>
 </ion-content>

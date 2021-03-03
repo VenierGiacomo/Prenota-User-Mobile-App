@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { ModalController, Platform, NavController, ToastController, AlertController, ActionSheetController } from '@ionic/angular';
+import { ModalController, Platform, NavController, ToastController, AlertController, ActionSheetController, PopoverController } from '@ionic/angular';
 import { Plugins } from '@capacitor/core';
 import '@capacitor-community/stripe'; 
 import { StripePlugin, GooglePayPriceStatus, GooglePayAuthMethod } from '@capacitor-community/stripe';
@@ -8,7 +8,8 @@ import Notiflix from "notiflix";
 import { NativeApiService } from '../services/nativeapi.service';
 import { ApiService } from '../services/api.service';
 import { StorageService } from '../services/storage.service';
-
+import { PopoverComponent } from '../popover/popover.component';
+const { LocalNotifications } = Plugins;
 @Component({
   selector: 'app-pay-modal',
   templateUrl: './pay-modal.page.html',
@@ -31,15 +32,22 @@ export class PayModalPage implements OnInit {
   disabled_back=false
   fast_pay=false
   book_load=false
+  credit_pay=false
   @Input() total_service
   @Input() today
   @Input() timeslot
   @Input() homeref
-payment_methods
-  constructor(private storage: StorageService ,public actionSheetController: ActionSheetController, private apiNative:NativeApiService,private api: ApiService,private nav: NavController,private plt: Platform, private modalController: ModalController,private toastController:ToastController,) {
+  @Input() adons_list
+  payment_methods
+  height
+  elmnt = 80
+  payment_credit_loading
+  height_interval
+  constructor(private popoverController: PopoverController,private storage: StorageService ,public actionSheetController: ActionSheetController, private apiNative:NativeApiService,private api: ApiService,private nav: NavController,private plt: Platform, private modalController: ModalController,private toastController:ToastController,) {
     this.plt.ready().then(async  ()=>{
       if(this.plt.is('hybrid')){
         StripeCap.setPublishableKey({ key: 'pk_live_kb4i70qfPxeWXXYfjImvx64f00Et58vNmC' })
+        // StripeCap.setPublishableKey({ key: 'pk_test_f3m2iNJqa6UdyuD9Ey8O7ZiH00eSjJ4lEt' })
         StripeCap.isApplePayAvailable().then(res=>{
          if(res.available){
            this.applePay_available=true
@@ -52,20 +60,53 @@ payment_methods
            this.fast_pay=true
          }
       })
-      }else{  
-      var height = window.innerHeight
-      var x:any = document.getElementsByClassName('pay-customer-modal')[0]
-      x.style.transition="400ms"        
-        x.style.paddingTop =`calc(${height}px - 320px)`
-      
-
       }
-     
-    await this.getCLientSecret()
+
+      if(this.adons_list.length>0){
+        var slidingTagLiAfterStyle = document.createElement("style");
+        slidingTagLiAfterStyle.id = 'style-adon'
+slidingTagLiAfterStyle.innerHTML =
+ `  .recap:after {
+  display: block;
+  background: #313131;
+  content: '';
+  height: 1px;
+  width: 82%;
+  margin: 20px auto ;
+  padding: 0;
+  }
+  `
+  document.head.appendChild(slidingTagLiAfterStyle);
+      }else{
+ var style_el = document.getElementById('style-adon')
+ if(style_el){
+  style_el.remove()
+ }
+      }
+      setTimeout(async ()=>{
+        this.height = window.innerHeight
+        var elmnt = document.getElementById("cont");
+        var padding_top = this.height - elmnt.offsetHeight - 275 - ( 52* this.adons_list.length )
+        var x:any = document.getElementsByClassName('pay-customer-modal')[0]
+        x.style.transition="400ms"     
+        x.style.paddingTop =`${padding_top}px`
+        await this.getCLientSecret()
+        },200)
+ this.height_interval =setInterval(()=>{
+  this.height = window.innerHeight
+  var elmnt = document.getElementById("cont");
+  var padding_top = this.height - elmnt.offsetHeight - 275 - ( 52* this.adons_list.length )
+  var x:any = document.getElementsByClassName('pay-customer-modal')[0]
+  x.style.transition="400ms"     
+  x.style.paddingTop =`${padding_top}px`
+},300)
+        
    })
    }
 
   ngOnInit() {
+  
+  
   }
   async getCLientSecret(){
     var x =document.getElementsByClassName("modal-shadow")
@@ -90,10 +131,24 @@ payment_methods
               amount: Number(this.homeref.to_pay)}],
           },
       }).then(()=>{
+        if(this.homeref.must_be_payed){
+          this.apiNative.booknotifications(this.homeref.appointments_id).then((res)=>{
+            console.log(res)
+          }).catch((err)=>{
+            console.log(err)
+          })
+          this.homeref.sendEmailConfirmation()
+        }
         this.book(true) 
       }).catch(()=>{
-        // await this.book(false) 
-        this.presentToast("C'è stato un problema durante il pagamento. La spesa non è stata addebitata. Puoi sempre pagare sul posto")})
+        // await this.book(false)
+        if(this.homeref.must_be_payed){
+          this.presentToast("Non siamo risuciti a terminare il pagamento. La spesa non è stata addebitata.")
+        }else{
+          this.presentToast("Non siamo risuciti a terminare il pagamento. La spesa non è stata addebitata. Puoi sempre pagare sul posto")
+        }
+      })
+       
        
       this.payment_loading=false 
       
@@ -129,6 +184,7 @@ payment_methods
           e.target.value = e.target.value.substring(0,5)
         }
       });
+      clearInterval(this.height_interval)
       await this.modalController.dismiss('not_keep');
       
     }
@@ -162,6 +218,7 @@ payment_methods
           e.target.value = e.target.value.substring(0,5)
         }
       }); 
+      clearInterval(this.height_interval)
       await this.modalController.dismiss();
       
     }
@@ -190,19 +247,45 @@ payment_methods
       this.opacity_scroll=0
       var x:any = document.getElementsByClassName('pay-customer-modal')[0]
       x.style.transition="400ms"
-      if(!this.fast_pay){
-        this.applePay_top = "-159px"
-        x.style.paddingTop ="calc(100vh - 430px)"
+      if(this.fast_pay){
+         if(this.homeref.account_credits > Number(this.homeref.to_pay)*100){ this.credit_pay=true
+          var padding_top = this.height - this.elmnt - 445
+          x.style.paddingTop =`${padding_top}px`
+          this.applePay_top = "-290px"
+        }else{
+          this.credit_pay=false
+          var padding_top = this.height - this.elmnt - 445
+          x.style.paddingTop =`${padding_top}px`
+          this.applePay_top = "-220px"
+        }
       }else{
-        this.applePay_top = "-209px"
-        x.style.paddingTop ="calc(100vh - 530px)"
+         if(this.homeref.account_credits > Number(this.homeref.to_pay)*100){ this.credit_pay=true
+          var padding_top = this.height - this.elmnt - 455
+          x.style.paddingTop =`${padding_top}px`
+          this.applePay_top = "-120px"
+        }else{
+          this.credit_pay=false
+          var padding_top = this.height - this.elmnt - 375
+          x.style.paddingTop =`${padding_top}px`
+          this.applePay_top = "-170px"
+        }
+     
+       
       }
     }
 
    async  goPay(){
+    clearInterval(this.height_interval)
     this.book_load =true
-      this.homeref.book()
+    clearInterval(this.height_interval)
+    var adons =[]
+    adons = await this.adons_list.filter((val)=>{ return val.selected})
+    adons = adons.map((val)=>{ return val.id_c})
+    
+      this.homeref.book(adons)
+
       setTimeout(async () => {
+        clearInterval(this.height_interval)
         if(this.homeref.payable){
 
     
@@ -211,13 +294,33 @@ payment_methods
           if(token){
             this.disabled_back=true      
             
-            if(!this.fast_pay){
-              var x:any = document.getElementsByClassName('pay-customer-modal')[0]
-              x.style.transition="400ms"
-              x.style.paddingTop ="calc(100vh - 240px)"
+            if(this.fast_pay){
+               if(this.homeref.account_credits > Number(this.homeref.to_pay)*100){ this.credit_pay=true
+                var padding_top = this.height - this.elmnt -295
+                var x:any = document.getElementsByClassName('pay-customer-modal')[0]
+                x.style.transition="400ms"     
+                x.style.paddingTop =`${padding_top}px`
+              }else{
+                var padding_top = this.height - this.elmnt -245
+                var x:any = document.getElementsByClassName('pay-customer-modal')[0]
+                x.style.transition="400ms"     
+                x.style.paddingTop =`${padding_top}px`
+              }
+             
             }else{
-              this.pos_book='-100vw'
-              this.pos_pay='0vw'
+              
+               if(this.homeref.account_credits > Number(this.homeref.to_pay)*100){ this.credit_pay=true
+                var padding_top = this.height - this.elmnt -245
+                var x:any = document.getElementsByClassName('pay-customer-modal')[0]
+                x.style.transition="400ms"     
+                x.style.paddingTop =`${padding_top}px`
+              }else{
+                this.credit_pay=false
+                var padding_top = this.height - this.elmnt -175
+                var x:any = document.getElementsByClassName('pay-customer-modal')[0]
+                x.style.transition="400ms"     
+                x.style.paddingTop =`${padding_top}px`
+              }
             }
             setTimeout(()=>{
               this.pos_book='-100vw'
@@ -244,19 +347,37 @@ payment_methods
                   e.target.value = e.target.value.substring(0,5)
                 }
               });
-            },600)
+            },900)
           } }else{
             var token = await this.api.isvalidToken()
             if(token){
               this.disabled_back=true      
              
-              if(!this.fast_pay){
-                var x:any = document.getElementsByClassName('pay-customer-modal')[0]
-                x.style.transition="400ms"
-                x.style.paddingTop ="calc(100vh - 240px)"
+              if(this.fast_pay){
+                 if(this.homeref.account_credits > Number(this.homeref.to_pay)*100){ this.credit_pay=true
+                  var padding_top = this.height - this.elmnt -295
+                  var x:any = document.getElementsByClassName('pay-customer-modal')[0]
+                  x.style.transition="400ms"     
+                  x.style.paddingTop =`${padding_top}px`
+                }else{
+                  this.credit_pay=false
+                  this.pos_book='-100vw'
+                  this.pos_pay='0vw'
+                }
+               
               }else{
-                this.pos_book='-100vw'
-                this.pos_pay='0vw'
+                
+                 if(this.homeref.account_credits > Number(this.homeref.to_pay)*100){ this.credit_pay=true
+                
+                  this.pos_book='-100vw'
+                  this.pos_pay='0vw'
+                }else{
+                  this.credit_pay=false
+                  var padding_top = this.height - this.elmnt -175
+                  var x:any = document.getElementsByClassName('pay-customer-modal')[0]
+                  x.style.transition="400ms"     
+                  x.style.paddingTop =`${padding_top}px`
+                }
               }
               setTimeout(()=>{
                 this.pos_book='-100vw'
@@ -283,7 +404,7 @@ payment_methods
                     e.target.value = e.target.value.substring(0,5)
                   }
                 });
-              },600)
+              },900)
             }
           }
       
@@ -291,15 +412,33 @@ payment_methods
            if(this.plt.is('hybrid')){
             var token = await this.apiNative.isvalidToken()
             if(token){
-              this.disabled_back=true      
-              if(!this.fast_pay){
-                var x:any = document.getElementsByClassName('pay-customer-modal')[0]
-                x.style.transition="400ms"
-                x.style.paddingTop ="calc(100vh - 240px)"
-              }else{
-                this.pos_book='-100vw'
-                this.pos_pay='0vw'
-              }
+              this.disabled_back=true          
+                if(this.fast_pay){
+                   if(this.homeref.account_credits > Number(this.homeref.to_pay)*100){ this.credit_pay=true
+                    var padding_top = this.height - this.elmnt -295
+                    var x:any = document.getElementsByClassName('pay-customer-modal')[0]
+                    x.style.transition="400ms"     
+                    x.style.paddingTop =`${padding_top}px`
+                  }else{
+                    this.credit_pay=false
+                    this.pos_book='-100vw'
+                    this.pos_pay='0vw'
+                  }
+                 
+                }else{
+                  
+                   if(this.homeref.account_credits > Number(this.homeref.to_pay)*100){ this.credit_pay=true
+                  
+                    this.pos_book='-100vw'
+                    this.pos_pay='0vw'
+                  }else{
+                    this.credit_pay=false
+                    var padding_top = this.height - this.elmnt -175
+                    var x:any = document.getElementsByClassName('pay-customer-modal')[0]
+                    x.style.transition="400ms"     
+                    x.style.paddingTop =`${padding_top}px`
+                  }
+                }
               setTimeout(()=>{
                 this.pos_book='-100vw'
                 this.pos_pay='0vw'
@@ -326,19 +465,37 @@ payment_methods
                   }
                 });
                 clearInterval(interval)
-              },600)
+              },900)
             }
            }else{
             var token = await this.api.isvalidToken()
             if(token){
               this.disabled_back=true      
-              if(!this.fast_pay){
-                var x:any = document.getElementsByClassName('pay-customer-modal')[0]
-                x.style.transition="400ms"
-                x.style.paddingTop ="calc(100vh - 240px)"
+              if(this.fast_pay){
+                 if(this.homeref.account_credits > Number(this.homeref.to_pay)*100){ this.credit_pay=true
+                  var padding_top = this.height - this.elmnt -295
+                  var x:any = document.getElementsByClassName('pay-customer-modal')[0]
+                  x.style.transition="400ms"     
+                  x.style.paddingTop =`${padding_top}px`
+                }else{
+                  this.credit_pay=false
+                  this.pos_book='-100vw'
+                  this.pos_pay='0vw'
+                }
+               
               }else{
-                this.pos_book='-100vw'
-                this.pos_pay='0vw'
+                
+                 if(this.homeref.account_credits > Number(this.homeref.to_pay)*100){ this.credit_pay=true
+                
+                  this.pos_book='-100vw'
+                  this.pos_pay='0vw'
+                }else{
+                  this.credit_pay=false
+                  var padding_top = this.height - this.elmnt -175
+                  var x:any = document.getElementsByClassName('pay-customer-modal')[0]
+                  x.style.transition="400ms"     
+                  x.style.paddingTop =`${padding_top}px`
+                }
               }
               setTimeout(()=>{
                 this.pos_book='-100vw'
@@ -366,10 +523,10 @@ payment_methods
                   }
                 });
                 clearInterval(interval)
-              },600)
+              },900)
             }
           }
-        },500)
+        },800)
       }
       }, 1500);
       
@@ -377,10 +534,31 @@ payment_methods
    
       
     }
-    async backModal(){
+    async backModal(back_btn?){
+      if(this.homeref.must_be_payed){
+        if(back_btn){
+          if (this.plt.is('hybrid')) {
+            await this.closeModal()
+            for(let appo of this.homeref.appointments_id){      
+              
+                await LocalNotifications.getPending().then( res => {
+                var id_1 =appo
+                var id_2 =appo+1000
+  
+                var indexes = res.notifications.filter((val,ind,arr)=>{ return val.id == id_1.toString() ||val.id == id_2.toString() })
+  
+                LocalNotifications.cancel({notifications: indexes});
+                })      
+            }
+          }else{
+            await this.closeModal()
+          }
+        }
+        
+      }
       if(!this.disabled_back){
         this.homeref.confirm='none'
-        await this.closeModal()
+          await this.closeModal()
       } 
     }
     async book(bool){
@@ -421,10 +599,22 @@ payment_methods
                 allowedCardNetworks: ['VISA', 'MASTERCARD','AMEX']
             },
           }).then(async ()=>{
+            if(this.homeref.must_be_payed){
+              this.homeref.sendEmailConfirmation()
+              this.apiNative.booknotifications(this.homeref.appointments_id).then((res)=>{
+                console.log(res)
+              }).catch((err)=>{
+                console.log(err)
+              })
+            }
             await this.book('googlepay') 
           }).catch(async ()=>{
             // await this.book(false) 
-            this.presentToast("C'è stato un problema durante il pagamento. La spesa non è stata addebitata. Puoi sempre pagare sul posto")})
+            if(this.homeref.must_be_payed){
+          this.presentToast("Non siamo risuciti a terminare il pagamento. La spesa non è stata addebitata.")
+        }else{
+          this.presentToast("Non siamo risuciti a terminare il pagamento. La spesa non è stata addebitata. Puoi sempre pagare sul posto")
+        }})
   }
     async buywithCard(){
       this.payment_loading=true
@@ -444,15 +634,34 @@ payment_methods
                 exp_year: 2000+ Number(date[1]),
                 cvc: cvv,
             },
-            redirectUrl: 'https://prenota.cc/', // Required for Android
         }).then(async ()=>{
+          if(this.homeref.must_be_payed){
+            if(this.plt.is('hybrid')){
+              this.apiNative.booknotifications(this.homeref.appointments_id).then((res)=>{
+                console.log(res)
+              }).catch((err)=>{
+                console.log(err)
+              })
+            }else{
+              this.api.booknotifications(this.homeref.appointments_id).subscribe(res=>{
+                console.log(res)
+              },err=>{
+                console.log(err)
+              })
+            }
+            this.homeref.sendEmailConfirmation()
+          }
           await this.book(true) 
           this.payment_loading=false 
         }).catch(async (err)=>{
           console.log(err)
           this.payment_loading=false 
           // await this.book(false) 
-          this.presentToast("C'è stato un problema durante il pagamento. La spesa non è stata addebitata. Puoi sempre pagare sul posto")})
+          if(this.homeref.must_be_payed){
+          this.presentToast("Non siamo risuciti a terminare il pagamento. La spesa non è stata addebitata.")
+        }else{
+          this.presentToast("Non siamo risuciti a terminare il pagamento. La spesa non è stata addebitata. Puoi sempre pagare sul posto")
+        }})
         
      
     }
@@ -461,7 +670,6 @@ payment_methods
       var buttons=[]
     
       for (let el of this.payment_methods.data){
-        console.log(el)
        var button= {
                     text: `${el.card.brand.toUpperCase()} ···· ···· ···· ${el.card.last4}`,
                     icon: 'card-outline',
@@ -472,15 +680,34 @@ payment_methods
                         clientSecret,
                         saveMethod: true,
                         paymentMethodId: el.id,
-                        redirectUrl: 'https://prenota.cc/', // Required for Android
                     }).then(async ()=>{
+                      if(this.homeref.must_be_payed){
+                        this.homeref.sendEmailConfirmation()
+                        if(this.plt.is('hybrid')){
+                          this.apiNative.booknotifications(this.homeref.appointments_id).then((res)=>{
+                            console.log(res)
+                          }).catch((err)=>{
+                            console.log(err)
+                          })
+                        }else{
+                          this.api.booknotifications(this.homeref.appointments_id).subscribe(res=>{
+                            console.log(res)
+                          },err=>{
+                            console.log(err)
+                          })
+                        }
+                      }
                       await this.book(true) 
                       this.payment_loading=false 
                     }).catch(async (err)=>{
                       console.log(err)
                       this.payment_loading=false 
                       // await this.book(false) 
-                      this.presentToast("C'è stato un problema durante il pagamento. La spesa non è stata addebitata. Puoi sempre pagare sul posto")})
+                      if(this.homeref.must_be_payed){
+          this.presentToast("Non siamo risuciti a terminare il pagamento. La spesa non è stata addebitata.")
+        }else{
+          this.presentToast("Non siamo risuciti a terminare il pagamento. La spesa non è stata addebitata. Puoi sempre pagare sul posto")
+        }})
                     }
                   }
           buttons.push(button)
@@ -505,4 +732,82 @@ payment_methods
       await actionSheet.present();
     }
     
+  payWithCredits(){
+    this.payment_credit_loading=true
+    if(this.plt.is('hybrid')){
+      this.apiNative.payBusinesswithCredits(this.homeref.appointments_id).then(async (res:any)=>{
+        if(res.payed){
+          if(this.homeref.must_be_payed){
+            this.apiNative.booknotifications(this.homeref.appointments_id).then((res)=>{
+              console.log(res)
+            }).catch((err)=>{
+              console.log(err)
+            })
+            this.homeref.sendEmailConfirmation()
+          }
+          await this.book(true) 
+        }else{
+          if(this.homeref.must_be_payed){
+          this.presentToast("Non siamo risuciti a terminare il pagamento. La spesa non è stata addebitata.")
+        }else{
+          this.presentToast("Non siamo risuciti a terminare il pagamento. La spesa non è stata addebitata. Puoi sempre pagare sul posto")
+        }
+        }
+        
+        this.payment_credit_loading=false
+      }).catch(err=>{
+        if(this.homeref.must_be_payed){
+          this.presentToast("Non siamo risuciti a terminare il pagamento. La spesa non è stata addebitata.")
+        }else{
+          this.presentToast("Non siamo risuciti a terminare il pagamento. La spesa non è stata addebitata. Puoi sempre pagare sul posto")
+        }
+        this.payment_credit_loading=false
+      })
+    }else{
+      this.api.payBusinesswithCredits(this.homeref.appointments_id).subscribe(async (res:any)=>{
+        if(res.payed){
+          if(this.homeref.must_be_payed){
+            this.api.booknotifications(this.homeref.appointments_id).subscribe(res=>{
+              console.log(res)
+            },err=>{
+              console.log(err)
+            })
+            this.homeref.sendEmailConfirmation()
+          }
+          await this.book(true) 
+        }else{
+          
+          if(this.homeref.must_be_payed){
+          this.presentToast("Non siamo risuciti a terminare il pagamento. La spesa non è stata addebitata.")
+        }else{
+          this.presentToast("Non siamo risuciti a terminare il pagamento. La spesa non è stata addebitata. Puoi sempre pagare sul posto")
+        }
+        }
+        
+        this.payment_credit_loading=false
+      },err=>{
+        if(this.homeref.must_be_payed){
+          this.presentToast("Non siamo risuciti a terminare il pagamento. La spesa non è stata addebitata.")
+        }else{
+          this.presentToast("Non siamo risuciti a terminare il pagamento. La spesa non è stata addebitata. Puoi sempre pagare sul posto")
+        }
+        this.payment_credit_loading=false
+      })
+    }
+  
+    
+  }
+  async popoverInfo(ev, adon){
+  
+      const popover = await this.popoverController.create({
+        component: PopoverComponent,
+        cssClass: 'popover_custom',
+        event: ev,
+        componentProps:{
+          desc: adon.description
+        }
+      });
+      return await popover.present();
+    
+  }
 }

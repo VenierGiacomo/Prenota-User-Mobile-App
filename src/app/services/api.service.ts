@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { identifierModuleUrl } from '@angular/compiler';
 export class UserCache{
   constructor(
               public id: number,
@@ -121,6 +122,25 @@ getUser(){
   }
   throw throwError("error");  
 }
+
+updateUser(first_name, last_name, email, phone){
+  
+  var data ={
+    "first_name": first_name,
+    "last_name": last_name,
+    "email": email,
+    // "sex": sex,
+    "phone": phone,
+    // "password": password,
+  }
+  const token = this.getToken()
+  var l 
+  if (token) {
+     l = this.parseJwt(token)
+  return this.http.put(BASE_URL+'auth/'+l.user_id, data ,{headers: this.newheader()})
+  }
+  throw throwError("error");  
+}
 getemployeeHours(id): Observable<any>{
      return this.http.get(BASE_URL+'employeehours/?employee='+id,{headers: this.httpheader})
 }
@@ -169,10 +189,23 @@ bookAppointment(start, end, day, month, year,name, details, employee, service):O
   var data = {'start': start , 'end': end, 'day': day, 'week':week, 'month':month, 'year' : year, 'employee': employee,  'client_name' :name, 'details': details, 'service_n': service}
     return this.http.post(BASE_URL+'bookings/', data,{headers: this.newheader()})
 }
-bookAppointmentNoOwner(start, end, day, month, year,name, phone, details, employee, service, shop):Observable<any>{
+bookAppointmentNoOwner(start, end, day, month, year,name, phone, details, employee, service, shop, shadow?, adons?):Observable<any>{
   var week = this.getWeekNumber(new Date(year, month, day))
-  var data = {'start': start , 'end': end, 'day': day, 'week':week, 'month':month, 'year' : year, 'employee': employee,  'client_name' :name, 'phone': phone, 'details': details, 'service_n': service, 'shop':shop}
+  // var data
+  // if(adons){
+   var data = {'start': start , 'end': end, 'day': day, 'week':week, 'month':month, 'year' : year, 'employee': employee,  'client_name' :name, 'phone': phone, 'details': details, 'service_n': service, 'shop':shop, 'adons':adons}
+  // }else{
+  //    data = {'start': start , 'end': end, 'day': day, 'week':week, 'month':month, 'year' : year, 'employee': employee,  'client_name' :name, 'phone': phone, 'details': details, 'service_n': service, 'shop':shop}
+  // }
+  if(shadow){
+    return this.http.post(BASE_URL+'bookings/shadow/', data,{headers: this.newheader()})
+  }else{
     return this.http.post(BASE_URL+'bookings/', data,{headers: this.newheader()})
+  }
+}
+booknotifications(list_ids){
+  var ids=list_ids.toString()
+  return this.http.get(BASE_URL+'bookings/notifications/?list_ids='+ids,{headers: this.newheader() })
 }
 getAppointments(week):Observable<any>{
   return this.http.get(BASE_URL+'bookings/week/'+week+'/?owner=2', {headers: this.httpheader})
@@ -210,9 +243,9 @@ getMonthAppointments(month):Observable<any>{
   return this.http.get(BASE_URL+'bookings/month/'+month,{headers: this.newheader()})
 }
 
-updateAppointment(id, start, end, day, month, year,name, details, employee, service):Observable<any>{
+updateAppointment(id, start, end, day, month, year,name, phone, details, employee, service, note):Observable<any>{
   var week = this.getWeekNumber(new Date(year, month, day))
-  var data = {'start': start , 'end': end, 'day': day, 'week':week, 'month':month, 'year' : year, 'employee': employee,  'client_name' :name, 'details': details, 'service_n': service}
+  var data = {'start': start , 'end': end, 'day': day, 'week':week, 'month':month, 'year' : year, 'employee': employee,  'client_name' :name, 'details': details, 'service_n': service,'phone':phone, 'note':note}
   return this.http.put(BASE_URL+'bookings/'+id+'/', data, {headers: this.newheader()})
 }
 
@@ -294,6 +327,10 @@ payBusiness(list_ids){
     return this.http.post(BASE_URL+'webhooks/pay/business/', {list_ids:list_ids},{headers: this.newheader()})
 }
 
+payBusinesswithCredits(list_ids){
+  return this.http.post(BASE_URL+'webhooks/pay/business/credits/', {list_ids:list_ids},{headers: this.newheader()})
+}
+
 paymentMethods(){
   return this.http.post(BASE_URL+'webhooks/payment_methods/', {},{headers: this.newheader()})
 }
@@ -306,4 +343,30 @@ stripeBusTicket(service,logged){
     return this.http.post(BASE_URL+'webhooks/ticket', {services:service},{headers: this.httpheader})
   }
 }
+isStoreClient(shop):Observable<any>{
+    return this.http.get(BASE_URL+'store/clients/is/?shop='+shop,{headers: this.newheader()})
+}
+paywithStoredcard():Observable<any>{
+  var httpheader = new HttpHeaders({'Content-type':'application/json','Authorization':'Bearer cdff994219cae592734638619022b4940003aa081939068bf03ae7555e43ce0e'}) 
+  
+  return this.http.put('https://api.sumup.com/v0.1/checkouts/16b96b30-e7b9-4380-be27-fd0b5d7465b5',{"payment_type": "card","token": "6678f1ab-1cae-4f7d-aad0-85381c99c3b9","customer_id": "DC000103"},{headers: httpheader})
+}
+stripePortalSession(){
+  return this.http.post(BASE_URL+'webhooks/portal/stripe', {},{headers: this.newheader()})
+}
+getServiceAdons(service_id):Observable<any>{
+  return this.http.get(BASE_URL+'serviceaddons/'+service_id,{headers: this.httpheader})
+}
+newCustomerSocket(channel){
+  var data ={
+    channel: channel,
+  }
+  return this.http.post(BASE_URL+'webhooks/new_customer_socket/',data,{headers: this.newheader()})
+}
+updateStoreClientQRCode(id):Observable<any>{
+  return this.http.post(BASE_URL+'store/clients/QRCode',{id: id, client_name:'Only because required'}, {headers: this.newheader()})
+}
+
+
+
 }

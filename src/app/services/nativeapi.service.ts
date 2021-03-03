@@ -161,11 +161,26 @@ async bookAppointment(start, end, day, month, year,name, details, employee, serv
   return await this.postData(url,data,this.token_header)
 
 }
-async bookAppointmentNoOwner(start, end, day, month, year,name, phone, details, employee, service, shop){
+async bookAppointmentNoOwner(start, end, day, month, year,name, phone, details, employee, service, shop, shadow?, adons?){
   var week = this.getWeekNumber(new Date(year, month, day))
-  var data = {'start': start , 'end': end, 'day': day, 'week':week, 'month':month, 'year' : year, 'employee': employee,  'client_name' :name, 'phone': phone, 'details': details, 'service_n': service, 'shop':shop}
-  let url = BASE_URL+'bookings/'
+  var data
+  if(adons){
+   data = {'start': start , 'end': end, 'day': day, 'week':week, 'month':month, 'year' : year, 'employee': employee,  'client_name' :name, 'phone': phone, 'details': details, 'service_n': service, 'shop':shop, 'adons':adons}
+  }else{
+     data = {'start': start , 'end': end, 'day': day, 'week':week, 'month':month, 'year' : year, 'employee': employee,  'client_name' :name, 'phone': phone, 'details': details, 'service_n': service, 'shop':shop}
+  }
+  if(shadow){
+    let url = BASE_URL+'bookings/shadow/'
+    return  await  this.postData(url,data,this.token_header)
+  }else{
+    let url = BASE_URL+'bookings/'
   return  await  this.postData(url,data,this.token_header)
+  }
+}
+async booknotifications(list_ids){
+  var ids=list_ids.toString()
+  let url = BASE_URL+'bookings/notifications/?list_ids='+ids
+  return await this.getData(url,this.token_header)
 }
 
  async getAppointments(week){
@@ -189,10 +204,11 @@ async getAppointmentsByshop5(week,id){
   return  await  this.getData(url,this.simple_header)
 
 }
-async stripeBusTicket(service,logged){
+async stripeBusTicket(service){
   let url = BASE_URL+'webhooks/ticket';
-  let params = {"services": service}
-  if(logged){
+  let params = {"ticket_type": service}
+  const token = await this.getToken()
+  if (token) {
     return  await  this.postData(url,params,this.token_header)
   }else{
     return  await  this.postData(url,params,this.simple_header)
@@ -304,12 +320,62 @@ async payBusiness(list_ids){
   var data = {list_ids:list_ids}
   return await  this.postData(url,data,this.token_header)
 }
+async payBusinesswithCredits(list_ids){
+  let url = BASE_URL+'webhooks/pay/business/credits/'
+  var data = {list_ids:list_ids}
+  return await  this.postData(url,data,this.token_header)
+}
 
 async paymentMethods(){
   let url = BASE_URL+'webhooks/payment_methods/'
   return await  this.postData(url,{},this.token_header)
 }
+async updateAppointment(id, start, end, day, month, year,name, phone, details, employee, service, note){
+  let url = BASE_URL+'bookings/'+id+'/'
+  var week = this.getWeekNumber(new Date(year, month, day))
+  var data = {'start': start , 'end': end, 'day': day, 'week':week, 'month':month, 'year' : year, 'employee': employee,  'client_name' :name, 'details': details, 'service_n': service,'phone':phone, 'note':note}
+  return await this.putData(url, data, this.token_header)
+}
+async stripePortalSession(){
+  let url = BASE_URL+'webhooks/portal/stripe'
+  return await  this.postData(url,{},this.token_header)
+}
+async isStoreClient(shop){
+  let url = BASE_URL+'store/clients/is/?shop='+shop
+  return await  this.getData(url,this.token_header)
+}
 
+async updateUser(first_name, last_name, email, phone){
+  const token = await this.getToken()
+  var l 
+  if (token) {
+      l = await this.parseJwt(token) 
+  }
+  var url = BASE_URL+'auth/'+l.user_id
+  var data ={
+    "first_name": first_name,
+    "last_name": last_name,
+    "email": email,
+    // "sex": sex,
+    "phone": phone,
+    // "password": password,
+  }
+  return await this.putData(url, data, this.token_header)
+}
+async getServiceAdons(service_id){
+  let url = BASE_URL+'serviceaddons/'+service_id
+  return await  this.getData(url,this.simple_header)
+}
+async newCustomerSocket(channel){
+  var data ={
+    channel: channel,
+  }
+  return await this.postData(BASE_URL+'webhooks/new_customer_socket/',data,this.token_header)
+}
+async updateStoreClientQRCode(id){
+  const url = BASE_URL+'store/clients/QRCode'
+  return await this.postData(url,{id: id, client_name:'Only because required'},this.token_header)
+}
 
 async getData(url,headers){
   let res = await Http.request({
@@ -328,6 +394,15 @@ async postData(url,data,headers){
   })
   return res.data
 }
+async putData(url,data,headers){
+  let res = await Http.request({
+    method: 'PUT',
+    url: url,
+    headers: headers,
+    data: data
+  })
+  return res.data
+}
 async deleteData(url,headers){
   let res = await Http.request({
     method: 'DELETE',
@@ -336,4 +411,5 @@ async deleteData(url,headers){
   })
   return res.data
 }
+
   }

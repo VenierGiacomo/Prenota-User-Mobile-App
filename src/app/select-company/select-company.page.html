@@ -1,0 +1,11 @@
+
+<ion-content>
+  <div class="cont">
+    <h2>Per convalidare il biglietto, seleziona la compagnia di trasporto che utilizzerai</h2>
+    <div [class.selected]='selected==1' (click)='selected=1'> <span class="ticket-image"><img src='../assets/Trieste_Trasporti_logo.svg'></span><p>  Trieste trasporti</p></div>
+    <div [class.selected]='selected==2' (click)='selected=2'> <span class="ticket-image"><img src='../assets/Arriva_Udine_Logo_Positive_CMYK_OL.width-800.png'></span><p>Arriva Udine</p></div>
+      <div [class.selected]='selected==3' (click)='selected=3'><span class="ticket-image"><img src='../assets/unnamed.width-800.jpg'></span><p>ATAP Pordenone</p></div>
+      <div [class.selected]='selected==4' (click)='selected=4'><span class="ticket-image"><img src='../assets/unnamed-1.width-800.jpg'></span><p>APT Gorizia</p></div>
+       <button (click)='closeModal()'>Conferma</button> 
+  </div>
+</ion-content>

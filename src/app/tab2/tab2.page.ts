@@ -12,6 +12,7 @@ import { Plugins } from '@capacitor/core';
 import { NotModalPage } from '../not-modal/not-modal.page';
 import { CancelModalPage } from '../cancel-modal/cancel-modal.page';
 import { ProfilePage } from '../profile/profile.page';
+import { SelectCompanyPage } from '../select-company/select-company.page';
 const { Browser } = Plugins;
 const { LocalNotifications } = Plugins;
 const { Share } = Plugins;
@@ -46,6 +47,7 @@ rows = ["06:45", "07:00", "07:15", "07:30", "07:45", "08:00", "08:15", "08:30", 
   constructor(private toastController: ToastController, public actionSheetController: ActionSheetController,  private alertController: AlertController,public modalController: ModalController, private storage: StorageService, private plt:Platform,private apiNative:NativeApiService, private router:Router, private api: ApiService,) {}
 
   async ionViewDidEnter() {
+    this.load_width='0vw'
     this.activated_ticket=false
     await this.getClientAppointments()    
   }
@@ -197,13 +199,13 @@ rows = ["06:45", "07:00", "07:15", "07:30", "07:45", "08:00", "08:15", "08:30", 
       }
      
       await this.apiNative.deleteStorage()
-      this.presentToast('Logout effettuato con successo')
+      this.presentToast('Arrivederci')
       this.appointments_list=[]
     }else{
       await this.api.deleteStorage()
       await this.apiNative.deleteStorage()
       localStorage.clear()
-      this.presentToast('Logout effettuato con successo')
+      this.presentToast('Arrivederci')
       this.appointments_list=[]   
     }
    
@@ -340,7 +342,7 @@ rows = ["06:45", "07:00", "07:15", "07:30", "07:45", "08:00", "08:15", "08:30", 
           this.load_width ='100vw'
           this.active_time=`${hour_plus}:${min}`
           setTimeout(() => {
-            this.activated_ticket=true
+           this.presetCompaniesSelection()
           }, 900);
          
          
@@ -382,5 +384,19 @@ rows = ["06:45", "07:00", "07:15", "07:30", "07:45", "08:00", "08:15", "08:30", 
       this.backdrop_active =false
     }, 500);
   }
+ async presetCompaniesSelection(){  
+   const modal = await this.modalController.create({
+  component:SelectCompanyPage,
+  swipeToClose: true,
+  cssClass: 'select-modal' ,
+  componentProps: { 
+    homeref: this,
+  }
+});
+modal.onDidDismiss().then(async data => {
+  this.activated_ticket=true
  
+});
+return await modal.present();
+}
 }

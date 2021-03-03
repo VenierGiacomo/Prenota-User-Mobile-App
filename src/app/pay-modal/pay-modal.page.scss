@@ -107,12 +107,7 @@
   }
 
   .apple_pay_btn {
-    width: 82vw;
-    margin: 0px 9vw 20px 9vw;
-    padding: 0px 10px;
-    height: 50px;
-    border-radius: 7px;;
-    line-height: 50px;
+ 
     font-weight: 700;
     font-size: 18px;
     background: #000000;
@@ -126,15 +121,30 @@
         margin-right: 1px;
     }
   }
-  
-
-  .confirm-pay button{
+  button, .apple_pay_btn {
     width: 82vw;
-    margin: 0px 9vw 10px 9vw;
+    box-shadow: 0px 0px 10px 2px #00000022;
+    margin: 10px 9vw 10px 9vw;
     padding: 0px 10px;
     height: 50px;
     border-radius: 7px;;
     line-height: 50px;
+  }
+  .confirm-credit button{
+    font-size: 16px;
+    background: #ffffff;
+    font-weight: 700;
+    position: relative;
+    color: #313131;
+    box-shadow: 0px 0px 10px 2px #00000022;
+   
+    ion-icon{
+      font-size: 20px;
+      margin-bottom: -4px;
+      margin-right: 1px;
+  }
+}
+  .confirm-pay button{
     font-size: 16px;
     background: #003679;
     font-weight: 700;
@@ -165,9 +175,9 @@
 
 .money_due{
     text-align: center;
-    font-size: 24px;
+    font-size: 28px;
     font-weight: 700;
-    line-height: 50px;
+    line-height: 64px;
     color: #1a1a1a;
   }
 
@@ -178,9 +188,11 @@
       text-align: center;
     border-top:  #1a1a1a99 1px solid;
    
+
+     
     p{
       font-size: 15px;
-        padding-left: 0px !important;;
+        
         color: #343a40;
     }
   }
@@ -194,18 +206,204 @@
     height: 100%;
     transition: 400ms;
     h3{
-        font-size: 21px;
-        padding-top: 20px;
-        padding-left: 9vw;;
-        font-weight: 700;
-        color: #1a1a1a;
+        white-space: normal;
+        position: relative;
+        display: inline-block;
+        width: 100%;
+        color: #000;
+        font-size: 18px;
+        font-weight: 400;
+        text-transform: uppercase;
+        text-align: center;
+        margin: 20px auto 0px;
     }
+    h3:after {
+      display: block;
+      background: #313131;
+      content: '';
+      height: 1px;
+      width: 82%;
+      margin: 20px auto ;
+      padding: 0;
+    }
+    
     p{
         color: #343a40;
+        width: 82vw;
         padding-left: 9vw;;
         font-size: 15px;
     }
   }
+
+  // ion-item{
+    
+  // }
+  .toggle{
+    width: 82vw;
+    margin: 0px 9vw 20px 9vw;
+    display: grid;
+    height: 32px;
+    grid-template-columns: 4fr 1fr;
+     color: #212121;
+     ion-toggle{
+      justify-self: end;
+     }
+    span p{
+      padding:0px;
+      margin:0px;
+      display: inline-block;
+      width: min-content;;
+
+      line-height: 32px;
+    }
+    span{
+      position: relative;
+      height: 32px;
+    }
+    span ion-icon{
+      display: inline-block;
+      margin-left: 10px;
+      font-size: 17px;
+      margin-bottom: -3px;;
+      
+    }
+    .adon_price{
+      position: absolute;
+      right: 5px;
+      
+      top:0px;
+      line-height: 32px;
+      font-size: 11px;
+      text-align: right;
+      font-weight: 300;
+        
+    
+    }
+  }
+  .loader-6 {
+    height: 32px;
+    width: 32px;
+    margin: 9px auto;
+    -webkit-animation: loader-6-1 2s cubic-bezier(0.770, 0.000, 0.175, 1.000) infinite;
+            animation: loader-6-1 2s cubic-bezier(0.770, 0.000, 0.175, 1.000) infinite;
+  }
+  @-webkit-keyframes loader-6-1 {
+    0%   { -webkit-transform: rotate(0deg); }
+    100% { -webkit-transform: rotate(360deg); }
+  }
+  @keyframes loader-6-1 {
+    0%   { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  .loader-6::before {
+    content: "";
+    display: block;
+    position: absolute;
+    top: 0; left: 0;
+    bottom: 0; right: auto;
+    margin: auto;
+    width: 8px;
+    height: 8px;
+    background: #313131;
+    border-radius: 50%;
+    -webkit-animation: loader-6-2 2s cubic-bezier(0.770, 0.000, 0.175, 1.000) infinite;
+            animation: loader-6-2 2s cubic-bezier(0.770, 0.000, 0.175, 1.000) infinite;
+  }
+  @-webkit-keyframes loader-6-2 {
+    0%   { -webkit-transform: translate3d(0, 0, 0) scale(1); }
+    50%  { -webkit-transform: translate3d(24px, 0, 0) scale(.5); }
+    100% { -webkit-transform: translate3d(0, 0, 0) scale(1); }
+  }
+  @keyframes loader-6-2 {
+    0%   { transform: translate3d(0, 0, 0) scale(1); }
+    50%  { transform: translate3d(24px, 0, 0) scale(.5); }
+    100% { transform: translate3d(0, 0, 0) scale(1); }
+  }
+  .loader-6::after {
+    content: "";
+    display: block;
+    position: absolute;
+    top: 0; left: auto;
+    bottom: 0; right: 0;
+    margin: auto;
+    width: 8px;
+    height: 8px;
+    background: #313131;
+    border-radius: 50%;
+    -webkit-animation: loader-6-3 2s cubic-bezier(0.770, 0.000, 0.175, 1.000) infinite;
+            animation: loader-6-3 2s cubic-bezier(0.770, 0.000, 0.175, 1.000) infinite;
+  }
+  @-webkit-keyframes loader-6-3 {
+    0%   { -webkit-transform: translate3d(0, 0, 0) scale(1); }
+    50%  { -webkit-transform: translate3d(-24px, 0, 0) scale(.5); }
+    100% { -webkit-transform: translate3d(0, 0, 0) scale(1); }
+  }
+  @keyframes loader-6-3 {
+    0%   { transform: translate3d(0, 0, 0) scale(1); }
+    50%  { transform: translate3d(-24px, 0, 0) scale(.5); }
+    100% { transform: translate3d(0, 0, 0) scale(1); }
+  }
+  .loader-6 span {
+    display: block;
+    position: absolute;
+    top: 0; left: 0;
+    bottom: 0; right: 0;
+    margin: auto;
+    height: 32px;
+    width: 32px;
+  }
+  .loader-6 span::before {
+    content: "";
+    display: block;
+    position: absolute;
+    top: 0; left: 0;
+    bottom: auto; right: 0;
+    margin: auto;
+    width: 8px;
+    height: 8px;
+    background: #313131;
+    border-radius: 50%;
+    -webkit-animation: loader-6-4 2s cubic-bezier(0.770, 0.000, 0.175, 1.000) infinite;
+            animation: loader-6-4 2s cubic-bezier(0.770, 0.000, 0.175, 1.000) infinite;
+  }
+  @-webkit-keyframes loader-6-4 {
+    0%   { -webkit-transform: translate3d(0, 0, 0) scale(1); }
+    50%  { -webkit-transform: translate3d(0, 24px, 0) scale(.5); }
+    100% { -webkit-transform: translate3d(0, 0, 0) scale(1); }
+  }
+  @keyframes loader-6-4 {
+    0%   { transform: translate3d(0, 0, 0) scale(1); }
+    50%  { transform: translate3d(0, 24px, 0) scale(.5); }
+    100% { transform: translate3d(0, 0, 0) scale(1); }
+  }
+  .loader-6 span::after {
+    content: "";
+    display: block;
+    position: absolute;
+    top: auto; left: 0;
+    bottom: 0; right: 0;
+    margin: auto;
+    width: 8px;
+    height: 8px;
+    background: #313131;
+    border-radius: 50%;
+    -webkit-animation: loader-6-5 2s cubic-bezier(0.770, 0.000, 0.175, 1.000) infinite;
+            animation: loader-6-5 2s cubic-bezier(0.770, 0.000, 0.175, 1.000) infinite;
+  }
+  @-webkit-keyframes loader-6-5 {
+    0%   { -webkit-transform: translate3d(0, 0, 0) scale(1); }
+    50%  { -webkit-transform: translate3d(0, -24px, 0) scale(.5); }
+    100% { -webkit-transform: translate3d(0, 0, 0) scale(1); }
+  }
+  @keyframes loader-6-5 {
+    0%   { transform: translate3d(0, 0, 0) scale(1); }
+    50%  { transform: translate3d(0, -24px, 0) scale(.5); }
+    100% { transform: translate3d(0, 0, 0) scale(1); }
+  }
+  
+
+
+  
   .loader-5 {
     height: 32px;
     width: 32px;

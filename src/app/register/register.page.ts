@@ -1,11 +1,12 @@
-import { Component, OnInit, Input, ContentChild } from '@angular/core';
-import { ModalController, NavController, Platform, ToastController, IonInput } from '@ionic/angular';
+import { Component, OnInit, Input  } from '@angular/core';
+import { ModalController, NavController, Platform, ToastController } from '@ionic/angular';
 import { ApiService } from '../services/api.service';
 import Notiflix from "notiflix";
 import { NativeApiService } from '../services/nativeapi.service';
 import { Plugins } from '@capacitor/core';
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
+
 import { StorageService } from '../services/storage.service';
+
 const { Browser } = Plugins;
 
 @Component({
@@ -25,6 +26,7 @@ BASE_URL = 'https://giacomovenier.pythonanywhere.com/api/'
   @Input() email = ''
   sex = 'm'
   @Input() phone = ''
+  @Input() client_id 
 password =''
 
   first_name_err=''
@@ -42,13 +44,13 @@ password =''
     password_input.type = password_input.type === 'password' ?  'text' : 'password';
     this.showPassword = !this.showPassword;
 
-    console.log( this.showPassword)
+
   }
   toggleShowReg() {
     var password_input_reg:any = document.getElementById('input_reg')
     password_input_reg.type = password_input_reg.type === 'password' ?  'text' : 'password';
     this.showPassword_reg = !this.showPassword_reg;
-    console.log( this.showPassword_reg)
+  
   }
 
   async closeModal(bool){
@@ -81,12 +83,32 @@ password =''
       if (this.plt.is('hybrid')) {
         await this.nativeApi.register(this.first_name, this.last_name, this.email, 'm', this.phone, this.password).then(
           async data=>{
+            
+           
             // await this.nativeApi.storeToken(data.token)
             if(await data.token){
+              await this.closeModal(true)   
+              if(this.homeref){
+                this.homeref.user.phone = this.phone
+                await this.homeref.bookfromLogin(data.email, data.first_name, data.last_name)
+                await this.closeModal(true)
+              }
+             
+                        
+              setTimeout(()=>{
+                if(this.client_id){
+                  
+                  this.nativeApi.updateStoreClientQRCode(this.client_id).then(async res=>{
+                    this.presentToast('Account collegato')
+                    
+                  }).catch(async err=>{
+                    this.presentToast("Non siamo riusciti a collegare l'account. Puoi sempre riutilizzare il link")
+                  })
+                }else{
+                  this.presentToast('Salve  '+ data.first_name)
+                }
+              },100)
               await this.closeModal(true)
-              this.homeref.user.phone = this.phone
-              await this.homeref.bookfromLogin(data.email, data.first_name, data.last_name)
-              this.presentToast('Benvenuto '+ data.first_name)
             }else{
               if (data.email != undefined){
                 this.error = 'Questa email è invalida o è già stata utilizzata'
@@ -120,7 +142,7 @@ password =''
           this.closeModal(true)
           this.homeref.user.phone = this.phone
           await this.homeref.bookfromLogin(data.email, data.first_name, data.last_name )
-          this.presentToast('Benvenuto '+ data.first_name)
+          this.presentToast('Salve '+this.first_name)
           // this.homeref.closeModal()
         },
         err => {
@@ -168,7 +190,7 @@ password =''
           if(this.homeref.page != 'tab2'){
             await this.homeref.bookfromLogin(res.email, res.first_name, res.last_name)
           }
-          this.presentToast('Bentornato '+ res.first_name )
+          this.presentToast('Che bello riverderti  '+ data.first_name)
           this.nativeApi.paymentMethods().then(async (res)=>{
             await this.storage.clearPaymentMethods()
               await this.storage.setPaymentMethods(res)
@@ -198,7 +220,7 @@ password =''
               }
              
               // this.homeref.closeModal()
-              this.presentToast('Bentornato '+res.first_name)
+              this.presentToast('Che bello riverderti  '+ res.first_name)
               this.api.paymentMethods().subscribe(async (res)=>{
                 await this.storage.clearPaymentMethods()
                 await this.storage.setPaymentMethods(res)

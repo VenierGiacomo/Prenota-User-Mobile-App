@@ -5,9 +5,9 @@
         Clear
       </ion-button>
     </ion-buttons> -->
-    <ion-buttons slot="end"  mode=ios>
+    <ion-buttons slot="end"  mode=ios (click)='assistenzaActionSheet()' >
       <ion-button  mode=ios>
-          <a (click)='assistenzaActionSheet()' target="_blank"><div  style="color: #343a40; font-size: 13px;">Assistenza</div></a>
+          <a target="_blank"><div  style="color: #343a40; font-size: 13px;">Assistenza</div></a>
       </ion-button>
     </ion-buttons>
 
@@ -24,7 +24,7 @@
 
         
         <!-- <div class="prof-profile" *ngFor='let shop of shops' (click)="navBusiness(shop)"> -->
-            <div class="prof-profile" *ngFor='let shop of shops' (click)="presentModal(shop)">
+            <div class="prof-profile" *ngFor='let shop of shops' (click)="presentModal(shop)" (press)='newCustomer(shop)'>
                 <div class="cont_img_text">
                         <div class="prof-img"><img src='{{shop.img_url}}'></div>
                         <div class="text_widg">

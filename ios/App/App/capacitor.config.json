@@ -28,9 +28,5 @@
       "HideKeyboardFormAccessoryBar": "false",
       "AndroidLaunchMode": "singleTask"
     }
-  },
-  "server": {
-    "url": "http://192.168.1.168:8101",
-    "cleartext": true
   }
 }

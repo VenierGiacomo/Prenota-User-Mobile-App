@@ -96,7 +96,7 @@ html{
   .pay-customer-modal{
     background: transparent;
     .modal-wrapper { border-top-left-radius: 15px; border-top-right-radius: 15px;}
-    padding-top:calc(100vh - 300px)
+    padding-top:calc(100vh)
     
   }
 .not-modal{
@@ -144,3 +144,23 @@ html{
  .card-action-class .action-sheet-button-inner{
     font-size: 13px;
  }
+
+ :root {
+  // .popover_custom ion-backdrop {
+  //  backdrop-filter: blur(8px);
+   
+  // }
+  .popover_custom{
+    // backdrop-filter: blur(16px);
+    --backdrop-opacity:0.3
+}
+      .popover-content {
+          left: calc(10vw -  var(--ion-safe-area-right, 0px)) !important; 
+          width: 80vw;
+          
+          ion-lable{
+            font-size: 11px !important;
+            --font-size: 11px !important;
+          }
+      }
+    }

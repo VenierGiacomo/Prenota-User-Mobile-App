@@ -1,5 +1,10 @@
+ion-content{
+  --keyboard-offset: 0px !important;
+overflow: hidden !important;
+}
 .book-int{
-    overflow: hidden;
+  overflow: hidden !important;
+  padding-top:20px !important;
     position: absolute;
     background: #fff;
     display: inline-block;
@@ -7,7 +12,7 @@
     height: 100%;
     transition: 400ms;
     h3{
-        font-size: 21px;
+        font-size: 18px;
         padding-left: 9vw;;
         padding-bottom: 20px;
         font-weight: 700;
@@ -15,12 +20,23 @@
     }
     p{
         color: #343a40;
+        width: 82vw;
         padding-left: 9vw;;
         font-size: 15px;
     }
   }
   .delete_btn button{
+    background: #c23535;
 
+    color: white;
+  }
+  .note_btn button{
+    background: #00479d;
+
+    color: white;
+  }
+
+  button{
     width: 82vw;
     margin: 0px 9vw 10px 9vw;
     padding: 0px 10px;
@@ -36,11 +52,11 @@
     -webkit-box-shadow: 0px 0px 15px 0px rgba(0,0,50,0.17);
     -moz-box-shadow: 0px 0px 15px 0px rgba(0,0,0,50.17);
     box-shadow: 0px 0px 15px 0px rgba(0,0,50,0.17);
-
-  
-    background: #c23535;
-
-    color: white;
+    ion-icon{
+      font-size: 20px;
+      margin-bottom: -4px;
+      margin-right: 1px;
+  }
   }
 
   .separator{
@@ -52,32 +68,16 @@
  
   p{
     font-size: 15px;
-      padding-left: 0px !important;;
+      
       color: #343a40;
   }
 }
 .white_btn button{
-    width: 82vw;
-    margin: 0px 9vw 10px 9vw;
-    padding: 0px 10px;
-    height: 50px;
-    border-radius: 7px;;
-    line-height: 50px;
-    font-size: 16px;
+  
     background: #fff;
-    font-weight: 700;
-    position: relative;
-    color: #343a40;
-
-    -webkit-box-shadow: 0px 0px 15px 0px rgba(0,0,50,0.17);
-    -moz-box-shadow: 0px 0px 15px 0px rgba(0,0,0,50.17);
-    box-shadow: 0px 0px 15px 0px rgba(0,0,50,0.17);
    
-    ion-icon{
-      font-size: 20px;
-      margin-bottom: -4px;
-      margin-right: 1px;
-  }
+    color: #343a40;
+   
 }
 ion-content{
     --padding-top: 20px;
@@ -206,3 +206,19 @@ ion-content{
     100% { transform: translate3d(0, 0, 0) scale(1); }
   }
   
+  ion-textarea{
+    --padding-start: 20px;
+    --padding-end: 20px;
+    --padding-top: 10px;
+    --padding-bottom: 10px;
+    width:82vw;
+    margin: 0px auto 20px auto;
+    color: #313131;
+    // padding: 10px 20px;
+    -webkit-box-shadow: 0px 0px 15px 0px rgba(0,0,50,0.17);
+    -moz-box-shadow: 0px 0px 15px 0px rgba(0,0,0,50.17);
+    box-shadow: 0px 0px 15px 0px rgba(0,0,50,0.17);
+    border-radius: 10px;
+    --placeholder-color: #919191 
+  }
+

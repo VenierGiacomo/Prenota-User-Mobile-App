@@ -43,6 +43,10 @@ export class BookModalPage implements OnInit {
   @Input() website
   @Input() address
   @Input() payable
+  @Input() must_be_payed
+  @Input() accept_credits
+  @Input() adons
+  @Input() available_on
   list_appointments
   services:any=[]
   week = []
@@ -66,6 +70,9 @@ export class BookModalPage implements OnInit {
   show_something= false
   appointments_id =[]
   text_c ='#0061d5'
+  account_credits = 0
+  is_member = false
+  is_client= false
   week_name = ["Lun","Mar","Mer","Gio","Ven","Sab","Dom"]
   months_days=[31, ((this.year%4==0 && this.year%100!=0)|| this.year%400==0)? 29 :28, 31 , 30, 31, 30, 31, 31, 30, 31, 30, 31]
   months_names=['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno','Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre']
@@ -74,6 +81,7 @@ export class BookModalPage implements OnInit {
   // rand = [ 6, 12, 21, 32 ,47 ,49 ]
   times =["06:45", "06:50", "06:55", "07:00", "07:05", "07:10", "07:15", "07:20", "07:25", "07:30", "07:35", "07:40", "07:45", "07:50", "07:55", "08:00", "08:05", "08:10", "08:15", "08:20", "08:25", "08:30", "08:35", "08:40", "08:45", "08:50", "08:55", "09:00", "09:05", "09:10", "09:15", "09:20", "09:25", "09:30", "09:35", "09:40", "09:45", "09:50", "09:55", "10:00", "10:05", "10:10", "10:15", "10:20", "10:25", "10:30", "10:35", "10:40", "10:45", "10:50", "10:55", "11:00", "11:05", "11:10", "11:15", "11:20", "11:25", "11:30", "11:35", "11:40", "11:45", "11:50", "11:55", "12:00", "12:05", "12:10", "12:15", "12:20", "12:25", "12:30", "12:35", "12:40", "12:45", "12:50", "12:55", "13:00", "13:05", "13:10", "13:15", "13:20", "13:25", "13:30", "13:35", "13:40", "13:45", "13:50", "13:55","14:00", "14:05", "14:10", "14:15", "14:20", "14:25", "14:30", "14:35", "14:40", "14:45", "14:50", "14:55", "15:00", "15:05", "15:10", "15:15", "15:20", "15:25", "15:30", "15:35", "15:40", "15:45", "15:50", "15:55", "16:00", "16:05", "16:10", "16:15", "16:20", "16:25", "16:30", "16:35", "16:40", "16:45", "16:50", "16:55", "17:00", "17:05", "17:10", "17:15", "17:20", "17:25", "17:30", "17:35", "17:40", "17:45", "17:50", "17:55", "18:00", "18:05", "18:10", "18:15", "18:20", "18:25", "18:30", "18:35", "18:40", "18:45", "18:50", "18:55", "19:00", "19:05", "19:10", "19:15", "19:20", "19:25", "19:30", "19:35", "19:40", "19:45", "19:50", "19:55", "20:00", "20:05", "20:10", "20:15", "20:20", "20:25", "20:30", "20:35", "20:40", "20:45", "20:50", "20:55", "21:00", "21:05", "21:10", "21:15", "21:20", "21:25", "21:30", "21:35", "21:40", "21:45", "21:50", "21:55", "22:00", "22:05", "22:10", "22:15","22:20", "22:25", "22:30", "22:35", "22:40", "22:45", "22:50", "22:55", "23:00", "23:05", "23:10", "23:15", "23:20", "23:25", "23:30", "23:35", "23:40", "23:45", "23:50", "23:55" ]
   rows = ["06:45", "07:00", "07:15", "07:30", "07:45", "08:00", "08:15", "08:30", "08:45", "09:00", "09:15", "09:30", "09:45", "10:00", "10:15", "10:30", "10:45", "11:00", "11:15", "11:30", "11:45", "12:00", "12:15", "12:30", "12:45", "13:00", "13:15", "13:30", "13:45", "14:00", "14:15", "14:30", "14:45", "15:00", "15:15", "15:30", "15:45", "16:00", "16:15", "16:30", "16:45", "17:00", "17:15", "17:30", "17:45", "18:00", "18:15", "18:30", "18:45", "19:00", "19:15", "19:30", "19:45", "20:00", "20:15", "20:30", "20:45", "21:00", "21:15", "21:30", "21:45", "22:00", "22:15", "22:30", "22:45", "23:00", "23:15", "23:30", "23:45", "24:00"]
+  full_hours = [ "07:00",  "08:00", "09:00",  "10:00", "11:00",  "12:00", "13:00",  "14:00", "15:00", "16:00", "17:00","18:00", "19:00", "20:00", "21:00",  "22:00",  "23:00","24:00"]
   days= [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31]
   months=['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno','Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre']
   months_short=['Gen','Feb','Mar','Apr','Mag','Giu','Lug','Ago','Set','Ott','Nov','Dic']
@@ -93,6 +101,9 @@ export class BookModalPage implements OnInit {
   notifications_to_set
   to_pay   
   secret
+  email_confirmation
+  adons_list=[];
+  hourfilter
   // price
   constructor( private apiNative:NativeApiService, private plt: Platform,private api: ApiService, private nav: NavController, private storage: StorageService, public modalController: ModalController, private pickerController: PickerController,) {}
 // private apiNative: NativeApiService,
@@ -109,7 +120,15 @@ export class BookModalPage implements OnInit {
     var now = new  Date()
     var month = now.getMonth()
     var day_number = now.getDate()
-
+    if(this.available_on=='f'){
+      this.hourfilter=this.full_hours
+    }else{
+      if(this.available_on=='a'){
+        this.hourfilter=this.times
+      }else{
+        this.hourfilter=this.rows
+      }
+    }
   //  window.addEventListener('scroll', function(ev) {
 
    
@@ -155,6 +174,41 @@ export class BookModalPage implements OnInit {
             console.log(err)
           })
         }
+    }).then(async ()=>{
+      // if(this.accept_credits){
+        if(this.plt.is('hybrid')){
+          var token = await this.apiNative.isvalidToken()
+      if(token){
+          this.apiNative.isStoreClient(this.id).then(res=>{
+            if(res[0]!=undefined){
+              this.is_client = true
+              this.is_member = res[0].isMember
+              this.account_credits = res[0].credit
+            }else{
+              this.is_client = false
+            }
+          })
+        }else{
+          this.is_client = false
+        }
+        }else{
+          if(this.api.isvalidToken()){
+            this.api.isStoreClient(this.id).subscribe(res=>{
+              if(res[0]!=undefined){
+                this.is_client = true
+                this.is_member = res[0].isMember
+                this.account_credits = res[0].credit
+              }else{
+                this.is_client = false
+              }
+            })
+          }else{
+            this.is_client = false  
+          }
+         
+        }
+      // }
+      
     }).catch(err=>{
       console.log(err)
     })
@@ -200,8 +254,15 @@ export class BookModalPage implements OnInit {
     if(this.plt.is('hybrid')) {
       this.apiNative.getStoreservicebyStore(this.id).then(
         async data => {
-          this.services =  await data
-        
+          var services =  await data
+          this.services = services.filter(val =>{
+            return val.hasToBeMember == this.is_member })
+            if(!this.is_client){
+              this.services = this.services.filter(val =>{
+                return !val.hasToBeCLient  })
+            }
+            
+          this.services.map(val => val.selected =false)  
           Notiflix.Block.Remove('.service');
         }).catch(
           err => {
@@ -211,7 +272,14 @@ export class BookModalPage implements OnInit {
     else{
       this.api.getStoreservicebyStore(this.id).subscribe(
         async data=>{
-          this.services =  await data
+          var services:any =  await data
+          this.services = services.filter(val =>{
+            return val.hasToBeMember == this.is_member })
+            if(!this.is_client){
+              this.services = this.services.filter(val =>{
+                return !val.hasToBeCLient  })
+            }
+            this.services.map(val => val.selected =false)  
           Notiflix.Block.Remove('.service');
         err=>{
           console.log(err)
@@ -343,22 +411,42 @@ export class BookModalPage implements OnInit {
     this.date_vis = "hidden"
    
     this.cont=0
-    const index = this.service.indexOf(service);
-    if (index > -1) {
-      this.service.splice(index, 1);
-      this.empl_for_service.splice(index, 1)
-    }else{
+    let index
+    if(this.adons){
+      this.services.map(val => {if(val.id != service.id){val.selected =false}})  
+      this.service=[]
       this.service.push(service)
+
+      index = -1
       var list =[ ]
-      for(let ser of this.employees_serivces){
-        if(service.id == ser.service_id){
-          var name = this.employees_list.filter( function( el ) {
-            return el.employee == ser.employee})
-          list.push({id:ser.employee, name: name[0].name})
+        for(let ser of this.employees_serivces){
+          if(service.id == ser.service_id){
+            var name = this.employees_list.filter( function( el ) {
+              return el.employee == ser.employee})
+            list.push({id:ser.employee, name: name[0].name})
+          }
         }
+        this.empl_for_service.push(list)
+        this.getAdons(service)
+    }else{
+      index = this.service.indexOf(service);
+      if (index > -1) {
+        this.service.splice(index, 1);
+        this.empl_for_service.splice(index, 1)
+      }else{
+        this.service.push(service)
+        var list =[ ]
+        for(let ser of this.employees_serivces){
+          if(service.id == ser.service_id){
+            var name = this.employees_list.filter( function( el ) {
+              return el.employee == ser.employee})
+            list.push({id:ser.employee, name: name[0].name})
+          }
+        }
+        this.empl_for_service.push(list)
       }
-      this.empl_for_service.push(list)
     }
+    
     
     if( this.service.length!=0){
       
@@ -385,7 +473,18 @@ export class BookModalPage implements OnInit {
   
     // this.calculateAvailability(date)
   }
-
+   
+  async getAdons(service){
+   if(this.plt.is('hybrid')){
+    this.apiNative.getServiceAdons(service.id).then(res=>{
+      this.adons_list = res
+    })
+   }else{
+    this.api.getServiceAdons(service.id).subscribe(res=>{
+      this.adons_list = res
+    })
+   }
+  }
   async DatePicker(date_avi, ind, bool) {
     this.spin_spots_neg='hidden'
     // this.spin_spots='block'
@@ -453,7 +552,7 @@ export class BookModalPage implements OnInit {
         })
         this.day=this.unique[0].number
         this.month =this.unique[0].month
-        // console.log(this.unique)
+        
         this.today= `${this.day} ${this.months[this.month]} ${this.year}`
         this.spin = 'none'
         this.getAppointments(this.day,true)
@@ -484,7 +583,7 @@ export class BookModalPage implements OnInit {
       })
       this.day=this.unique[0].number
       this.month =this.unique[0].month
-      // console.log(this.unique)
+      
       this.today= `${this.day} ${this.months[this.month]} ${this.year}`
       this.spin = 'none'
       this.getAppointments(this.day,true)
@@ -1108,19 +1207,24 @@ async calculateAvailability(date, bool){
               var max_ind = this.openhours.length-1
               // let _mid =0
               for(let idx in this.openhours){
-                // console.log(idx ,this.openhours[idx].employee)
+               
                 if(this.openhours[idx].employee==y){
                   let id:any = idx
-                  // console.log(id , this.openhours[id] , this.openhours[id-1] , this.openhours[id], this.openhours[id-1],  app , this.service[serv_ind])
+                
                   if(id ==0 || id == max_ind || this.openhours[id].time-this.openhours[id-1].time> 1  || this.openhours[id].employee-this.openhours[id-1].employee!= 0 || app == undefined || app.duration == this.service[serv_ind].duration_book){
+                    
                     if (app != undefined){
-                      if(app.duration >=   this.service[serv_ind].duration_book){
-                        this.availableSpots.push(app)
-                        // console.log(app)
+                      if(app.duration ==   this.service[serv_ind].duration_book){
+                          this.availableSpots.push(app)  
+                      }
+                      if(this.openhours[id].time-this.openhours[id-1].time> 1){
+                        app=undefined
                       }
                     }
-                    if(this.rows.indexOf(this.times[this.openhours[id].time])!=-1){
+
+                    if(this.hourfilter.indexOf(this.times[this.openhours[id].time])!=-1){
                       app = {start: this.openhours[id].time, duration: 1, employee:y, emplo_name:empl_name, service: this.service[0].id , service_name: service_name}
+                    
                     }
                 
                   }else{
@@ -1147,7 +1251,7 @@ async calculateAvailability(date, bool){
              this.place_holder = []   
             //  if(this.final_spots.length<1 || this.final_spots==undefined ||this.final_spots == null ) {
             //   if(this.uniques.length>0){
-            //     if(date.getDate()==this.uniques[0].number){
+            //     if(date.getDate()==this.souniques[0].number){
             //       // this.just_entered =0
             //       this.uniques.shift()
             //       await this.DatePicker(this.uniques[0],0) 
@@ -1167,7 +1271,7 @@ async calculateAvailability(date, bool){
                 var f = this.final_spots[0][0].emplo_name
                 this.filtr.push(g)
                 this.place_holder.push(f)
-                // console.log( this.final_spots)
+                
                 await this.filter_serv()
                 if(bool && this.available_days.length>0){
                   this.date_vis='visible'
@@ -1187,10 +1291,9 @@ async calculateAvailability(date, bool){
       if (day_of_week == -1){
         day_of_week= 6
       }
-      // Notiflix.Block.Standard('.bookings-time', 'Verificando la disponibilità...');
-      // console.log(this.final_spots, serv_ind)
+      
       this.availableSpots = this.final_spots
-      // console.log(this.availableSpots, this.final_spots)
+      
       var list = [];
       var app
       for (let day of this.empl_hours){
@@ -1224,7 +1327,7 @@ async calculateAvailability(date, bool){
             for(let spot of this.availableSpots){
               let time_spot = JSON.parse(JSON.stringify(spot));
               let obj = await this.openhours.find(obj => obj.time == (Math.ceil(dur_client/3)*3)+spot[last_spot_ind].start && obj.employee == empl.employee && spot.length == last_spot_ind+1 );
-              // console.log(obj)
+              
               if(obj!=undefined){
                 var ind = this.openhours.indexOf(obj)
                 if(ind+duration<this.openhours.length){
@@ -1323,7 +1426,7 @@ async testMap(){
       return
     }
   }
-  // var x =  this.uniques.map(async (value,ind,arr)=>{console.log(new Date(value.year, value.month,value.number), await this.calculateAvailability(new Date(value.year, value.month,value.number)))
+  
 
   // })
   
@@ -1372,9 +1475,9 @@ async filter_serv(){
   }
 
 
-async book(){
+async book(adons){
   this.appointments_id=[]
-  var length  = (this.app_to_book.length-1).toString()
+  var length  = this.app_to_book.length
   var token: any = await this.apiNative.isvalidToken()
       if (this.plt.is('hybrid')) {
         if(token){
@@ -1383,17 +1486,20 @@ async book(){
             var client_name = this.user.first_name+' '+ this.user.last_name
             var start = this.rows.indexOf(this.times[this.app_to_book[ind].start])
             var end = start + this.app_to_book[ind].duration
-            // console.log(start, end, this.day, this.month, this.year, client_name, this.user.phone,  this.service[ind].name, this.app_to_book[ind].employee, this.app_to_book[ind].service,this.id,this.name)
-            this.apiNative.bookAppointmentNoOwner(start, end, this.day, this.month, this.year, client_name, this.user.phone,  this.service[ind].name, this.app_to_book[ind].employee, this.app_to_book[ind].service,this.id).then(async data=>{
-              // console.log(data)
-              this.appointments_id.push(await data.id)
            
-              if( ind == length){
-                // console.log(this.user.email,this.user.first_name,this.user.last_name,this.day,this.months_names[this.month],this.year,this.times[this.app_to_book[ind].start],this.total_service.name,this.name)
+            this.apiNative.bookAppointmentNoOwner(start, end, this.day, this.month, this.year, client_name, this.user.phone,  this.service[ind].name, this.app_to_book[ind].employee, this.app_to_book[ind].service,this.id, this.must_be_payed, adons).then( data=>{
+             
+              this.appointments_id.push( data.id)              
+              if( length === this.appointments_id.length){
+                
                 if(this.payable){
+                 
               this.getPrice()
             }else{
+              setTimeout(async () => {
                 await this.pay_modal.dismiss('keep');
+              }, 100);
+              
               this.confirm='block'
               Notiflix.Report.Init(
                 {success: 
@@ -1409,8 +1515,10 @@ async book(){
                  ok_btn.addEventListener("click",async ()=>{
                    await this.closeModal();  await this.nav.navigateRoot('/tabs/tab2'); await this.presentNotModal()
                 },false) 
-          }
-                this.sendEmailConfirmation(this.user.email,this.user.first_name,this.user.last_name,this.day,this.months_names[this.month],this.year,this.times[this.app_to_book[0].start],this.service[ind].name,this.name)
+          }   
+                    this.setEmailConfirmation(this.user.email,this.user.first_name,this.user.last_name,this.day,this.months_names[this.month],this.year,this.times[this.app_to_book[0].start],this.service[ind].name,this.name)
+              
+                
 
               }
           
@@ -1523,7 +1631,7 @@ async book(){
         month=month-1
       }
    var x = this.timeslot.split(":")
-    // console.log(new Date(this.year, month, this.day, x[0]-2), `Ricordati il tuo appuntamento presso ${this.name}.\n${this.total_service.name} oggi alle ${this.timeslot}`, new Date(this.year, this.month, day, 11),`Ricordati il tuo appuntamento presso ${this.name}.\n${this.total_service.name} il ${this.today} alle ${this.timeslot}`,)
+    
     if(this.api.isvalidToken()){
 
       for (let  ind in this.app_to_book){
@@ -1531,15 +1639,16 @@ async book(){
         var client_name = this.user.first_name+' '+ this.user.last_name
         var start = this.rows.indexOf(this.times[this.app_to_book[ind].start])
         var end = start + this.app_to_book[ind].duration
-        // console.log(start, end, this.day, this.month, this.year, client_name, this.user.phone,  this.service[ind].name, this.app_to_book[ind].employee, this.app_to_book[ind].service,this.id,this.name)
-        this.api.bookAppointmentNoOwner(start, end, this.day, this.month, this.year, client_name, this.user.phone,  this.service[ind].name, this.app_to_book[ind].employee, this.app_to_book[ind].service,this.id).subscribe(async data=>{
-          // console.log(data)
+        
+        this.api.bookAppointmentNoOwner(start, end, this.day, this.month, this.year, client_name, this.user.phone,  this.service[ind].name, this.app_to_book[ind].employee, this.app_to_book[ind].service,this.id, this.must_be_payed, adons).subscribe(async data=>{
+         
           this.appointments_id.push(await data.id)
        
-          if( ind == length){
+          if( length === this.appointments_id.length){
             
             if(this.payable){
-              this.getPrice()
+             
+          this.getPrice()
             }else{
                   await this.pay_modal.dismiss('keep');
               this.confirm='block'
@@ -1558,8 +1667,10 @@ async book(){
                      await this.closeModal();  await this.nav.navigateRoot('/tabs/tab2'); await this.presentNotModal()
                   },false) 
             }
-            this.sendEmailConfirmation(this.user.email,this.user.first_name,this.user.last_name,this.day,this.months_names[this.month],this.year,this.times[this.app_to_book[0].start],this.service[ind].name,this.name)
-          }
+       
+            this.setEmailConfirmation(this.user.email,this.user.first_name,this.user.last_name,this.day,this.months_names[this.month],this.year,this.times[this.app_to_book[0].start],this.service[ind].name,this.name)
+       
+        }
       
       // Notiflix.Report.Init(
       //   {success: 
@@ -1589,12 +1700,17 @@ async book(){
     }
   }
   }
-  async bookfromLogin(email,first_name,last_name){
+  async bookfromLogin(email,first_name,last_name,adons){
     this.appointments_id=[]
-    var length  = (this.app_to_book.length-1).toString()
+    var length  = this.app_to_book.length
     if (this.plt.is('hybrid')) {
       var token = await this.apiNative.isvalidToken() //occhio l/await non testato
       if(token){
+        this.apiNative.isStoreClient(this.id).then((res)=>{
+          if(res[0]!=undefined){
+            this.account_credits = res[0].credit
+          }
+        })
         // await this.storage.setAppointment(appointment)
         
         for (let  ind in this.app_to_book){
@@ -1602,34 +1718,11 @@ async book(){
           var client_name =first_name+' '+ last_name
           var start = this.rows.indexOf(this.times[this.app_to_book[ind].start])
           var end = start + this.app_to_book[ind].duration
-          // console.log(start, end, this.day, this.month, this.year, client_name, this.user.phone,  this.service[ind].name, this.app_to_book[ind].employee, this.app_to_book[ind].service,this.id,this.name)
-          this.apiNative.bookAppointmentNoOwner(start, end, this.day, this.month, this.year, client_name, this.user.phone,  this.service[ind].name, this.app_to_book[ind].employee, this.app_to_book[ind].service,this.id).then( async data=>{
-            // console.log(data)
-            this.appointments_id.push(await data.id)
          
-            if( ind == length){
-              if(this.payable){
-              this.getPrice()
-            }else{
-                await this.pay_modal.dismiss('keep');
-              this.confirm='block'
-              Notiflix.Report.Init(
-                {success: 
-                  {svgColor:'#0061d5',
-                  titleColor:'#1e1e1e',
-                  messageColor:'#242424',
-                  buttonBackground:'#0061d5',
-                  buttonColor:'#fff'
-                  ,backOverlayColor:'rgba(#00479d,0.2)',},
-                })
-                Notiflix.Report.Success("L'appuntamento è stato prenotato", 'Controlla la tua email per ulteriori informazioni. (Può capitare finisca nella sezione spam)', 'OK');
-                var ok_btn = document.getElementById('NXReportButton')
-                 ok_btn.addEventListener("click",async ()=>{
-                   await this.closeModal();  await this.nav.navigateRoot('/tabs/tab2'); await this.presentNotModal()
-                },false) 
-          }
-              this.sendEmailConfirmation(email,first_name,last_name,this.day,this.months_names[this.month],this.year,this.times[this.app_to_book[0].start],this.service[0].name,this.name)
-            }
+          this.apiNative.bookAppointmentNoOwner(start, end, this.day, this.month, this.year, client_name, this.user.phone,  this.service[ind].name, this.app_to_book[ind].employee, this.app_to_book[ind].service,this.id, this.must_be_payed,adons).then(data=>{
+           
+             this.appointments_id.push( data.id)
+         
         
         // Notiflix.Report.Init(
         //   {success: 
@@ -1719,6 +1812,7 @@ async book(){
             // })
             
           }
+          
         })
 
         
@@ -1745,7 +1839,35 @@ async book(){
         //             extra: null
         //           },
         //         ])}},false) 
+            
+        if( length === this.appointments_id.length){
+          
+          if(this.payable){
+           
+        this.getPrice()
+        }else{
+            setTimeout(async ()=>{
+              await this.pay_modal.dismiss('keep');
+            },100) 
+          this.confirm='block'
+          Notiflix.Report.Init(
+            {success: 
+              {svgColor:'#0061d5',
+              titleColor:'#1e1e1e',
+              messageColor:'#242424',
+              buttonBackground:'#0061d5',
+              buttonColor:'#fff'
+              ,backOverlayColor:'rgba(#00479d,0.2)',},
+            })
+            Notiflix.Report.Success("L'appuntamento è stato prenotato", 'Controlla la tua email per ulteriori informazioni. (Può capitare finisca nella sezione spam)', 'OK');
+            var ok_btn = document.getElementById('NXReportButton')
+             ok_btn.addEventListener("click",async ()=>{
+               await this.closeModal();  await this.nav.navigateRoot('/tabs/tab2'); await this.presentNotModal()
+            },false) 
+      }  
+          this.setEmailConfirmation(email,first_name,last_name,this.day,this.months_names[this.month],this.year,this.times[this.app_to_book[0].start],this.service[0].name,this.name)
         
+      }
         }).catch(
           async err=>{
           Notiflix.Report.Failure("C'è stato un problema", 'Controlla la tua connessione o prova a cambiare orario', 'Indietro');  await this.pay_modal.dismiss(); this.confirm='none'
@@ -1768,42 +1890,24 @@ async book(){
         month=month-1
       }
    var x = this.timeslot.split(":")
-    // console.log(new Date(this.year, month, this.day, x[0]-2), `Ricordati il tuo appuntamento presso ${this.name}.\n${this.total_service.name} oggi alle ${this.timeslot}`, new Date(this.year, this.month, day, 11),`Ricordati il tuo appuntamento presso ${this.name}.\n${this.total_service.name} il ${this.today} alle ${this.timeslot}`,)
+    
     if(this.api.isvalidToken()){
+      this.api.isStoreClient(this.id).subscribe(res=>{
+        if(res[0]!=undefined){
+          this.account_credits = res[0].credit
+        }
+      })
     for (let  ind in this.app_to_book){
       // await this.storage.setAppointment(appointment)
       
       var client_name =first_name+' '+ last_name
       var start = + this.rows.indexOf(this.times[this.app_to_book[ind].start])
       end = start + this.app_to_book[ind].duration
-      // console.log(start, end, this.day, this.month, this.year, client_name, this.user.phone,  this.service[ind].name, this.app_to_book[ind].employee, this.app_to_book[ind].service,this.id,this.name)
-      this.api.bookAppointmentNoOwner(start, end, this.day, this.month, this.year, client_name, this.user.phone,  this.service[ind].name, this.app_to_book[ind].employee, this.app_to_book[ind].service,this.id).subscribe(async data=>{
-        // console.log(data)
-        this.appointments_id.push(await data.id)
      
-        if( ind == length){
-          if(this.payable){
-              this.getPrice()
-            }else{
-                await this.pay_modal.dismiss('keep');
-              this.confirm='block'
-              Notiflix.Report.Init(
-                {success: 
-                  {svgColor:'#0061d5',
-                  titleColor:'#1e1e1e',
-                  messageColor:'#242424',
-                  buttonBackground:'#0061d5',
-                  buttonColor:'#fff'
-                  ,backOverlayColor:'rgba(#00479d,0.2)',},
-                })
-                Notiflix.Report.Success("L'appuntamento è stato prenotato", 'Controlla la tua email per ulteriori informazioni. (Può capitare finisca nella sezione spam)', 'OK');
-                var ok_btn = document.getElementById('NXReportButton')
-                 ok_btn.addEventListener("click",async ()=>{
-                   await this.closeModal();  await this.nav.navigateRoot('/tabs/tab2'); await this.presentNotModal()
-                },false) 
-          }
-            this.sendEmailConfirmation(email,first_name,last_name,this.day,this.months_names[this.month],this.year,this.times[this.app_to_book[0].start],this.service[ind].name,this.name)
-          }
+      this.api.bookAppointmentNoOwner(start, end, this.day, this.month, this.year, client_name, this.user.phone,  this.service[ind].name, this.app_to_book[ind].employee, this.app_to_book[ind].service,this.id, this.must_be_payed,adons).subscribe( data=>{
+       
+         this.appointments_id.push(data.id)
+       
           // await this.storage.setAppointment(appointment)
       
       // Notiflix.Report.Init(
@@ -1823,7 +1927,36 @@ async book(){
           
    
       //  await this.pay()
-   
+      if( length === this.appointments_id.length){
+        
+        if(this.payable){
+         
+      this.getPrice()
+          }else{
+            setTimeout(async () => {
+              await this.pay_modal.dismiss('keep');
+            }, 100);
+             
+            this.confirm='block'
+            Notiflix.Report.Init(
+              {success: 
+                {svgColor:'#0061d5',
+                titleColor:'#1e1e1e',
+                messageColor:'#242424',
+                buttonBackground:'#0061d5',
+                buttonColor:'#fff'
+                ,backOverlayColor:'rgba(#00479d,0.2)',},
+              })
+              Notiflix.Report.Success("L'appuntamento è stato prenotato", 'Controlla la tua email per ulteriori informazioni. (Può capitare finisca nella sezione spam)', 'OK');
+              var ok_btn = document.getElementById('NXReportButton')
+               ok_btn.addEventListener("click",async ()=>{
+                 await this.closeModal();  await this.nav.navigateRoot('/tabs/tab2'); await this.presentNotModal()
+              },false) 
+        }
+    
+          this.setEmailConfirmation(email,first_name,last_name,this.day,this.months_names[this.month],this.year,this.times[this.app_to_book[0].start],this.service[ind].name,this.name)
+        
+      }
       },
       async err=>{
         Notiflix.Report.Failure("C'è stato un problema", 'Controlla la tua connessione o prova a cambiare orario', 'Indietro');  await this.pay_modal.dismiss(); this.confirm='none'
@@ -1838,19 +1971,36 @@ async book(){
       }
     }
     }
-  sendEmailConfirmation(email, name, surname, day, month, year, time, servcie, shop){
+
+    setEmailConfirmation(email, name, surname, day, month, year, time, servcie, shop){
+      this.email_confirmation={
+        email:email,
+        name:name,
+        surname:surname,
+        day:day,
+        month:month,
+        year:year,
+        time:time,
+        servcie:servcie,
+        shop:shop
+      }
+      if(!this.must_be_payed){
+        this.sendEmailConfirmation()
+      }
+    }
+  sendEmailConfirmation(){
     if (this.plt.is('hybrid')) {
-      this.apiNative.emailConfirmBooking(email,name,surname,day,month,year,time,servcie,shop).then(
+      this.apiNative.emailConfirmBooking(this.email_confirmation.email, this.email_confirmation.name, this.email_confirmation.surname, this.email_confirmation.day, this.email_confirmation.month, this.email_confirmation.year, this.email_confirmation.time, this.email_confirmation.servcie, this.email_confirmation.shop).then(
         data=>{
-          // console.log(data)
+      
         }).catch(err=>{
             console.log(err)
         }
       )
     }else{
-      this.api.emailConfirmBooking(email,name,surname,day,month,year,time,servcie,shop).subscribe(
+      this.api.emailConfirmBooking(this.email_confirmation.email, this.email_confirmation.name, this.email_confirmation.surname, this.email_confirmation.day, this.email_confirmation.month, this.email_confirmation.year, this.email_confirmation.time, this.email_confirmation.servcie, this.email_confirmation.shop).subscribe(
         data=>{
-          // console.log(data)
+          
         },err=>{
             console.log(err)
         }
@@ -1912,6 +2062,7 @@ async presentPayModal(){
       total_service:this.total_service,
       today:this.today,
       timeslot:this.timeslot,
+      adons_list: this.adons_list,
     }
   });
   this.pay_modal.onDidDismiss().then(res=>{
@@ -1926,7 +2077,6 @@ async presentPayModal(){
 }
 
 getPrice(){
-  console.log(this.appointments_id)
   if (this.plt.is('hybrid')) {
     this.apiNative.payBusiness(this.appointments_id).then(
       async data=>{      

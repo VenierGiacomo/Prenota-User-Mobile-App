@@ -39,20 +39,30 @@ export class AppComponent {
     App.addListener('appUrlOpen', (data: any) => {
       this.zone.run(async () => {
           const slug = data.url.split(".cc/").pop();
-          console.log(slug)
+          
           if (slug) {
             var slug_parts =slug.split('/')
-            console.log(slug_parts)
+            
             if(slug_parts[0] == 'register'){
               var token: any = await this.apiNative.isvalidToken()
               if(token){
-                await this.presentToast('Per registrare un nuovo account devi prima effetuare il logout')
+                if(slug_parts[6]){
+                  this.apiNative.updateStoreClientQRCode(slug_parts[6]).then(async res=>{
+                    await this.presentToast('Profilo collegato')
+                  }).catch(err=>{
+                    console.log(err)
+                  })
+                }else{
+                  await this.presentToast('Per registrare un nuovo account devi prima effettuare il logout')
+                }
+               
               }else{
                 data = {
                   first_name: slug_parts[1],
                   last_name :  slug_parts[2],
                   email : slug_parts[3],
                   phone : slug_parts[4],
+                  client_id : slug_parts[6],
                 }
                 await this.presentRegisterModal(data)
               }
@@ -73,7 +83,8 @@ async presentRegisterModal(reg_data) {
           first_name: reg_data.first_name,
            last_name :  reg_data.last_name,
            email : reg_data.email,
-           phone : reg_data.phone
+           phone : reg_data.phone,
+           client_id:reg_data.client_id
         }
       });
       return await modal.present();

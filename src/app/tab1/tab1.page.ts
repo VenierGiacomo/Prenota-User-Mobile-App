@@ -5,6 +5,10 @@ import { ApiService } from '../services/api.service';
 import { NativeApiService } from '../services/nativeapi.service';
 import { StorageService } from '../services/storage.service';
 import { BookModalPage } from '../book-modal/book-modal.page';
+import { ActivatedRoute } from '@angular/router';
+import { RegisterPage } from '../register/register.page';
+import { PayModalPage } from '../pay-modal/pay-modal.page';
+import { IfStmt } from '@angular/compiler';
 @Component({
   selector: 'app-tab1',
   templateUrl: 'tab1.page.html',
@@ -17,7 +21,7 @@ capelli:any=[]
 grouped:any=[]
 spin='block'
 initialoffsetTop
-  constructor(private toastController: ToastController,public actionSheetController: ActionSheetController, private nav: NavController ,  private storage: StorageService, public modalController: ModalController,private api:ApiService, private plt:Platform,private apiNative:NativeApiService) {
+  constructor(private route: ActivatedRoute, private toastController: ToastController,public actionSheetController: ActionSheetController, private nav: NavController ,  private storage: StorageService, public modalController: ModalController,private api:ApiService, private plt:Platform,private apiNative:NativeApiService) {
     this.plt.ready().then(
       () =>{
         if (this.plt.is('hybrid')) {
@@ -63,10 +67,74 @@ initialoffsetTop
         } ) 
         
   }
- 
-  ngOnInit() {
+  async ionViewDidEnter() {
+    if(this.plt.is('hybrid')){
+      if(token){
+        var token = await this.apiNative.isvalidToken()
+        this.apiNative.paymentMethods().then(async (res)=>{
+          await this.storage.clearPaymentMethods()
+            await this.storage.setPaymentMethods(res)
+        })
+      }
+    }else{
+      if(this.api.isvalidToken()){
+        this.api.paymentMethods().subscribe(async (res)=>{
+          await this.storage.clearPaymentMethods()
+          await this.storage.setPaymentMethods(res)
+        })}
+    }
   }
-  
+  ngOnInit() {
+
+    if(!this.plt.is("hybrid")){
+
+      this.route.paramMap.subscribe(async params => {
+        if(params.get('first_name')){
+          var token: any = await this.api.isvalidToken()
+              if(token){
+                await this.presentToast('Per registrare un nuovo account devi prima effettuare il logout')
+                this.nav.navigateRoot('tabs')
+              }else{
+               var  data = {
+                  first_name: params.get('first_name'),
+                  last_name :  params.get('last_name'),
+                  email : params.get('email'),
+                  phone : params.get('phone'),
+                }
+                await this.presentRegisterModal(data)
+        }
+
+        
+      }
+      })
+  }
+}
+  async presentRegisterModal(reg_data) {
+    const modal = await this.modalController.create({
+      component:RegisterPage,
+      swipeToClose: true,
+      cssClass: 'select-modal' ,
+      componentProps: { 
+        first_name: reg_data.first_name,
+         last_name :  reg_data.last_name,
+         email : reg_data.email,
+         phone : reg_data.phone
+      }
+    });
+    modal.onDidDismiss().then(()=>{
+      this.nav.navigateRoot('tabs')
+    })
+    return await modal.present();
+}  
+async presentToast(text) {
+  const toast = await this.toastController.create({
+    message: text,
+    position: 'top',
+    duration: 5000,
+    cssClass:'toast-class',
+  });
+  toast.present();
+}
   async presentModal(shop) {
     if(shop.closed){
       this.presentclosed(shop.closed_message)
@@ -83,7 +151,11 @@ initialoffsetTop
           max_spots: shop.max_spots,
           website: shop.website,
           address: shop.address,
-          payable: shop.payable
+          payable: shop.payable,
+          accept_credits: shop.credits,
+          must_be_payed: shop.must_pay,
+          adons: shop.adons,
+          available_on: shop.available_on,
         }
       });
       return await modal.present();
@@ -122,9 +194,7 @@ initialoffsetTop
     toast.present();
   }
   async assistenzaActionSheet() {
-
-    
-
+    // this.presentPayModal()
     const actionSheet = await this.actionSheetController.create({
       header: 'Assistenza',
       
@@ -155,6 +225,35 @@ initialoffsetTop
     await actionSheet.present();
   }
 
+  // async presentPayModal(){
+  //   var modal = await this.modalController.create({
+  //     component:PayModalPage,    
+  //     cssClass: 'pay-customer-modal' ,
+  //     backdropDismiss: false,
+  //     swipeToClose: false,
+  //     componentProps: {
+  //       homeref: this,
+  //       total_service:{name:'Campo 1 ora'},
+  //       today:"Ven 19 Feb",
+  //       timeslot:"10:30",
+  //     }
+  //   });
+  //   return await modal.present();
+  // }
+  newCustomer(shop){
+    var channel = shop.store_name.replaceAll(' ','-')
+  if(this.plt.is('hybrid')){
+    this.apiNative.newCustomerSocket(channel).then(res=>{
+      console.log(res)
+    }).catch(err=>{
+      console.log(err)
+    })
+  }else{
+    this.api.newCustomerSocket(channel).subscribe(res=>{
+      
+    })
+  }
+    
+  }
 
-  
 }

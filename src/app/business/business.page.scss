@@ -359,11 +359,10 @@ ion-header{
     }
   
     ion-title {
-      color:#fff;
+      color:#0061d5;
       font-size: 21px;
       font-family: 'Comfortaa Bold';
-      --background: #0061d5;
-      background: #0061d5;
+
     }
 
     body{
@@ -423,5 +422,19 @@ ion-header{
                 /* Set full opacity on the placeholder */
                 --placeholder-opacity: 1;
 
+        }
+    }
+
+    ion-header{
+        background: #fff;
+        --background: #fff;
+        ion-toolbar{
+            background: #fff;
+            --background: #fff;
+        }
+        ion-icon{
+            padding-right: 10px;
+            font-size: 21px;
+            color: #929da7;
         }
     }

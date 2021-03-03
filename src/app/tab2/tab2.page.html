@@ -5,8 +5,8 @@
             Clear
           </ion-button>
         </ion-buttons> -->
-        <ion-buttons slot="end">
-          <ion-button  mode=ios (click)='settings()'>
+        <ion-buttons slot="end" (click)='settings()'>
+          <ion-button  mode=ios >
               <ion-icon name="cog-outline"></ion-icon>
           </ion-button>
         </ion-buttons>
@@ -14,9 +14,28 @@
       </ion-toolbar>
     </ion-header>
   <ion-content >
-
+      <!-- <h2 *ngIf='appointments_list.length!=0 || ticket_list.length!=0'>I tuoi biglietti</h2>
+      <div *ngIf='appointments_list.length!=0 || ticket_list.length!=0' >
+          <div  class="ticket" (click)="activate_ticket()" *ngIf="!activated_ticket">
+              <div class="bg_load" [style.width]='load_width'> </div>
+              <div class="ticket-image"><img src='../assets/unnamed (1).png'></div>
+            <div class="ticket-text">
+              <p>Durata biglietto:  60 minuti</p> 
+              <p><span style="color: #5c6a85; font-size: 16px; font-weight: 600;;">Clicca per attivare</span></p> 
+            </div>
+          </div>
+          <div class="ticket"  (click)="process()" *ngIf="activated_ticket">
+              <div class="ticket-image"><img src='../assets/unnamed (1).png'></div>
+              <div class="ticket-text">
+                <p>Durata biglietto:  60 minuti</p> 
+                <p ><span style="color: #017230; font-size: 16px; font-weight: 600;;">Attivo fino alle {{active_time}}</span></p> 
+              </div>
+            </div>
+           
+      </div> -->
   <!-- <h2 *ngIf='appointments_list.length!=0 || ticket_list.length!=0'>I tuoi servizi</h2> -->
   <h2 *ngIf='appointments_list.length!=0'>I tuoi appuntamenti</h2>
+  <p *ngIf='appointments_list.length!=0' style="font-size: 11px; color: #212121; margin: 0px 5vw; padding: 0px 10px;">Clicca su un appuntamento per info o cancellare</p>
   <!-- <div class="appintment" >Al momento non hai appuntamenti prenotati</div> -->
   <!-- <div *ngIf='appointments_list.length==0 && ticket_list.length==0' style="width: 100vw; padding: 0px 4vw; top: 30vh;text-align: center;"> -->
       <div *ngIf='appointments_list.length==0 ' style="width: 100vw; padding: 0px 4vw; top: 30vh;text-align: center;">
@@ -27,30 +46,14 @@
       <p><a (click)='infoModal("https:prenota.cc/termofuse")'>Termini di Utilizzo</a> - <a (click)='infoModal("https:prenota.cc/privacy")'>Privacy Policy</a> <br> <br><a href='https://wa.me/393404526854'>Contatta il centro assistenza 24/7</a></p>
     </div>
 </div>
-<!-- <div *ngIf='appointments_list.length!=0 || ticket_list.length!=0' >
-    <div  class="ticket" (click)="activate_ticket()" *ngIf="!activated_ticket">
-        <div class="bg_load" [style.width]='load_width'> </div>
-        <div class="ticket-image"><img src='../assets/Trieste_Trasporti_logo.svg'></div>
-      <div class="ticket-text">
-        <p>Durata:  60 minuti</p> 
-        <p><span style="color: #5c6a85; font-size: 16px; font-weight: 600;;">Clicca per attivare</span></p> 
-      </div>
-    </div>
-    <div class="ticket"  (click)="process()" *ngIf="activated_ticket">
-        <div class="ticket-image"><img src='../assets/Trieste_Trasporti_logo.svg'></div>
-        <div class="ticket-text">
-          <p>Durata:  60 minuti</p> 
-          <p ><span style="color: #017230; font-size: 16px; font-weight: 600;;">Attivo fino alle {{active_time}}</span></p> 
-        </div>
-      </div>
-     
-</div> -->
+
 
   
   
   <!-- <ion-item-sliding *ngFor="let appointment of appointments_list" (click)='presentPopover($event)'> -->
-   <div  class="appintment"  *ngFor="let appointment of appointments_list"(click)='presentPopover($event,appointment)'>
-
+   <div  class="appintment"  *ngFor="let appointment of appointments_list, let ind =index"(click)='presentPopover($event,appointment)'>
+      <div *ngIf='appointment.payed' style="position: absolute; top:10px; right: 10px; font-size: 13px; font-weight: 700; color: #009c49"><ion-icon  style='font-size: 16px;margin-bottom: -3px;;' name="checkmark-circle-outline"></ion-icon> Pagato</div>
+      <div  *ngIf='!appointment.payed'  style="position: absolute; top:10px; right: 10px; font-size: 13px; font-weight: 700; color: #757575"> Da pagare</div>
       <div class='app-Shop'>{{appointment.store_name}}</div>
       <div class='app-service'>{{appointment.details}}</div>
       <div class='app-date'> <ion-icon name="location-outline"></ion-icon> {{appointment.location}}</div>
@@ -78,3 +81,4 @@
     <p>Data: {{today_ticket}}</p>
   </div>
 </div>
+

@@ -12,6 +12,10 @@ const routes: Routes = [
         loadChildren: () => import('../tab1/tab1.module').then(m => m.Tab1PageModule)
       },
       {
+        path: 'tab1/register/:first_name/:last_name/:email/:phone',
+        loadChildren: () => import('../tab1/tab1.module').then(m => m.Tab1PageModule)
+      },
+      {
         path: 'tab2',
         loadChildren: () => import('../tab2/tab2.module').then(m => m.Tab2PageModule)
       },
@@ -30,7 +34,12 @@ const routes: Routes = [
     path: '',
     redirectTo: '/tabs/tab1',
     pathMatch: 'full'
-  }
+  },
+  {
+    path: 'register/:first_name/:last_name/:email/:phone',
+    redirectTo: '/tabs/tab1/register/:first_name/:last_name/:email/:phone',
+    pathMatch: 'full'
+  },   
 ];
 
 @NgModule({

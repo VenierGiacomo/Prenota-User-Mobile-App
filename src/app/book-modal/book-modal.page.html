@@ -1,5 +1,7 @@
 <ion-header class="ion-no-border">
+  
   <ion-toolbar>
+    <div slot="start" style="padding-left: 20px; font-weight: 300;" *ngIf='accept_credits && account_credits!=0'>Il tuo credito: {{(account_credits/100).toFixed(2)}}€</div>
       <ion-icon slot="end" name="close-outline"  class="white-icon" (click)='closeModal()'></ion-icon>
   </ion-toolbar>
 </ion-header>
@@ -19,13 +21,15 @@
       </div>
 </section>
 <section >
-<h5>Seleziona un servizio o più</h5>
-<p *ngIf='services.length>5'>Scorri per altri servizi</p>
+<h5 *ngIf='!adons'>Seleziona un servizio o più</h5>
+<h5 *ngIf='adons'>Seleziona un servizio</h5>
+<p *ngIf='services.length>4'>Scorri verso il basso per altri servizi</p>
   <div class="service">
       <!-- <ion-radio-group [(ngModel)]="service" > -->
-          <ion-item *ngFor='let service of services' lines="full" (click)='selectService(service)'>
-              <ion-label>{{service.name}} <b style="text-align-last: right;text-align: right;">a partire da {{service.price/100}}€</b></ion-label>
-              <ion-checkbox slot="end"  [value]="service"></ion-checkbox>
+          <ion-item *ngFor='let service of services' lines="full" >
+              <ion-label>{{service.name}} <b style="text-align-last: right;text-align: right;"><br> Prezzo: {{(service.price==0)? "Gratuito" : service.price/100+'€'}}</b></ion-label>
+              <!-- <ion-label>{{service.name}} <b style="text-align-last: right;text-align: right;">a partire da {{service.price/100}}€</b></ion-label> -->
+              <ion-checkbox slot="end"  [(ngModel)]="service.selected" (click)='selectService(service)'></ion-checkbox>
           </ion-item>
       <!-- </ion-radio-group> -->
   </div>
@@ -66,7 +70,7 @@
       <!-- <span  *ngIf='emplo_show[ix]'> -->
         <!-- <h6 style="color: #fff;" >Disponibilità di {{empl.name}}:</h6> -->
           <div class='x-scroller'>
-              <span  *ngFor='let time of final_spots_displ'><div class="time-slot" (click)="selectTime(time)">{{times[time[0].start]}}</div></span>
+              <span  *ngFor='let time of final_spots_displ'><div class="time-slot" (click)="selectTime(time)" >{{times[time[0].start]}}</div></span>
               <!-- <p  *ngIf='!emplo_show[ix]' style="color: #efefef; font-size: 13px;">Nessuna disponibilita, prova in un' altra data</p> -->
           </div>
       <!-- </span>  -->

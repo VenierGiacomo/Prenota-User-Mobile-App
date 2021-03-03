@@ -17,7 +17,7 @@
     <div class="select-ticket" [style.left]='pos_ticket' [style.top]='pos_ticket_top'>
   <div class="prof-profile" (click)='paySingleCorse()'>
     <div class="cont_img_text">
-            <div class="prof-img"> <img src='../assets/Trieste_Trasporti_logo.svg.png'></div>
+            <div class="prof-img"> <img src='../assets/unnamed (1).png'></div>
             <div class="text_widg">
                 <h4>Biglietto 1 ora</h4>
                 <h5>Intera rete</h5>
@@ -28,7 +28,7 @@
 </div>          
 <div class="prof-profile" (click)='payDailyCorse()'>
   <div class="cont_img_text">
-          <div class="prof-img"> <img src='../assets/Trieste_Trasporti_logo.svg.png'></div>
+          <div class="prof-img"> <img src='../assets/unnamed (1).png'></div>
           <div class="text_widg">
               <h4>Biglietto Giornaliero</h4>
               <h5>Intera rete</h5>
@@ -39,7 +39,7 @@
 </div>   
 <div class="prof-profile" (click)='show_monthly()'>
   <div class="cont_img_text">
-          <div class="prof-img"> <img src='../assets/Trieste_Trasporti_logo.svg.png'></div>
+          <div class="prof-img"> <img src='../assets/unnamed (1).png'></div>
           <div class="text_widg">
               <h4>Abbonamenti</h4>
               <h5>Intera rete</h5>
@@ -50,10 +50,10 @@
 </div>  
     </div>
 <div class="card-int"  [style.left]='pos_pay'>
-  <div style="color: #000; text-align: center; font-weight: 700;">Tesserino N. {{code}}</div>
+  <div style="color: #000; text-align: center; font-weight: 700;" *ngIf='ticket_type=="monthly"'>Tesserino N. {{code}}</div>
 <label class='label_c'>{{product_buying.name}}<br>Importo dovuto:<br> <span class="money_due">{{product_buying.price}}€</span></label>
-  <div class="apple_pay_btn" (click)='applePayment()'>  <ion-icon name="logo-apple"></ion-icon>Pay </div>
-  <div class="confirm-pay"> <button  type='submit' (click)='goCard()'><ion-icon name="card-outline"></ion-icon> Carta di Credito</button></div>
+  <div class="apple_pay_btn" (click)='applePayment()' *ngIf='ticket_type=="monthly"'>  <ion-icon name="logo-apple"></ion-icon>Pay </div>
+  <div class="confirm-pay"> <button  type='submit' (click)='CardorNopay()'><span *ngIf="!payment_loading"><ion-icon name="card-outline"></ion-icon> Carta di Credito</span><div class="loader-5 center" *ngIf="payment_loading"><span></span></div></button></div>
 </div>
 <div class="card-int"  [style.left]='pos_card'>
     <div style="color: #000; text-align: center; font-weight: 700;">Tesserino N. {{code}}</div>

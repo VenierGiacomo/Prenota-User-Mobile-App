@@ -1,7 +1,18 @@
 
 body{
     background: #0061d6;
+    caret-color: white !important;
 }
+input[type="text"] {
+    caret-color: white !important;
+  }
+
+  ion-input{
+    caret-color: white !important;
+  }
+  input{
+    caret-color: white !important;
+  }
 ion-button p{
 color: white;
 font-weight: 500;;
@@ -26,6 +37,7 @@ h1{
 .input-cont{
     position: absolute;
     top: 70px;
+    caret-color: white !important;
     ion-item{
         font-size: 13px !important;
         color:#EBEEFF;;
@@ -39,6 +51,7 @@ h1{
         font-size: 13px !important;
     }
     ion-input{
+        caret-color: white !important;
         max-height: 30px;
         --placeholder-opacity: 0.9;
         --placeholder-color: rgb(168, 2, 2);

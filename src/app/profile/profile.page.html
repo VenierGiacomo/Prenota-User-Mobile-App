@@ -1,6 +1,6 @@
 <ion-header class="ion-no-border bar-header">
   <ion-toolbar style=" background: transparent !important;">
-      <ion-icon slot="end" name="close-outline"  (click)='closeModal(false)'></ion-icon>
+      <ion-icon slot="end" name="close-outline"  (click)='closeModal()'></ion-icon>
   </ion-toolbar>
 </ion-header>
 
@@ -32,10 +32,10 @@
     <ion-label style="text-align: right; margin: 0px;">Uomo</ion-label>
     <ion-toggle (click)='switchSex()'></ion-toggle>
     <ion-label style="text-align: left;margin: 0px;">Donna</ion-label>
-  </ion-item> -->
-  <p class='err' *ngIf='error!=""' >{{error}}</p>  
+  </ion-item> -->  
   <div class="login-btn">
-    <ion-button fill=outline color='light' (click)='register()'>Salva modifche</ion-button>
+    <ion-button fill=outline color='light' (click)='updateUser()'>Salva modifche</ion-button>
+    <ion-button color='light' (click)='openPaymentMethods()' style='margin-top:20px'>Metodi di pagamento</ion-button>
   </div> 
  </div>
 </ion-content>

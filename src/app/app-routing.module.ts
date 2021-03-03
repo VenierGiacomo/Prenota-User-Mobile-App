@@ -26,9 +26,13 @@ const routes: Routes = [
     path: 'business/:id',
     loadChildren: () => import('./business/business.module').then( m => m.BusinessPageModule)
   },
-  {path: '**', 
-  redirectTo: '/tabs/tab1',
-},
+  {
+    path: 'register/:first_name/:last_name/:email/:phone',
+    loadChildren: () => import('./tabs/tabs.module').then( m => m.TabsPageModule)
+  },
+//   {path: '**', 
+//   redirectTo: '/tabs/tab1',
+// },
   {
     path: 'bus-ticket',
     loadChildren: () => import('./bus-ticket/bus-ticket.module').then( m => m.BusTicketPageModule)
@@ -48,6 +52,10 @@ const routes: Routes = [
   {
     path: 'profile',
     loadChildren: () => import('./profile/profile.module').then( m => m.ProfilePageModule)
+  },
+  {
+    path: 'select-company',
+    loadChildren: () => import('./select-company/select-company.module').then( m => m.SelectCompanyPageModule)
   },
   
 ];

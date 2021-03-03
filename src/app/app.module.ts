@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, Injectable } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
@@ -9,15 +9,26 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { CommonModule } from '@angular/common';
 import { AppCenterAnalytics } from '@ionic-native/app-center-analytics/ngx';
-import { Stripe } from '@ionic-native/stripe/ngx';
+// import { Stripe } from '@ionic-native/stripe/ngx';
 import { PopoverComponent } from './popover/popover.component';
 // import { ApplePay } from '@ionic-native/apple-pay/ngx';
-import { PayPal } from '@ionic-native/paypal/ngx';
-import { Braintree} from '@ionic-native/braintree/ngx';
+// import { PayPal } from '@ionic-native/paypal/ngx';
+// import { Braintree} from '@ionic-native/braintree/ngx';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 import { Keyboard } from '@ionic-native/keyboard/ngx';
 import { Diagnostic } from '@ionic-native/diagnostic/ngx';
-
+import 'hammerjs'
+import { HammerGestureConfig, HAMMER_GESTURE_CONFIG } from '@angular/platform-browser';
+import { HammerModule } from '@angular/platform-browser';
+import * as Hammer from 'hammerjs';
+@Injectable()
+export class MyHammerConfig extends HammerGestureConfig {
+    buildHammer(element: HTMLElement): any {
+      return new Hammer(element, {
+        swipe: { direction: Hammer.DIRECTION_ALL }
+      });
+   }
+}
 @NgModule({
   declarations: [AppComponent,PopoverComponent],
   entryComponents: [],
@@ -28,17 +39,18 @@ import { Diagnostic } from '@ionic-native/diagnostic/ngx';
     IonicStorageModule.forRoot(),
     IonicModule.forRoot(),
     AppRoutingModule,
+    HammerModule,
     HttpClientModule],
   providers: [
     StatusBar,
     Diagnostic,
     AppCenterAnalytics,
     // ApplePay,
-    PayPal,
-    Stripe,
-    Braintree,    
+
+    // Stripe,  
     Keyboard,
     BarcodeScanner,
+    {provide: HAMMER_GESTURE_CONFIG, useClass: MyHammerConfig },
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]

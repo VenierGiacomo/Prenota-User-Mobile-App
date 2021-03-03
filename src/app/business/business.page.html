@@ -1,20 +1,31 @@
-<!-- <ion-header class="ion-no-border">
-  <ion-toolbar>
-      <ion-icon slot="start" name="chevron-back-outline"  class="white-icon" (click)='goHome()'></ion-icon>
-  </ion-toolbar>
-</ion-header> -->
+<ion-header  mode=ios >
+  <ion-toolbar  mode=ios translucent>
+    <ion-buttons slot="start">
+      <ion-button  mode=ios (click)='goHome()'>
+          <ion-icon name="home-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+      <ion-buttons slot="end"  mode=ios>
+        <ion-button  mode=ios>
+            <a (click)='assistenzaActionSheet()' target="_blank"><div  style="color: #929da7; font-size: 13px;">Assistenza</div></a>
+        </ion-button>
+      </ion-buttons>
+  
+      <ion-title mode=ios  >prenota</ion-title>
+    </ion-toolbar>
+  </ion-header>
 
-<ion-content fullscreen>
+  <ion-content >
     <div class="spinner" [style.display]="spin">
         <div class="double-bounce1"></div>
         <div class="double-bounce2"></div>
       </div>
 <section class="profile">
-      <div class="cont-img"><img [src]='image'></div>
+      <div class="cont-img" ><img [src]='image'></div>
       <div class="names">
           <h2>{{name}}</h2>
           <h5>{{role}}</h5>
-          <h5>{{address}}</h5>
+          <ion-button fill=outline (click)='infoModal()' color="light"> Maggiori informazioni</ion-button>
           <!-- <ion-button style='margin: 0px 10px;' fill=outline (click)='infoModal()'><a href="https://www.google.com/maps/place/Via+Pirano,+12,+34145+Trieste+TS/@45.6308291,13.7860032" target="_blank">Mappa</a></ion-button> -->
       </div>
 </section>
@@ -24,7 +35,7 @@
   <div class="service">
       <!-- <ion-radio-group [(ngModel)]="service" > -->
           <ion-item *ngFor='let service of services' lines="full" (click)='selectService(service)'>
-              <ion-label>{{service.name}}</ion-label>
+              <ion-label>{{service.name}} <b style="text-align-last: right;text-align: right;">a partire da {{service.price/100}}€</b></ion-label>
               <ion-checkbox slot="end"  [value]="service"></ion-checkbox>
           </ion-item>
       <!-- </ion-radio-group> -->
@@ -35,11 +46,11 @@
         <div class="double-bounce1"></div>
         <div class="double-bounce2"></div>
       </div>
-<section class="date" [style.visibility]="spin_spots_neg">
+<section class="date" [style.visibility]="date_vis">
   <h5 *ngIf='uniques.length!=0'>Seleziona una data</h5>
 
   <div class='x-scroller'>
-      <div class="time-slot" *ngFor='let date_avi of uniques, let ind = index' (click)="DatePicker(date_avi, ind)" [class.active]='active_date[ind]'>{{week_name[date_avi.week_day]}} {{date_avi.number}} {{months_short[date_avi.month]}}</div>
+      <span *ngFor='let date_avi of uniques, let ind = index'><div class="time-slot"  (click)="DatePicker(date_avi, ind, true)" [class.active]='active_date[ind]' *ngIf='available_days[ind]'>{{week_name[date_avi.week_day]}} {{date_avi.number}} {{months_short[date_avi.month]}}</div></span>
     </div>
 </section>
 <section class="time" *ngIf='uniques.length!=0' [style.visibility]="spin_spots_neg">
@@ -48,18 +59,21 @@
         <div class="double-bounce2"></div>
       </div> -->
       <span *ngIf='employees_list.length>1'>
-      <ion-item  class="item-class" *ngFor='let serv of service, let i = index 'lines="none">
-          <ion-label>{{serv.name}} </ion-label>
-          <ion-select interface="popover"  [(ngModel)]="filtr[i]"   (ionChange)='filter_serv()' placeholder='{{place_holder[i]}}' >
-              <ion-select-option  *ngFor='let empl of empl_for_service[i]' value={{empl.id}}>{{empl.name}}</ion-select-option>
-            
-          </ion-select>
-        </ion-item>
+        <span *ngIf='has_spot'>
+            <ion-item  class="item-class" *ngFor='let serv of service, let i = index 'lines="none">
+                <ion-label>{{serv.name}} </ion-label>
+                <ion-select interface="popover"  [(ngModel)]="filtr[i]"   (ionChange)='filter_serv()' placeholder='{{place_holder[i]}}' >
+                    <ion-select-option  *ngFor='let empl of empl_for_service[i]' value={{empl.id}}>{{empl.name}}</ion-select-option>
+                  
+                </ion-select>
+              </ion-item>
+        </span>
+     
       </span>
     <h5 style="color: #fff;" >Seleziona un orario</h5>
     
-    <p  *ngIf='final_spots_displ.length==0' style="color: #efefef; font-size: 15px;"  [style.visibility]="spin_spots_neg">Nessuna disponibilita, prova in un' altra data</p>
-    <div  style="position: relative;"   [style.visibility]="spin_spots_neg">
+    <p  *ngIf='!has_spot' style="color: #efefef; font-size: 15px;"  [style.visibility]="spin_spots_neg">Nessuna disponibilita, prova in un' altra data</p>
+    <div  style="position: relative;"   [style.visibility]="spin_spots_neg" *ngIf='has_spot'>
       <!-- <span  *ngIf='emplo_show[ix]'> -->
         <!-- <h6 style="color: #fff;" >Disponibilità di {{empl.name}}:</h6> -->
           <div class='x-scroller'>
@@ -77,20 +91,16 @@
 </ion-content>
 
 <div class="confirm-tab" [style.display]='confirm'>
-  <div class="cont">
-    <h3>Riassunto prenotazione</h3>
-        <div><b>Servizio:</b> {{total_service.name}}</div>
-        <div><b>Data:</b> {{today}}</div>
-        <div><b>Orario:</b> {{timeslot}}</div>
-        <div class="buttons">  
-          <button (click)='book()' class='confirm'>prenota</button> 
-          <div (click)='confirm="none"'>Annulla</div>
-        </div>
-  </div>
 </div>
+<!-- 
+<div class="confirm-tab" [style.display]='show_not_req'>
+    <div class="cont">
+      <h3>Ti possiamo ricordare noi l'appuntamnto</h3>
+          <div>Permetti a Prenota di inviarti una notifica il giorno prima dell'appuntamento e la mattina spessa. </div>
 
-<style>
-    .braintree-option__card{
-       display: none !important;
-    }
-</style>
+          <div class="buttons">  
+            <button (click)='show_not=trues' class='confirm'>Ricordamelo</button> 
+            <div (click)='show_not=false'>Non sono interessato</div>
+          </div>
+    </div>
+  </div> -->

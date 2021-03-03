@@ -1,14 +1,28 @@
 
 
-<ion-content>
+<ion-content scrollY=false>
     <div class="book-int"  [style.left]='pos_book'> 
+    <span class="recap">
     <h3>Riassunto prenotazione</h3>
-    <p style="text-transform: capitalize;"><b>Servizio:</b> {{total_service.name}}<br>
+    <p style="text-transform: capitalize;"id='cont' ><b>Servizio:</b> {{total_service.name}}<br>
     <b>Data:</b> {{today}}<br>
     <b>Orario:</b> {{timeslot}}</p>
+  </span>
+ 
+        <div class="toggle" *ngFor='let adon of adons_list'>
+            <span>
+              <p><b>{{adon.name}}</b></p>
+                  <ion-icon name="information-circle-outline" (click)='popoverInfo($event,adon)'></ion-icon>  
+              <div class="adon_price">+ {{adon.price/100}}€</div>
+            </span>
+            <ion-toggle [(ngModel)]='adon.selected' ></ion-toggle>
+          </div>
+       
+          
+ 
     <div class="prenota_btn" (click)='goPay()' > <button><span *ngIf="!book_load">prenota</span> <div class="loader-5 center" *ngIf="book_load"><span></span></div> </button> </div>
     <div class="separator" [style.opacity]='opacity_scroll'>
-        <p (click)='backModal()'>Indietro</p>
+        <p (click)='backModal(true)'>Indietro</p>
       </div>
     </div>
   <div class="card-int"  [style.left]='pos_pay'>    
@@ -19,15 +33,18 @@
   <div class="apple_pay_btn" (click)='applePayment()' [style.opacity]='opacity_scroll' [style.margin-top]='applePay_top' *ngIf='applePay_available'>  <ion-icon name="logo-apple"></ion-icon>Pay </div>
  
   <div class="apple_pay_btn" (click)='useStripeGoogle()' [style.opacity]='opacity_scroll' [style.margin-top]='applePay_top' *ngIf='googlePay_available'>  <img  style='height: 23px;' src='../assets/icon/gpay.svg'> </div>
-
-  <div style='margin-top: 20px;' class="confirm-pay" (click)='CardorNopay()'  [style.margin-top]='applePay_top'  *ngIf='!fast_pay'> <button  type='submit' > <span *ngIf="!payment_loading"><ion-icon name="card-outline"></ion-icon> Carta di credito</span><div class="loader-5 center" *ngIf="payment_loading"><span></span></div></button></div>
-  <div style='margin-top: 20px;' class="confirm-pay" (click)='CardorNopay()'  *ngIf='fast_pay'> <button  type='submit' > <span *ngIf="!payment_loading"><ion-icon name="card-outline"></ion-icon> Carta di credito</span><div class="loader-5 center" *ngIf="payment_loading"><span></span></div></button></div>
+  <div style='margin-top: 10px;' class="confirm-credit" (click)='payWithCredits()' *ngIf='credit_pay && fast_pay'> <button  > <span *ngIf="!payment_credit_loading"><ion-icon name="wallet-outline"></ion-icon> Paga con credito</span><div class="loader-6 center" *ngIf="payment_credit_loading"><span></span></div></button></div>
+  <div style='margin-top: 10px;' class="confirm-credit" (click)='payWithCredits()' [style.margin-top]='applePay_top'    *ngIf='credit_pay  && !fast_pay'><button   > <span *ngIf="!payment_credit_loading"><ion-icon name="wallet-outline"></ion-icon> Paga con credito</span><div class="loader-6 center" *ngIf="payment_credit_loading"><span></span></div></button></div>
+  <div  class="confirm-pay" (click)='CardorNopay()'  [style.margin-top]='applePay_top'  *ngIf='!fast_pay'> <button  type='submit' > <span *ngIf="!payment_loading"><ion-icon name="card-outline"></ion-icon> Carta di credito</span><div class="loader-5 center" *ngIf="payment_loading"><span></span></div></button></div>
+  <div  class="confirm-pay" (click)='CardorNopay()'  *ngIf='fast_pay'> <button  type='submit' > <span *ngIf="!payment_loading"><ion-icon name="card-outline"></ion-icon> Carta di credito</span><div class="loader-5 center" *ngIf="payment_loading"><span></span></div></button></div>
+  
   <div class="separator" [style.opacity]='opacity_scroll' >
-      <p (click)='book(false)' >Paga sul posto</p>
+      <p *ngIf='!homeref.must_be_payed' (click)='book(false)' > Paga sul posto</p>
+      <p *ngIf='homeref.must_be_payed' (click)='backModal(true)'>Indietro</p>
   </div>
   
   <div class="apple_pay_btn" (click)='applePayment()' *ngIf='applePay_available'>  <ion-icon name="logo-apple"></ion-icon>Pay </div>
-
+  <div  class="confirm-credit" (click)='payWithCredits()'  *ngIf='credit_pay && !fast_pay'> <button   > <span *ngIf="!payment_credit_loading"><ion-icon name="wallet-outline"></ion-icon> Paga con credito</span><div class="loader-6 center" *ngIf="payment_credit_loading"><span></span></div></button></div>
   <div class="apple_pay_btn" (click)='useStripeGoogle()' *ngIf='googlePay_available'>  <img src='../assets/icon/gpay.svg' style='height: 23px;' > </div>
   
   <label class='label' for="card-number"> Carta di credito</label>
@@ -46,8 +63,11 @@
 
   <!-- <div class="confirm-pay" > <button  type='submit' (click)='goCard()'><ion-icon name="card-outline"></ion-icon> Carta di Credito</button></div> -->
   <div class="separator">
-    <p (click)='book(false)' >Paga sul posto</p>
+      <p *ngIf='!homeref.must_be_payed' (click)='book(false)' > Paga sul posto</p>
+      <p *ngIf='homeref.must_be_payed' (click)='backModal(true)'>Indietro</p>
   </div>
+
+  
 </div>
 </div>
 </ion-content>
