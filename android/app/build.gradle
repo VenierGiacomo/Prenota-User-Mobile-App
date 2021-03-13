@@ -6,8 +6,8 @@ android {
         applicationId "io.prenota.client"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 219
-        versionName "0.2.19"
+        versionCode 223
+        versionName "0.2.23"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

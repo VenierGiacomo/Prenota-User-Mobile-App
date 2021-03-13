@@ -7,8 +7,10 @@ import { StorageService } from '../services/storage.service';
 import { BookModalPage } from '../book-modal/book-modal.page';
 import { ActivatedRoute } from '@angular/router';
 import { RegisterPage } from '../register/register.page';
-import { PayModalPage } from '../pay-modal/pay-modal.page';
-import { IfStmt } from '@angular/compiler';
+import { ShareAppoSocialPage } from '../share-appo-social/share-appo-social.page';
+import { Plugins } from '@capacitor/core';
+import { AddFavoritesPage } from '../add-favorites/add-favorites.page';
+const { LocalNotifications } = Plugins;
 @Component({
   selector: 'app-tab1',
   templateUrl: 'tab1.page.html',
@@ -19,13 +21,14 @@ shops:any=[]
 salute:any=[]
 capelli:any=[]
 grouped:any=[]
-spin='block'
+// spin='block'
+spin='none'
 initialoffsetTop
   constructor(private route: ActivatedRoute, private toastController: ToastController,public actionSheetController: ActionSheetController, private nav: NavController ,  private storage: StorageService, public modalController: ModalController,private api:ApiService, private plt:Platform,private apiNative:NativeApiService) {
     this.plt.ready().then(
       () =>{
         if (this.plt.is('hybrid')) {
-          this.apiNative.getStores().then(async data=>{
+          this.apiNative.getStores1().then(async data=>{
             var shops:any =data
             this.storage.setShops(shops)
             this.shops = data
@@ -45,7 +48,7 @@ initialoffsetTop
                     
         }
         else{
-          this.api.getStores().subscribe(data=>{
+          this.api.getStores1().subscribe(data=>{
             var shops:any =data
             this.storage.setShops(shops)
           
@@ -194,6 +197,7 @@ async presentToast(text) {
     toast.present();
   }
   async assistenzaActionSheet() {
+
     // this.presentPayModal()
     const actionSheet = await this.actionSheetController.create({
       header: 'Assistenza',
@@ -223,6 +227,10 @@ async presentToast(text) {
       }]
     });
     await actionSheet.present();
+    
+
+      
+
   }
 
   // async presentPayModal(){
@@ -243,17 +251,42 @@ async presentToast(text) {
   newCustomer(shop){
     var channel = shop.store_name.replaceAll(' ','-')
   if(this.plt.is('hybrid')){
-    this.apiNative.newCustomerSocket(channel).then(res=>{
-      console.log(res)
-    }).catch(err=>{
-      console.log(err)
+    this.apiNative.newCustomerSocket(channel,shop.id ).then(res=>{
+      if(res.status=='failed'){
+        if(res.already_exist){
+          this.presentToast('Sei già un cliente di '+shop.store_name)
+        }else{
+          this.presentToast("C'è stato un problema nella richiesta di diventare cliente\n\nRiprova più tardi")
+        }
+        this.presentToast('Sei già un cliente di '+shop.store_name) 
+      }else{
+        this.presentToast('Richiesta di diventare cliente inviata')
+      }
     })
   }else{
-    this.api.newCustomerSocket(channel).subscribe(res=>{
-      
+    this.api.newCustomerSocket(channel,shop.id).subscribe(res=>{
+      this.presentToast('Richiesta di diventare cliente inviata')
+    },err=>{
+      if(err.error.already_exist){
+        this.presentToast('Sei già un cliente di '+shop.store_name)
+      }else{
+        this.presentToast("C'è stato un problema nella richiesta di diventare cliente\n\nRiprova più tardi")
+      }
     })
   }
     
   }
+async addFavorite(){
+  const modal = await this.modalController.create({
+    component:AddFavoritesPage,
+    swipeToClose: true,
+    cssClass: 'select-modal' ,
+  });
+  modal.onDidDismiss().then(()=>{
+    this.nav.navigateRoot('tabs')
+  })
+  return await modal.present();
+  
 
+}
 }

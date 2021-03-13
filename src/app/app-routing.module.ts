@@ -57,6 +57,14 @@ const routes: Routes = [
     path: 'select-company',
     loadChildren: () => import('./select-company/select-company.module').then( m => m.SelectCompanyPageModule)
   },
+  {
+    path: 'share-appo-social',
+    loadChildren: () => import('./share-appo-social/share-appo-social.module').then( m => m.ShareAppoSocialPageModule)
+  },
+  {
+    path: 'add-favorites',
+    loadChildren: () => import('./add-favorites/add-favorites.module').then( m => m.AddFavoritesPageModule)
+  },
   
 ];
 @NgModule({

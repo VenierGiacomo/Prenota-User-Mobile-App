@@ -156,6 +156,45 @@ export class BookModalPage implements OnInit {
     
     await this.getEmployees()
     await this.tokenValidation()
+    if(this.plt.is('hybrid')){
+      var token = await this.apiNative.isvalidToken()
+  if(token){
+      this.apiNative.isStoreClient(this.id).then(res=>{
+        if(res[0]!=undefined){
+          this.is_client = true
+          this.is_member = res[0].isMember
+          this.account_credits = res[0].credit
+        }else{
+          this.is_client = false
+        }
+      }).then(()=>this.getDatesAndServices())
+    }else{
+      this.is_client = false
+      this.getDatesAndServices()
+    }
+    }else{
+      if(this.api.isvalidToken()){
+        this.api.isStoreClient(this.id).subscribe(res=>{
+          if(res[0]!=undefined){
+            this.is_client = true
+            this.is_member = res[0].isMember
+            this.account_credits = res[0].credit
+          }else{
+            this.is_client = false
+          }
+          this.getDatesAndServices()
+        })
+      }else{
+        this.is_client = false  
+        this.getDatesAndServices()
+      }
+     
+    }
+    
+    
+  }
+
+  getDatesAndServices(){
     this.calculateWorkdates().then(()=>{
       
       if(this.plt.is('hybrid')) {
@@ -174,46 +213,9 @@ export class BookModalPage implements OnInit {
             console.log(err)
           })
         }
-    }).then(async ()=>{
-      // if(this.accept_credits){
-        if(this.plt.is('hybrid')){
-          var token = await this.apiNative.isvalidToken()
-      if(token){
-          this.apiNative.isStoreClient(this.id).then(res=>{
-            if(res[0]!=undefined){
-              this.is_client = true
-              this.is_member = res[0].isMember
-              this.account_credits = res[0].credit
-            }else{
-              this.is_client = false
-            }
-          })
-        }else{
-          this.is_client = false
-        }
-        }else{
-          if(this.api.isvalidToken()){
-            this.api.isStoreClient(this.id).subscribe(res=>{
-              if(res[0]!=undefined){
-                this.is_client = true
-                this.is_member = res[0].isMember
-                this.account_credits = res[0].credit
-              }else{
-                this.is_client = false
-              }
-            })
-          }else{
-            this.is_client = false  
-          }
-         
-        }
-      // }
-      
-    }).catch(err=>{
-      console.log(err)
     })
-    
   }
+
   ngOnDestroy(){
     clearInterval(this.interval_insurance)
     //call your service here.
@@ -413,7 +415,7 @@ export class BookModalPage implements OnInit {
     this.cont=0
     let index
     if(this.adons){
-      this.services.map(val => {if(val.id != service.id){val.selected =false}})  
+      this.services.map(val => {if(val.id != service.id){val.selected =false}else{val.selected =true}})  
       this.service=[]
       this.service.push(service)
 
@@ -1210,14 +1212,12 @@ async calculateAvailability(date, bool){
                
                 if(this.openhours[idx].employee==y){
                   let id:any = idx
-                
                   if(id ==0 || id == max_ind || this.openhours[id].time-this.openhours[id-1].time> 1  || this.openhours[id].employee-this.openhours[id-1].employee!= 0 || app == undefined || app.duration == this.service[serv_ind].duration_book){
-                    
                     if (app != undefined){
                       if(app.duration ==   this.service[serv_ind].duration_book){
                           this.availableSpots.push(app)  
                       }
-                      if(this.openhours[id].time-this.openhours[id-1].time> 1){
+                      if(id>0 && this.openhours[id].time-this.openhours[id-1].time> 1){
                         app=undefined
                       }
                     }
@@ -1772,47 +1772,7 @@ async book(adons){
             await LocalNotifications.schedule({
               notifications: this.notifications_to_set
             });
-          }else{
-            // LocalNotifications.requestPermission().then(async(res)=>{
-            //   if(res.granted){
-            //     await LocalNotifications.schedule({
-            //       notifications: [
-            //         {
-            //           title: `Buongiorno ${first_name}, hai un appuntamento fissato per domani `,
-            //           body: `Ricordati del tuo appuntamento il ${this.today}, alle ${this.timeslot}\n${this.total_service.name} presso ${this.name}.`,
-            //           id:await data.id,
-            //           schedule: {at: new Date(this.year, month, day, 11)},
-            //           sound: null,
-            //           attachments: null,
-            //           actionTypeId: "",
-            //           extra: null
-            //         },
-            //         {
-            //           title: "Mancano 2 ore!",
-            //           body: `Ricordati del tuo appuntamento oggi alle ${this.timeslot}.\n${this.total_service.name} presso ${this.name}.`,
-            //           id: await data.id+1000,
-            //           schedule: {at: new Date(this.year, this.month, this.day, x[0]-2)},
-            //           sound: null,
-            //           attachments: null,
-            //           actionTypeId: "",
-            //           extra: null
-            //         },
-            //       ]
-            //     });
-            //   }else{
-                
-            //     const modal = await this.modalController.create({
-            //       component:NotModalPage,
-            //       swipeToClose: true,
-            //       cssClass: 'not-modal' 
-                  
-            //     });
-            //     return await modal.present();
-            //   }
-            // })
-            
           }
-          
         })
 
         

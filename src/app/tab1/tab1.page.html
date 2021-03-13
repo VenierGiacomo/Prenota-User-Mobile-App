@@ -14,29 +14,70 @@
     <ion-title mode=ios  >prenota</ion-title>
   </ion-toolbar>
 </ion-header>
-  <ion-content >
+  <ion-content scrollY=false>
 
       <div class="spinner" [style.display]="spin">
         <p>Caricamento in corso</p>
           <div class="double-bounce1"></div>
           <div class="double-bounce2"></div>
         </div>
+        <div class="empty_favorite">
+            <h2 style="margin: 0px 0px 0px 20px">Preferiti</h2>
+         
+            <p style="color:#616161; padding: 20px ">Seleziona le attività che utilizzi più spesso per averle sempre a portata di mano.<br><ion-icon name="heart" style=" font-size:30px; color: #d30c0c;"></ion-icon> 
+              </p>
+            <button (click)='addFavorite()'>Aggiungi un attività</button>
+        </div>
+        <!-- <div class="empty_favorite">
+            <h2 style="margin: 0px 0px 0px 20px">Preferiti</h2>
+            <div class="favo_scroll">
 
+           
+        <div class="prof-profile" (click)="addFavorite()">
+            <div class="cont_img_text">
+                    <div class="prof-img"><img src='../assets/icon.png'></div>
+                    <div class="text_widg">
+                        <h4>Clicca per aggiungere</h4>
+                        <h5 >Attività preferite</h5>
+                       
+                    </div>
         
-        <!-- <div class="prof-profile" *ngFor='let shop of shops' (click)="navBusiness(shop)"> -->
-            <div class="prof-profile" *ngFor='let shop of shops' (click)="presentModal(shop)" (press)='newCustomer(shop)'>
-                <div class="cont_img_text">
-                        <div class="prof-img"><img src='{{shop.img_url}}'></div>
-                        <div class="text_widg">
-                            <h4>{{shop.store_name}}</h4>
-                            <h5 >{{shop.business_description}}</h5>
-                            <p *ngIf='shop.closed'>Al momento chiuso</p>
-                            <div class="location" *ngIf='!shop.closed'><img src='../assets/icon/location.svg'>{{shop.address}}</div> 
-                        </div>
-            
-                </div>
-        </div>             
-       
+            </div>
+    </div>      
+     
+  
+  
+    
+  </div>
+</div> -->
+
+        <div class="scroll_cont">
+            <h2>Cosa stai cercando?</h2>
+        
+            <div class="scroll_horizontal">
+              <div class="category">
+                  <div class="categoy_img"><img src="../assets/categories/undraw_doctors_hwty.svg"></div>
+                  <div class="categoy_title">Medico</div>
+              </div>
+              <div class="category">
+                      <div class="categoy_img"><img src="../assets/categories/undraw_grand_slam_0q5r.svg"></div>
+                      <div class="categoy_title">Campo</div>
+              </div>
+              <div class="category">
+                      <div class="categoy_img"><img src="../assets/categories/undraw_barber_3uel (1).svg"></div>
+                      <div class="categoy_title">Parrucchiere</div>
+              </div>
+              <div class="category">
+                  <div class="categoy_img"><img src="../assets/categories/undraw_Nature_benefits_re_kk70.svg"></div>
+                  <div class="categoy_title">Cura di te</div>
+              </div>
+              <div class="category">
+                  <div class="categoy_img"><img src="../assets/categories/undraw_product_tour_foyt.svg"></div>
+                  <div class="categoy_title">altro</div>
+              </div>
+              
+            </div>
+          </div>
        
 <!-- <div id='multi-profile' class="multi-profile" (click)='openList()'>
 <h5>Salone parrucchieri</h5>

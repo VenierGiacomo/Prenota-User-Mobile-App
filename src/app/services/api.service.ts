@@ -357,9 +357,10 @@ stripePortalSession(){
 getServiceAdons(service_id):Observable<any>{
   return this.http.get(BASE_URL+'serviceaddons/'+service_id,{headers: this.httpheader})
 }
-newCustomerSocket(channel){
+newCustomerSocket(channel,id){
   var data ={
     channel: channel,
+    shop_id: id
   }
   return this.http.post(BASE_URL+'webhooks/new_customer_socket/',data,{headers: this.newheader()})
 }

@@ -234,7 +234,15 @@
         font-size: 15px;
     }
   }
-
+  input {   
+    /* Remove First */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+  }
+  input:focus{
+      outline: none;
+  }
   // ion-item{
     
   // }

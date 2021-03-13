@@ -51,8 +51,8 @@ export class BusTicketPage implements OnInit {
     // Render the PayPal button into #paypal-button-container
     // 
     this.plt.ready().then(async ()=>{
-      StripeCap.setPublishableKey({ key: 'pk_live_kb4i70qfPxeWXXYfjImvx64f00Et58vNmC' })
-      // StripeCap.setPublishableKey({ key: 'pk_test_f3m2iNJqa6UdyuD9Ey8O7ZiH00eSjJ4lEt' })
+      // StripeCap.setPublishableKey({ key: 'pk_live_kb4i70qfPxeWXXYfjImvx64f00Et58vNmC' })
+      StripeCap.setPublishableKey({ key: 'pk_test_f3m2iNJqa6UdyuD9Ey8O7ZiH00eSjJ4lEt' })
       this.event_listener =document.getElementsByClassName("modal-shadow")[0].addEventListener('click',async()=>{
        await  this.closeModal()      
       })

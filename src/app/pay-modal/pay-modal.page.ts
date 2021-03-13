@@ -249,24 +249,24 @@ slidingTagLiAfterStyle.innerHTML =
       x.style.transition="400ms"
       if(this.fast_pay){
          if(this.homeref.account_credits > Number(this.homeref.to_pay)*100){ this.credit_pay=true
-          var padding_top = this.height - this.elmnt - 445
-          x.style.paddingTop =`${padding_top}px`
+          var padding_top = `calc(100vh  - ${this.elmnt}px - 445px)`
+          x.style.paddingTop =`${padding_top}`
           this.applePay_top = "-290px"
         }else{
           this.credit_pay=false
-          var padding_top = this.height - this.elmnt - 445
-          x.style.paddingTop =`${padding_top}px`
+          var padding_top =`calc(100vh  - ${this.elmnt}px - 445px)`
+          x.style.paddingTop =`${padding_top}`
           this.applePay_top = "-220px"
         }
       }else{
          if(this.homeref.account_credits > Number(this.homeref.to_pay)*100){ this.credit_pay=true
-          var padding_top = this.height - this.elmnt - 455
-          x.style.paddingTop =`${padding_top}px`
+          var padding_top =`calc(100vh  - ${this.elmnt}px - 445px)`
+          x.style.paddingTop =`${padding_top}`
           this.applePay_top = "-120px"
         }else{
           this.credit_pay=false
-          var padding_top = this.height - this.elmnt - 375
-          x.style.paddingTop =`${padding_top}px`
+          var padding_top =`calc(100vh  - ${this.elmnt}px - 375px)`
+          x.style.paddingTop =`${padding_top}`
           this.applePay_top = "-170px"
         }
      

@@ -1,0 +1,102 @@
+h1{
+    width: 90vw;
+    display: block;
+    font-size: 42px;
+    color: #0061d5;
+    text-align: center;
+    font-family: "Comfortaa Bold";
+}
+h2{
+    padding: 0px 25px;
+    width: 90vw;
+    color: #343a40;
+    font-size: 24px;
+    font-weight: 700;
+}
+h4{
+    padding: 0px 25px;
+    width: 90vw;
+    margin: 0px;
+    color: #95a1ac;
+    font-size: 18px;
+}
+ion-content{
+    position: relative;
+    padding: 20px;
+}
+
+button {
+    width: 82vw;
+     margin: 0px auto;
+    padding: 0px 10px;
+    height: 50px;
+    border-radius: 7px;;
+    line-height: 50px;
+    font-weight: 700;
+    font-size: 18px;
+
+    text-align: center;
+    font-weight: 700 !important;
+    color: white;
+    box-shadow: 0 0 15px 1px #aaaa;
+   
+  }
+  .pos{
+    margin-top: 10px;
+    background: #fff;
+    color: #0061d5;
+}
+.fb{
+    margin-top: 10px;
+    background: #4267B2;
+    
+}
+.neg{
+    padding-top: 10px;
+    width: 90vw;
+    text-align: center;
+color: #646d74;
+}
+img{
+   margin: 10px 20px auto;
+    height: 20vh;
+}
+div{
+    width: 90vw;
+    text-align: center;
+    position: absolute;
+    padding: 10px 0px;
+    bottom: 0px;
+}
+@media(max-height:600px){
+    img{
+       display: none !important;
+     }
+}
+@media(max-height:350px){
+    img{
+       display: none !important;
+     }
+}
+
+.prof-img{
+    top:0px;
+    position: relative;
+    height:60px;
+    font-family:  'Open Sans', sans-serif !important;
+    width: 60px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-left: calc(50vw - 50px);
+    margin-bottom: 10px;
+    box-shadow: 0 0 15px 1px #ddd;
+    img{
+        display: block;
+        object-fit: cover;
+        width: 100%;
+        height: 100%;
+        margin:0px  !important;
+        top: 0;
+        // width: 100%;
+    }
+  }

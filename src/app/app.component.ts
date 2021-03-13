@@ -7,8 +7,10 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { Plugins } from '@capacitor/core';
 import { RegisterPage } from './register/register.page';
 import { NativeApiService } from './services/nativeapi.service';
+import { ShareAppoSocialPage } from './share-appo-social/share-appo-social.page';
 const { SplashScreen } = Plugins;
 const { App } = Plugins;
+const { LocalNotifications } = Plugins;
 // import { CodePush, InstallMode } from '@ionic-native/code-push/ngx';
 @Component({
   selector: 'app-root',
@@ -31,11 +33,40 @@ export class AppComponent {
 
   initializeApp() {
     this.platform.ready().then(() => {
+      if(this.platform.is('hybrid')){
+        LocalNotifications.addListener( 'localNotificationActionPerformed',  async (not) => {
+          console.log(not)
+          if(not.notification.extra.open){
+            const modal = await this.modalController.create({
+              component: ShareAppoSocialPage,
+              swipeToClose: false,
+              cssClass: 'not-modal' ,
+              componentProps:{
+                img: not.notification.extra.shop.img,
+                name: not.notification.extra.shop.name,
+                business_type: not.notification.extra.shop.business_type,
+                
+      
+              }
+          
+            
+            });
+            return await modal.present();
+          }
+          
+      }) 
+      }
+     
       this.statusBar.styleDefault();
       setTimeout(() => {
         SplashScreen.hide();
-      }, 800);
+      }, 500);
+      
     });
+    App.getLaunchUrl().then(res =>{
+
+      console.log(res)
+    })
     App.addListener('appUrlOpen', (data: any) => {
       this.zone.run(async () => {
           const slug = data.url.split(".cc/").pop();

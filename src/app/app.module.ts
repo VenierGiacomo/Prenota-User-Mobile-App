@@ -15,6 +15,7 @@ import { PopoverComponent } from './popover/popover.component';
 // import { PayPal } from '@ionic-native/paypal/ngx';
 // import { Braintree} from '@ionic-native/braintree/ngx';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
+import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import { Keyboard } from '@ionic-native/keyboard/ngx';
 import { Diagnostic } from '@ionic-native/diagnostic/ngx';
 import 'hammerjs'
@@ -30,12 +31,11 @@ export class MyHammerConfig extends HammerGestureConfig {
    }
 }
 @NgModule({
-  declarations: [AppComponent,PopoverComponent],
+  declarations: [AppComponent,PopoverComponent,],
   entryComponents: [],
   imports: [
     BrowserModule,
     CommonModule,
-   
     IonicStorageModule.forRoot(),
     IonicModule.forRoot(),
     AppRoutingModule,
@@ -43,6 +43,7 @@ export class MyHammerConfig extends HammerGestureConfig {
     HttpClientModule],
   providers: [
     StatusBar,
+    SocialSharing,
     Diagnostic,
     AppCenterAnalytics,
     // ApplePay,

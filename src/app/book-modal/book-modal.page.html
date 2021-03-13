@@ -26,10 +26,10 @@
 <p *ngIf='services.length>4'>Scorri verso il basso per altri servizi</p>
   <div class="service">
       <!-- <ion-radio-group [(ngModel)]="service" > -->
-          <ion-item *ngFor='let service of services' lines="full" >
+          <ion-item *ngFor='let service of services' lines="full"  (click)='selectService(service)'>
               <ion-label>{{service.name}} <b style="text-align-last: right;text-align: right;"><br> Prezzo: {{(service.price==0)? "Gratuito" : service.price/100+'€'}}</b></ion-label>
               <!-- <ion-label>{{service.name}} <b style="text-align-last: right;text-align: right;">a partire da {{service.price/100}}€</b></ion-label> -->
-              <ion-checkbox slot="end"  [(ngModel)]="service.selected" (click)='selectService(service)'></ion-checkbox>
+              <ion-checkbox slot="end"  [(ngModel)]="service.selected" ></ion-checkbox>
           </ion-item>
       <!-- </ion-radio-group> -->
   </div>

@@ -129,10 +129,15 @@ rows = ["06:45", "07:00", "07:15", "07:30", "07:45", "08:00", "08:15", "08:30", 
       if(token){
         this.apiNative.getClientAppointmentsweek(week,year).then(async data=>{
           this.appointments_list = await data
-          // await this.storage.deleteappointments()
-          // for(let appo of this.appointments_list ){
-          //   await this.storage.setAppointment(appo)
-          // }
+          var not = await  LocalNotifications.getPending()
+            if(not.notifications!=undefined && not.notifications.length>0){
+              await LocalNotifications.cancel(not)
+            }
+          if(this.appointments_list.length>0){
+            this.setNotifications()
+            
+          }
+          
           
         }).catch(err=>{
           console.log(err)
@@ -165,6 +170,75 @@ rows = ["06:45", "07:00", "07:15", "07:30", "07:45", "08:00", "08:15", "08:30", 
     var weekNo = Math.ceil(( ( (d - yearStart) / 86400000) + 1)/7);
     // Return array of year and week number
     return  weekNo
+  }
+
+  async setNotifications(){
+    var areEnabled
+    var notifications_to_set =[]
+    var day_before_date
+    var day_after_date
+    var stores = await this.storage.getShops()
+    LocalNotifications.areEnabled().then(async (res)=>{
+      areEnabled=res.value
+      for (let appo of this.appointments_list){
+        day_before_date = new Date( +new Date( appo.year, appo.month, appo.day, +this.rows[appo.start].split(':')[0], +this.rows[appo.start].split(':')[1]) - 1 * 24 * 60 * 60 * 1000) 
+        day_after_date = new Date( +new Date( appo.year, appo.month, appo.day, +this.rows[appo.start].split(':')[0], +this.rows[appo.start].split(':')[1]) + 1 * 24 * 60 * 60 * 1000) 
+        var not_day_before = {
+          title: `Ciao ${appo.client_name.split(' ')[0]}, hai un appuntamento per domani`,
+          body: `Ricordati del tuo appuntamento domani alle ${this.rows[appo.start]}\n${appo.details} presso ${appo.store_name}.`,
+          id: appo.id,
+          schedule: {at: new Date(day_before_date.getFullYear(), day_before_date.getMonth(), day_before_date.getDate(), 11)},
+          sound: null,
+          attachments: null,
+          actionTypeId: "",
+          extra: null
+        }
+        if(+not_day_before.schedule.at>+new Date()){
+          notifications_to_set.push(not_day_before)
+        }
+       
+
+        var not_2_hour_before = {
+          title: `Ciao ${appo.client_name.split(' ')[0]}, mancano 2 ore!`,
+          body: `Ricordati del tuo appuntamento oggi alle ${this.rows[appo.start]}.\n${appo.details} presso ${appo.store_name}.`,
+          id: appo.id+1000,
+          schedule: {at: new Date(appo.year, appo.month, appo.day, +this.rows[appo.start].split(':')[0]-2,+this.rows[appo.start].split(':')[1])},
+          sound: null,
+          attachments: null,
+          actionTypeId: "",
+          extra: null
+        }
+        if(+not_2_hour_before.schedule.at>+new Date()){
+          notifications_to_set.push(not_2_hour_before)
+        }
+
+        var emoji = String.fromCodePoint(0x1F60A)
+        var store = stores.filter(val=>{return val.id == appo.shop})
+        var not_social_reminder={
+          title: `Ciao ${appo.client_name.split(' ')[0]}, grazie da ${appo.store_name}! ${emoji}`,
+          body: `Speriamo sia andato tutto bene.\nClicca su questa notifica per aiutarci a farci conoscere. Bastano solo 5 secondi`,
+          id: appo.id+2000,
+          attachments: null,
+          schedule: {at: new Date(day_after_date.getFullYear(), day_after_date.getMonth(), day_after_date.getDate(), 7)},
+          extra: {
+            shop:{img: store.img_url, name: appo.store_name, business_type:store.business_description},
+            open:true
+          }
+        }
+        if(+not_social_reminder.schedule.at>+new Date()){
+          notifications_to_set.push(not_social_reminder)
+        }
+        
+      }
+      
+      if(areEnabled){
+        await LocalNotifications.schedule({
+          notifications: notifications_to_set
+        });
+     
+        
+      }
+    })
   }
 
   async infoModal(site) {

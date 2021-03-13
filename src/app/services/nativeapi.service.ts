@@ -366,9 +366,10 @@ async getServiceAdons(service_id){
   let url = BASE_URL+'serviceaddons/'+service_id
   return await  this.getData(url,this.simple_header)
 }
-async newCustomerSocket(channel){
+async newCustomerSocket(channel,id){
   var data ={
     channel: channel,
+    shop_id: id
   }
   return await this.postData(BASE_URL+'webhooks/new_customer_socket/',data,this.token_header)
 }

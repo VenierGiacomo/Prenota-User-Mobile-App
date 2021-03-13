@@ -21,6 +21,10 @@
     <param name="android-package" value="NativeStorage"/>
   </feature>
 
+  <feature name="SocialSharing">
+    <param name="android-package" value="nl.xservices.plugins.SocialSharing"/>
+  </feature>
+
   <feature name="SQLitePlugin">
     <param name="android-package" value="io.sqlc.SQLitePlugin"/>
   </feature>

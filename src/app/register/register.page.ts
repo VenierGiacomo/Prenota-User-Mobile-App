@@ -88,7 +88,7 @@ password =''
             // await this.nativeApi.storeToken(data.token)
             if(await data.token){
               await this.closeModal(true)   
-              if(this.homeref){
+              if(this.homeref.page != 'tab2'){
                 this.homeref.user.phone = this.phone
                 await this.homeref.bookfromLogin(data.email, data.first_name, data.last_name)
                 await this.closeModal(true)
@@ -105,10 +105,12 @@ password =''
                     this.presentToast("Non siamo riusciti a collegare l'account. Puoi sempre riutilizzare il link")
                   })
                 }else{
-                  this.presentToast('Salve  '+ data.first_name)
+                  // this.presentToast('Salve  '+ data.first_name)
                 }
               },100)
+              this.presentToast('Salve  '+ data.first_name)
               await this.closeModal(true)
+              
             }else{
               if (data.email != undefined){
                 this.error = 'Questa email è invalida o è già stata utilizzata'
@@ -139,10 +141,15 @@ password =''
        async  data=>{
          await this.api.storeToken(data.token)
           Notiflix.Block.Remove('.wrapper');
-          this.closeModal(true)
-          this.homeref.user.phone = this.phone
-          await this.homeref.bookfromLogin(data.email, data.first_name, data.last_name )
+          
+          if(this.homeref.page != 'tab2'){
+            this.homeref.user.phone = this.phone
+            await this.homeref.bookfromLogin(data.email, data.first_name, data.last_name )
+          }
           this.presentToast('Salve '+this.first_name)
+          this.closeModal(true)
+        
+        
           // this.homeref.closeModal()
         },
         err => {
