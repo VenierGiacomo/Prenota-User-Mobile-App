@@ -1,13 +1,13 @@
 <ion-header  mode=ios >
   <ion-toolbar  mode=ios translucent>
-    <ion-buttons slot="start">
-      <ion-button  mode=ios (click)='goHome()'>
-          <ion-icon name="home-outline"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-      <ion-buttons slot="end"  mode=ios>
+      <!-- <ion-buttons slot="start">
+        <ion-button>
+          Clear
+        </ion-button>
+      </ion-buttons> -->
+      <ion-buttons slot="end"  mode=ios (click)='assistenzaActionSheet()' >
         <ion-button  mode=ios>
-            <a (click)='assistenzaActionSheet()' target="_blank"><div  style="color: #929da7; font-size: 13px;">Assistenza</div></a>
+            <a target="_blank"><div  style="color: #fff; font-size: 13px;">Assistenza</div></a>
         </ion-button>
       </ion-buttons>
   
@@ -15,7 +15,7 @@
     </ion-toolbar>
   </ion-header>
 
-  <ion-content >
+<ion-content >
     <div class="spinner" [style.display]="spin">
         <div class="double-bounce1"></div>
         <div class="double-bounce2"></div>
@@ -25,18 +25,20 @@
       <div class="names">
           <h2>{{name}}</h2>
           <h5>{{role}}</h5>
-          <ion-button fill=outline (click)='infoModal()' color="light"> Maggiori informazioni</ion-button>
+          <!-- <ion-button fill=outline (click)='infoModal()' color="light"> Maggiori informazioni</ion-button> -->
           <!-- <ion-button style='margin: 0px 10px;' fill=outline (click)='infoModal()'><a href="https://www.google.com/maps/place/Via+Pirano,+12,+34145+Trieste+TS/@45.6308291,13.7860032" target="_blank">Mappa</a></ion-button> -->
       </div>
 </section>
 <section >
-<h5>Seleziona un servizio o più</h5>
-<p *ngIf='services.length>5'>Scorri per altri servizi</p>
+<h5 *ngIf='!adons'>Seleziona un servizio o più</h5>
+<h5 *ngIf='adons'>Seleziona un servizio</h5>
+<p *ngIf='services.length>4'>Scorri verso il basso per altri servizi</p>
   <div class="service">
       <!-- <ion-radio-group [(ngModel)]="service" > -->
-          <ion-item *ngFor='let service of services' lines="full" (click)='selectService(service)'>
-              <ion-label>{{service.name}} <b style="text-align-last: right;text-align: right;">a partire da {{service.price/100}}€</b></ion-label>
-              <ion-checkbox slot="end"  [value]="service"></ion-checkbox>
+          <ion-item *ngFor='let service of services' lines="full"  (click)='selectService(service)'>
+              <ion-label>{{service.name}} <b style="text-align-last: right;text-align: right;"><br> Prezzo: {{(service.price==0)? "Gratuito" : (service.price==-1)? "Preventivo in studio" : (service.price/100).toFixed(2) +"€"}}</b></ion-label>
+              <!-- <ion-label>{{service.name}} <b style="text-align-last: right;text-align: right;">a partire da {{service.price/100}}€</b></ion-label> -->
+              <ion-checkbox slot="end"  [(ngModel)]="service.selected" ></ion-checkbox>
           </ion-item>
       <!-- </ion-radio-group> -->
   </div>
@@ -77,7 +79,7 @@
       <!-- <span  *ngIf='emplo_show[ix]'> -->
         <!-- <h6 style="color: #fff;" >Disponibilità di {{empl.name}}:</h6> -->
           <div class='x-scroller'>
-              <span  *ngFor='let time of final_spots_displ'><div class="time-slot" (click)="selectTime(time)">{{times[time[0].start]}}</div></span>
+              <span  *ngFor='let time of final_spots_displ'><div class="time-slot" (click)="selectTime(time)" >{{times[time[0].start]}}</div></span>
               <!-- <p  *ngIf='!emplo_show[ix]' style="color: #efefef; font-size: 13px;">Nessuna disponibilita, prova in un' altra data</p> -->
           </div>
       <!-- </span>  -->

@@ -21,13 +21,38 @@
           <div class="double-bounce1"></div>
           <div class="double-bounce2"></div>
         </div>
-        <div class="empty_favorite">
+        <div class="empty_favorite" *ngIf='fav_shops.length==0'>
             <h2 style="margin: 0px 0px 0px 20px">Preferiti</h2>
          
             <p style="color:#616161; padding: 20px ">Seleziona le attività che utilizzi più spesso per averle sempre a portata di mano.<br><ion-icon name="heart" style=" font-size:30px; color: #d30c0c;"></ion-icon> 
               </p>
-            <button (click)='addFavorite()'>Aggiungi un attività</button>
+            <button (click)='addFavorite()'>Aggiungi ai preferiti</button>
         </div>
+
+        <div class="empty_favorite" *ngIf='fav_shops.length>0'>
+          <ion-fab   (click)='addFavorite()'>
+            <ion-fab-button class="fab_fav">
+              <ion-icon name="add"></ion-icon>
+            </ion-fab-button>
+          </ion-fab>
+          <h2 style="margin: 0px 0px 0px 20px; padding: 0px;">Preferiti</h2>
+          <p style='color:#616161; padding-left: 20px; text-align: left; font-size: 13px;'>Clicca su un attività per prenotare</p>
+          <div class="favo_scroll">
+        <div class="prof-profile" *ngFor='let shop of fav_shops' (click)="presentModal(shop)" (press)='presentBusinessSheet(shop)'>
+          <div class="cont_img_text">
+                  <div class="prof-img"><img src='{{shop.img_url}}'></div>
+                  <div class="text_widg">
+                      <h4>{{shop.store_name}}</h4>
+                      <h5 >{{shop.business_description}}</h5>
+                      <p *ngIf='shop.closed'>Al momento chiuso</p>
+                      <div class="location" *ngIf='!shop.closed'><img src='../assets/icon/location.svg'>{{shop.address}}</div> 
+                  </div>
+      
+          </div>
+  </div>  
+  <!-- <button (click)='addFavorite()'>Aggiungi ai preferiti</button> -->
+</div>   
+</div>   
         <!-- <div class="empty_favorite">
             <h2 style="margin: 0px 0px 0px 20px">Preferiti</h2>
             <div class="favo_scroll">
@@ -52,26 +77,26 @@
 </div> -->
 
         <div class="scroll_cont">
-            <h2>Cosa stai cercando?</h2>
+            <h2>Cosa vuoi prenotare?</h2>
         
             <div class="scroll_horizontal">
-              <div class="category">
+              <div class="category" (click)='navCategory(1)'>
                   <div class="categoy_img"><img src="../assets/categories/undraw_doctors_hwty.svg"></div>
-                  <div class="categoy_title">Medico</div>
+                  <div class="categoy_title">Salute</div>
               </div>
-              <div class="category">
+              <div class="category" (click)='navCategory(7)'>
                       <div class="categoy_img"><img src="../assets/categories/undraw_grand_slam_0q5r.svg"></div>
-                      <div class="categoy_title">Campo</div>
+                      <div class="categoy_title">Sport</div>
               </div>
-              <div class="category">
+              <div class="category" (click)='navCategory(2)'>
                       <div class="categoy_img"><img src="../assets/categories/undraw_barber_3uel (1).svg"></div>
                       <div class="categoy_title">Parrucchiere</div>
               </div>
-              <div class="category">
+              <div class="category" (click)='navCategory(3)'>
                   <div class="categoy_img"><img src="../assets/categories/undraw_Nature_benefits_re_kk70.svg"></div>
                   <div class="categoy_title">Cura di te</div>
               </div>
-              <div class="category">
+              <div class="category" (click)='navCategory(8)'>
                   <div class="categoy_img"><img src="../assets/categories/undraw_product_tour_foyt.svg"></div>
                   <div class="categoy_title">altro</div>
               </div>

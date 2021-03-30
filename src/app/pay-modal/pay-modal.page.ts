@@ -110,13 +110,18 @@ slidingTagLiAfterStyle.innerHTML =
   }
   async getCLientSecret(){
     var x =document.getElementsByClassName("modal-shadow")
-    this.event_listener =x[x.length-1].addEventListener('click',async()=>{
-     await  this.backModal()      
-    })
+    if(x==undefined ||x==null|| x[x.length-1]!=undefined||x[x.length-1]!=null){
+      this.event_listener =x[x.length-1].addEventListener('click',async()=>{
+        await  this.backModal()      
+       })
+    }
+    
     var y =document.getElementsByClassName("backdrop-no-tappable")
+    if(y==undefined ||y==null||y[y.length-1]!=undefined||y[y.length-1]!=null){
     this.event_listener1 =y[y.length-1].addEventListener('click',async()=>{
      await  this.backModal()      
     })
+  }
   }
   async  applePayment() {
     var clientSecret = this.homeref.secret
@@ -156,14 +161,21 @@ slidingTagLiAfterStyle.innerHTML =
 
     async closeModal(){
       var x =document.getElementsByClassName("modal-shadow")
+      if(x==undefined ||x==null|| x[x.length-1]!=undefined || x[x.length-1]!=null){
       this.event_listener =x[x.length-1].removeEventListener('click',async()=>{
        await  this.backModal()      
       })
-      var y =document.getElementsByClassName("backdrop-no-tappable")
+    }
+    var y =document.getElementsByClassName("backdrop-no-tappable")
+    if(y==undefined ||y==null||y[y.length-1]!=undefined&&y[y.length-1]!=null){
+  
       this.event_listener1 =y[y.length-1].removeEventListener('click',async()=>{
        await  this.backModal()      
       })
-      document.getElementById('card_number').removeEventListener('input', function (e:any) {
+    }
+    var card = document.getElementById('card_number')
+    if(card!=undefined&&card!=null){
+      card.removeEventListener('input', function (e:any) {
         e.target.value = e.target.value.replace(/[^\dA-Z]/g, '').replace(/(.{4})/g, '$1 ').trim();
         var key = e.keyCode || e.charCode;
         if( key!= 8 || key != 46 ){
@@ -173,7 +185,11 @@ slidingTagLiAfterStyle.innerHTML =
         }
        
       });
-      document.getElementById('expiry').removeEventListener('keyup', function (e:any) {
+    }
+      var expiry =document.getElementById('expiry')
+      if(expiry!=undefined&&expiry!=null){
+      document.getElementById('expiry')
+      expiry.removeEventListener('keyup', function (e:any) {
         var key = e.keyCode || e.charCode;
         if( key == 8 || key == 46 ){
         }else{
@@ -184,20 +200,27 @@ slidingTagLiAfterStyle.innerHTML =
           e.target.value = e.target.value.substring(0,5)
         }
       });
+    }
       clearInterval(this.height_interval)
       await this.modalController.dismiss('not_keep');
       
     }
     async closeModal1(){
       var x =document.getElementsByClassName("modal-shadow")
+      if( x==undefined ||x==null||x[x.length-1]!=undefined||x[x.length-1]!=null){
       this.event_listener =x[x.length-1].removeEventListener('click',async()=>{
        await  this.backModal()      
       })
+    }
       var y =document.getElementsByClassName("backdrop-no-tappable")
+      if(y==undefined ||y==null||y[y.length-1]!=undefined||y[y.length-1]!=null){
       this.event_listener1 =y[y.length-1].removeEventListener('click',async()=>{
        await  this.backModal()      
       })
-      document.getElementById('card_number').removeEventListener('input', function (e:any) {
+    }
+      var card = document.getElementById('card_number')
+      if(card!=undefined&&card!=null){
+      card.removeEventListener('input', function (e:any) {
         e.target.value = e.target.value.replace(/[^\dA-Z]/g, '').replace(/(.{4})/g, '$1 ').trim();
         var key = e.keyCode || e.charCode;
         if( key!= 8 || key != 46 ){
@@ -207,17 +230,21 @@ slidingTagLiAfterStyle.innerHTML =
         }
        
       });
-      document.getElementById('expiry').removeEventListener('keyup', function (e:any) {
-        var key = e.keyCode || e.charCode;
-        if( key == 8 || key == 46 ){
-        }else{
-          if(e.target.value.length==5){
-            document.getElementById('cvv').focus()
+    }
+      var expiry =document.getElementById('expiry')
+      if(expiry!=undefined&&expiry!=null){
+      expiry.removeEventListener('keyup', function (e:any) {
+          var key = e.keyCode || e.charCode;
+          if( key == 8 || key == 46 ){
+          }else{
+            if(e.target.value.length==5){
+              document.getElementById('cvv').focus()
+            }
+            e.target.value = e.target.value.replace(/[^\dA-Z]/g, '').replace(/(.{2})/g, '$1/').trim();
+            e.target.value = e.target.value.substring(0,5)
           }
-          e.target.value = e.target.value.replace(/[^\dA-Z]/g, '').replace(/(.{2})/g, '$1/').trim();
-          e.target.value = e.target.value.substring(0,5)
-        }
-      }); 
+        }); 
+    }
       clearInterval(this.height_interval)
       await this.modalController.dismiss();
       

@@ -33,7 +33,7 @@ constructor(private plt: Platform,  private storage: Storage) {
 }
 
 deleteStorage(){
-  this.storage.clear()
+  this.storage.remove('token')
 }
 async isvalidToken(){
   const token = await this.getToken().then(resp => {return resp}).catch(err => {return err});
@@ -156,7 +156,7 @@ async getEmployees(){
 
 async bookAppointment(start, end, day, month, year,name, details, employee, service){
   var week = this.getWeekNumber(new Date(year, month, day))
-  var data = {'start': start , 'end': end, 'day': day, 'week':week, 'month':month, 'year' : year, 'employee': employee,  'client_name' :name, 'details': details, 'service_n': service}
+  var data = {'new':true, 'start': start , 'end': end, 'day': day, 'week':week, 'month':month, 'year' : year, 'employee': employee,  'client_name' :name, 'details': details, 'service_n': service}
   let url = BASE_URL+'bookings/'
   return await this.postData(url,data,this.token_header)
 
@@ -165,9 +165,9 @@ async bookAppointmentNoOwner(start, end, day, month, year,name, phone, details, 
   var week = this.getWeekNumber(new Date(year, month, day))
   var data
   if(adons){
-   data = {'start': start , 'end': end, 'day': day, 'week':week, 'month':month, 'year' : year, 'employee': employee,  'client_name' :name, 'phone': phone, 'details': details, 'service_n': service, 'shop':shop, 'adons':adons}
+   data = {'new':true, 'start': start , 'end': end, 'day': day, 'week':week, 'month':month, 'year' : year, 'employee': employee,  'client_name' :name, 'phone': phone, 'details': details, 'service_n': service, 'shop':shop, 'adons':adons}
   }else{
-     data = {'start': start , 'end': end, 'day': day, 'week':week, 'month':month, 'year' : year, 'employee': employee,  'client_name' :name, 'phone': phone, 'details': details, 'service_n': service, 'shop':shop}
+     data = {'new':true, 'start': start , 'end': end, 'day': day, 'week':week, 'month':month, 'year' : year, 'employee': employee,  'client_name' :name, 'phone': phone, 'details': details, 'service_n': service, 'shop':shop}
   }
   if(shadow){
     let url = BASE_URL+'bookings/shadow/'

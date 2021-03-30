@@ -1,0 +1,27 @@
+<ion-header  mode=ios >
+  <ion-toolbar  mode=ios translucent>
+      <!-- <ion-buttons slot="start">
+        <ion-button>
+          Clear
+        </ion-button>
+      </ion-buttons> -->
+      <ion-buttons slot="end"  mode=ios (click)='assistenzaActionSheet()' >
+        <ion-button  mode=ios>
+            <a target="_blank"><div  style="color: #343a40; font-size: 13px;">Assistenza</div></a>
+        </ion-button>
+      </ion-buttons>
+  
+      <ion-title mode=ios  >prenota</ion-title>
+    </ion-toolbar>
+  </ion-header>
+<ion-content scrollY='false'>
+
+  <div>
+    <img src="../assets/undraw_connection_b38q.svg"> 
+  
+  <!-- <p class="neg" (click)='closeModal()'>Non ora</p> -->
+  </div>  
+  <h2>Ci sono problemi di connessione</h2>
+  <h4>Controlla la tua connessione ad internet e riprova a connetterti</h4>
+  <button class="pos" (click)='reconnect()'>Riprova a connetterti</button>
+</ion-content>

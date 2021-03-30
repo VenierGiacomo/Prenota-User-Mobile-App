@@ -1,0 +1,80 @@
+h1{
+    width: 90vw;
+    display: block;
+    font-size: 42px;
+    color: #0061d5;
+    text-align: center;
+    font-family: "Comfortaa Bold";
+}
+h2{
+    padding: 0px 25px;
+    width: 90vw;
+    color: #343a40;
+    font-size: 24px;
+    font-weight: 700;
+}
+h4{
+    padding: 0px 25px;
+    width: 90vw;
+    margin: 0px;
+    color: #95a1ac;
+    font-size: 18px;
+}
+ion-content{
+    position: relative;
+    --padding: 20px;
+    --padding-top: 50px;
+}
+
+button {
+    width: 82vw;
+     margin: 0px auto;
+    padding: 0px 10px;
+    height: 50px;
+    border-radius: 7px;;
+    line-height: 50px;
+    font-weight: 700;
+    font-size: 18px;
+    position: absolute;
+    bottom: 20px;
+    left: 4vw;
+    text-align: center;
+    font-weight: 700 !important;
+    color: white;
+   
+  }
+  .pos{
+    background: #0061d5;
+}
+.neg{
+    padding-top: 10px;
+    width: 90vw;
+    text-align: center;
+color: #646d74;
+}
+img{
+   margin: 10px auto;
+    height: 20vh;
+}
+div{
+    width: 90vw;
+    text-align: center;
+    position: relative;
+    padding: 10px 0px;
+    top: 30px;
+}
+
+@media(max-height:600px){
+    ion-content{
+      
+        --padding-top: 20px;
+    }
+    button{
+        bottom: 10px  !important;
+    }
+}
+@media(max-height:350px){
+    img{
+       display: none !important;
+     }
+}

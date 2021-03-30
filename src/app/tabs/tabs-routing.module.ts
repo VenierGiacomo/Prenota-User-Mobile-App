@@ -9,7 +9,15 @@ const routes: Routes = [
     children: [
       {
         path: 'tab1',
-        loadChildren: () => import('../tab1/tab1.module').then(m => m.Tab1PageModule)
+        children: [
+          {
+            path: '',
+            loadChildren: () => import('../tab1/tab1.module').then(m => m.Tab1PageModule)
+          },
+          { path: 'category/:id', 
+            loadChildren: () => import('../category/category.module').then(m => m.CategoryPageModule)
+          }
+        ]
       },
       {
         path: 'tab1/register/:first_name/:last_name/:email/:phone',
@@ -40,6 +48,11 @@ const routes: Routes = [
     redirectTo: '/tabs/tab1/register/:first_name/:last_name/:email/:phone',
     pathMatch: 'full'
   },   
+  // {
+  //   path: '**',
+  //   redirectTo: '/tabs/tab1',
+  //   pathMatch: 'full'
+  // },
 ];
 
 @NgModule({

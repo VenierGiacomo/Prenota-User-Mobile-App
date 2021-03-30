@@ -30,9 +30,6 @@ const routes: Routes = [
     path: 'register/:first_name/:last_name/:email/:phone',
     loadChildren: () => import('./tabs/tabs.module').then( m => m.TabsPageModule)
   },
-//   {path: '**', 
-//   redirectTo: '/tabs/tab1',
-// },
   {
     path: 'bus-ticket',
     loadChildren: () => import('./bus-ticket/bus-ticket.module').then( m => m.BusTicketPageModule)
@@ -65,7 +62,21 @@ const routes: Routes = [
     path: 'add-favorites',
     loadChildren: () => import('./add-favorites/add-favorites.module').then( m => m.AddFavoritesPageModule)
   },
-  
+  {
+    path: 'category',
+    loadChildren: () => import('./category/category.module').then( m => m.CategoryPageModule)
+  },
+  {
+    path: 'booked-by-others',
+    loadChildren: () => import('./booked-by-others/booked-by-others.module').then( m => m.BookedByOthersPageModule)
+  },
+  {
+    path: 'noconnection',
+    loadChildren: () => import('./absent/absent.module').then( m => m.AbsentPageModule)
+  },
+  {path: '**', 
+  redirectTo: '/tabs/tab1',
+},
 ];
 @NgModule({
   imports: [

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, NgZone, OnInit } from '@angular/core';
 import { ModalController, Platform, NavController, ActionSheetController, ToastController } from '@ionic/angular';
 import Notiflix from "notiflix";
 import { ApiService } from '../services/api.service';
@@ -7,10 +7,10 @@ import { StorageService } from '../services/storage.service';
 import { BookModalPage } from '../book-modal/book-modal.page';
 import { ActivatedRoute } from '@angular/router';
 import { RegisterPage } from '../register/register.page';
-import { ShareAppoSocialPage } from '../share-appo-social/share-appo-social.page';
 import { Plugins } from '@capacitor/core';
 import { AddFavoritesPage } from '../add-favorites/add-favorites.page';
-const { LocalNotifications } = Plugins;
+
+const { App } = Plugins;
 @Component({
   selector: 'app-tab1',
   templateUrl: 'tab1.page.html',
@@ -21,16 +21,19 @@ shops:any=[]
 salute:any=[]
 capelli:any=[]
 grouped:any=[]
+
 // spin='block'
 spin='none'
+fav_shops:any = []
 initialoffsetTop
-  constructor(private route: ActivatedRoute, private toastController: ToastController,public actionSheetController: ActionSheetController, private nav: NavController ,  private storage: StorageService, public modalController: ModalController,private api:ApiService, private plt:Platform,private apiNative:NativeApiService) {
+  constructor(private ngZone: NgZone, private route: ActivatedRoute, private toastController: ToastController,public actionSheetController: ActionSheetController, private nav: NavController ,  private storage: StorageService, public modalController: ModalController,private api:ApiService, private plt:Platform,private apiNative:NativeApiService) {
     this.plt.ready().then(
-      () =>{
+      async () =>{
+        this.fav_shops = await this.storage.getFavShops()
         if (this.plt.is('hybrid')) {
-          this.apiNative.getStores1().then(async data=>{
+          this.apiNative.getStores().then(async data=>{
             var shops:any =data
-            this.storage.setShops(shops)
+            await this.storage.setShops(shops)
             this.shops = data
             this.spin='none'
             var token = await this.apiNative.isvalidToken()
@@ -48,9 +51,9 @@ initialoffsetTop
                     
         }
         else{
-          this.api.getStores1().subscribe(data=>{
+          this.api.getStores().subscribe(async data=>{
             var shops:any =data
-            this.storage.setShops(shops)
+            await this.storage.setShops(shops)
           
             this.shops = data
             this.spin='none'
@@ -68,12 +71,26 @@ initialoffsetTop
                     })
         }
         } ) 
-        
-  }
+        App.addListener('appStateChange', (state) => {
+          this.ngZone.run(() => {
+          
+          if(state.isActive){
+            if (this.plt.is('hybrid')) {
+              
+              this.apiNative.getStores().then(async data=>{
+                var shops:any =data
+                await this.storage.setShops(shops).then(()=>{ this.reloadFav()})
+              })          
+            }
+          }  
+        });
+      });
+}
   async ionViewDidEnter() {
     if(this.plt.is('hybrid')){
+     
+      var token = await this.apiNative.isvalidToken()
       if(token){
-        var token = await this.apiNative.isvalidToken()
         this.apiNative.paymentMethods().then(async (res)=>{
           await this.storage.clearPaymentMethods()
             await this.storage.setPaymentMethods(res)
@@ -88,7 +105,7 @@ initialoffsetTop
     }
   }
   ngOnInit() {
-
+    
     if(!this.plt.is("hybrid")){
 
       this.route.paramMap.subscribe(async params => {
@@ -159,6 +176,7 @@ async presentToast(text) {
           must_be_payed: shop.must_pay,
           adons: shop.adons,
           available_on: shop.available_on,
+          advance_day:shop.book_advance,
         }
       });
       return await modal.present();
@@ -182,6 +200,10 @@ async presentToast(text) {
   }
  
 
+  }
+  async reloadFav(){
+    this.fav_shops = await this.storage.getFavShops()
+    
   }
  async  navBusiness(store){
     await this.nav.navigateForward('business/'+store.id)
@@ -247,16 +269,56 @@ async presentToast(text) {
   //     }
   //   });
   //   return await modal.present();
-  // }
-  newCustomer(shop){
+  // } async assistenzaActionSheet() {
+
+    // this.presentPayModal()
+
+  async presentBusinessSheet(shop){
+    const actionSheet = await this.actionSheetController.create({
+      header: shop.store_name,
+      
+      buttons: [{
+        text: 'Chiedi di diventare cliente',
+        // icon: 'share',
+        handler: () => {
+         this.newCustomer(shop)
+        }
+      }, {
+        text: 'Rimuovi dai preferiti',
+        role: 'destructive',
+        handler:  () => {
+             this.removefav(shop.id)  
+        }
+      }, {
+        text: 'Annulla',
+        // icon: 'close',
+        role: 'cancel',
+      }]
+    });
+    await actionSheet.present();
+  }
+    
+    
+
+async removefav(id){
+    await this.storage.removeFav(id)
+    this.fav_shops = this.fav_shops.filter((val)=>{return val.id!=id})
+    
+}
+
+  
+
+  async newCustomer(shop){
     var channel = shop.store_name.replaceAll(' ','-')
   if(this.plt.is('hybrid')){
+    var token = await this.apiNative.isvalidToken()
+    if(token){
     this.apiNative.newCustomerSocket(channel,shop.id ).then(res=>{
       if(res.status=='failed'){
         if(res.already_exist){
           this.presentToast('Sei già un cliente di '+shop.store_name)
         }else{
-          this.presentToast("C'è stato un problema nella richiesta di diventare cliente\n\nRiprova più tardi")
+          this.presentToast("C'è stato un problema.\n\nRiprova più tardi")
         }
         this.presentToast('Sei già un cliente di '+shop.store_name) 
       }else{
@@ -264,16 +326,21 @@ async presentToast(text) {
       }
     })
   }else{
+    this.presentToast('Devi avere un account per diventare cliente')
+  }}else{
+    if(this.api.isvalidToken()){
     this.api.newCustomerSocket(channel,shop.id).subscribe(res=>{
       this.presentToast('Richiesta di diventare cliente inviata')
     },err=>{
       if(err.error.already_exist){
         this.presentToast('Sei già un cliente di '+shop.store_name)
       }else{
-        this.presentToast("C'è stato un problema nella richiesta di diventare cliente\n\nRiprova più tardi")
+        this.presentToast("C'è stato un problema.\n\nRiprova più tardi")
       }
     })
-  }
+  }else{
+    this.presentToast('Devi avere un account per diventare cliente')
+  }}
     
   }
 async addFavorite(){
@@ -282,11 +349,14 @@ async addFavorite(){
     swipeToClose: true,
     cssClass: 'select-modal' ,
   });
-  modal.onDidDismiss().then(()=>{
-    this.nav.navigateRoot('tabs')
+  modal.onDidDismiss().then(async ()=>{
+    this.fav_shops = await this.storage.getFavShops()
   })
   return await modal.present();
   
 
+}
+async navCategory(cat){
+   this.nav.navigateForward('tabs/tab1/category/'+cat,)
 }
 }

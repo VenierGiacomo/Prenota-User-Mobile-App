@@ -83,17 +83,21 @@ password =''
       if (this.plt.is('hybrid')) {
         await this.nativeApi.register(this.first_name, this.last_name, this.email, 'm', this.phone, this.password).then(
           async data=>{
-            
            
             // await this.nativeApi.storeToken(data.token)
             if(await data.token){
-              await this.closeModal(true)   
+              await this.closeModal(true)
               if(this.homeref.page != 'tab2'){
                 this.homeref.user.phone = this.phone
                 await this.homeref.bookfromLogin(data.email, data.first_name, data.last_name)
-                await this.closeModal(true)
+                this.nativeApi.paymentMethods().then(async (res)=>{
+                  await this.storage.clearPaymentMethods()
+                    await this.storage.setPaymentMethods(res)
+                 
+                })
               }
              
+              
                         
               setTimeout(()=>{
                 if(this.client_id){
@@ -109,7 +113,7 @@ password =''
                 }
               },100)
               this.presentToast('Salve  '+ data.first_name)
-              await this.closeModal(true)
+             
               
             }else{
               if (data.email != undefined){
@@ -195,6 +199,7 @@ password =''
           var res:any=data
           await this.closeModal(true)
           if(this.homeref.page != 'tab2'){
+            this.homeref.user.phone = res.phone
             await this.homeref.bookfromLogin(res.email, res.first_name, res.last_name)
           }
           this.presentToast('Che bello riverderti  '+ data.first_name)

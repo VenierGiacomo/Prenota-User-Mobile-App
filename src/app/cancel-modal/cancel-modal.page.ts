@@ -73,7 +73,7 @@ rows = ["06:45", "07:00", "07:15", "07:30", "07:45", "08:00", "08:15", "08:30", 
     const date2:any = new Date(appo.year, appo.month, appo.day,0,0,0,0);
     const diffTime = Math.abs(date2 - date1);
     const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)); 
-    if(diffDays>=3){
+    if(diffDays>=appo.day_to_delete){
       if (this.plt.is('hybrid')) {
         this.apiNative.deleteAppointment(appo.id).then(async data=>{
           await this.homeref.getClientAppointments()

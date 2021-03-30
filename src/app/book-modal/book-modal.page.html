@@ -16,7 +16,7 @@
       <div class="names">
           <h2>{{name}}</h2>
           <h5>{{role}}</h5>
-          <ion-button fill=outline (click)='infoModal()' color="light"> Maggiori informazioni</ion-button>
+          <!-- <ion-button fill=outline (click)='infoModal()' color="light"> Maggiori informazioni</ion-button> -->
           <!-- <ion-button style='margin: 0px 10px;' fill=outline (click)='infoModal()'><a href="https://www.google.com/maps/place/Via+Pirano,+12,+34145+Trieste+TS/@45.6308291,13.7860032" target="_blank">Mappa</a></ion-button> -->
       </div>
 </section>
@@ -27,7 +27,7 @@
   <div class="service">
       <!-- <ion-radio-group [(ngModel)]="service" > -->
           <ion-item *ngFor='let service of services' lines="full"  (click)='selectService(service)'>
-              <ion-label>{{service.name}} <b style="text-align-last: right;text-align: right;"><br> Prezzo: {{(service.price==0)? "Gratuito" : service.price/100+'€'}}</b></ion-label>
+              <ion-label>{{service.name}} <b style="text-align-last: right;text-align: right;"><br> Prezzo: {{(service.price==0)? "Gratuito" : (service.price==-1)? "Preventivo in studio" : (service.price/100).toFixed(2) +"€"}}</b></ion-label>
               <!-- <ion-label>{{service.name}} <b style="text-align-last: right;text-align: right;">a partire da {{service.price/100}}€</b></ion-label> -->
               <ion-checkbox slot="end"  [(ngModel)]="service.selected" ></ion-checkbox>
           </ion-item>

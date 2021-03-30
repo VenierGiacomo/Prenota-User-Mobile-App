@@ -5,13 +5,13 @@
       </div>
        
       <ion-row>
-        <ion-col><ion-searchbar placeholder="Cerca un'attività"></ion-searchbar></ion-col> 
+        <ion-col><ion-searchbar placeholder="Cerca un'attività" (ionChange)='filterBusiness()' [(ngModel)]='business_name'></ion-searchbar></ion-col> 
      
       </ion-row>
     </div>
           <div style="padding-top: 124px;">
           <!-- <div class="prof-profile" *ngFor='let shop of shops' (click)="navBusiness(shop)"> -->
-              <div class="prof-profile" *ngFor='let shop of shops' (click)="addfavorite(shop)" >
+              <div class="prof-profile" *ngFor='let shop of shops_to_display' (click)="addfavorite(shop)" >
                   <div class="cont_img_text">
                           <div class="prof-img"><img src='{{shop.img_url}}'></div>
                           <div class="text_widg">
