@@ -200,7 +200,7 @@ export class BookModalPage implements OnInit {
    this.net_listner= Network.addListener("networkStatusChange", (status) => {
       this.ngZone.run(() => {
         if(!status.connected){
-          alert('booom')
+        
           this.closeModal()
         }
       });
@@ -988,10 +988,10 @@ async calculateAvailability(date, bool){
           
           this.openhours = await list
           for(let appointment of this.list_appointments){
+   
          
-            this.openhours = await this.openhours.filter(function(value, index, arr){ return (value.time < appointment.start_t && appointment.employee==value.employee )|| (value.time  >= appointment.end_t && appointment.employee==value.employee ) || appointment.employee!=value.employee})
+            this.openhours = await this.openhours.filter((value, index, arr)=>{ return (value.time < appointment.start_t && appointment.employee==value.employee )|| (value.time  >= appointment.end_t && appointment.employee==value.employee ) || appointment.employee!=value.employee || appointment.month!=this.month})
           } 
-          
           for (let empl of this.employees_serivces){
             if( empl.service_id == this.service[0].id){                
               var y = empl.employee
@@ -1100,7 +1100,7 @@ async calculateAvailability(date, bool){
       
       for(let appointment of this.list_appointments){
       
-        this.openhours = await this.openhours.filter(function(value, index, arr){ return (value.time <= appointment.start_t && appointment.employee==value.employee )|| (value.time  >= appointment.end_t && appointment.employee==value.employee ) || appointment.employee!=value.employee})
+        this.openhours = await this.openhours.filter((value, index, arr)=>{ return (value.time < appointment.start_t && appointment.employee==value.employee )|| (value.time  >= appointment.end_t && appointment.employee==value.employee ) || appointment.employee!=value.employee || appointment.month!=this.month})
       } 
       var o:any = await this.groupBy( this.openhours, 'employee')
     // setTimeout(async () => {

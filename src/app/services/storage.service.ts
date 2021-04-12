@@ -39,10 +39,13 @@ async setShops(shops){
   var new_fav_shops=[]
   for(let shop of fav_shops){
     var new_shop = shops.filter(val=>{return val.id==shop.id})
+    if(new_shop[0]!= undefined && new_shop[0]!= null)
     new_fav_shops.push(new_shop[0])
   }
   if(new_fav_shops.length>0){
     await this.setallFavShops(new_fav_shops)
+  }else{
+    this.clearFavShopss()
   }
   
   await this.storage.set('shops_list',shops)

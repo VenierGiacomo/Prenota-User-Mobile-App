@@ -51,7 +51,7 @@ initialoffsetTop
                     
         }
         else{
-          this.api.getStores().subscribe(async data=>{
+          this.api.getStores1().subscribe(async data=>{
             var shops:any =data
             await this.storage.setShops(shops)
           

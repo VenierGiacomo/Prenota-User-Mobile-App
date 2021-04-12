@@ -566,6 +566,7 @@ slidingTagLiAfterStyle.innerHTML =
         if(back_btn){
           if (this.plt.is('hybrid')) {
             await this.closeModal()
+            // this.apiNative.deletebookings().then(()=>)
             for(let appo of this.homeref.appointments_id){      
               
                 await LocalNotifications.getPending().then( res => {

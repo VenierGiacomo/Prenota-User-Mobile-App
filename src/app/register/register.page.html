@@ -10,12 +10,12 @@
    <div class="input-cont">
       <ion-item lines='none' >
    <ion-label position="stacked">Nome</ion-label>
-    <ion-input [(ngModel)]='first_name' type="text" name="first_name" placeholder="{{first_name_err}}"></ion-input>
+    <ion-input [(ngModel)]='first_name' type="text" name="first_name" placeholder="{{first_name_err}}" autocapitalize=true></ion-input>
     <!-- <p *ngIf='first_name_err!=""'>{{first_name_err}}</p> -->
   </ion-item>
   <ion-item lines='none' >
     <ion-label position="stacked">Cognome</ion-label>
-    <ion-input [(ngModel)]='last_name' type="text" name="last_name" placeholder="{{last_name_err}}"></ion-input>
+    <ion-input [(ngModel)]='last_name' type="text" name="last_name" placeholder="{{last_name_err}}" autocapitalize=true></ion-input>
     <!-- <p *ngIf='last_name_err!=""'>{{last_name_err}}</p> -->
   </ion-item>
   <ion-item lines='none' >

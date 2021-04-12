@@ -31,10 +31,8 @@
 	</array>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
-	<key>LSApplicationQueriesSchemes</key>
-	<array>
-		<string>fb</string>
-	</array>
+	<key>LSApplicationCategoryType</key>
+	<string></string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -43,27 +41,31 @@
 		<true/>
 	</dict>
 	<key>NSBluetoothAlwaysUsageDescription</key>
-	<string>Permettici di accederre al bluethooth del tuo cellulare per personalizzare la tua esperienza</string>
+	<string>Permettici di accedere al bluetooth per avere un' esperienza pesonalizzata e poter connetterci con i negozi vicini a te</string>
 	<key>NSBluetoothPeripheralUsageDescription</key>
-	<string>Permettici di accedere ai tuoi contatti per poterli collegare</string>
+	<string>Permettici di accedere al bluetooth per avere un' esperienza pesonalizzata e poter connetterci con i negozi vicini a te</string>
 	<key>NSCalendarsUsageDescription</key>
-	<string>Permettici di accedere al tuo calendario per salvare i tuoi appuntamenti</string>
+	<string>Permettici di accedere al calendario per registrare anche li le prenotazioni che effetui</string>
 	<key>NSCameraUsageDescription</key>
-	<string>Permettici di accedere alla telecamea per scannerizzare il tesserino del bus</string>
+	<string>Permettici di accedere alla telecamera  per registrare foto e video ed utilizzarli nell'app</string>
 	<key>NSContactsUsageDescription</key>
-	<string>Permettici di accedere ai tuoi contatti per poter sincronizzare l'app</string>
+	<string>Permettici di accedere ai contatti per avere un' esperienza pesonalizzata ed invitare i tuoi amici</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Permettici di accedere alla tua posizione per mostrarti i negozi più pertinenti</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Always allow Geolocation?</string>
+	<string>Permettici di accedere alla tua posizione per mostrarti i negozi più pertinenti</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Permettici di accedere alla tua posizione personalizzare i  negozi che vedi</string>
+	<string>Permettici di accedere alla tua posizione per mostrarti i negozi più pertinenti</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>Per creare video con l'audio</string>
+	<string>Permettici di accedere all microfono per registrare audio ed utilizzarli nell'app</string>
 	<key>NSMotionUsageDescription</key>
-	<string>Permettici di accederre alle motion del tuo cellulare per personalizzare la tua esperienza</string>
+	<string>Permettici di accedere ai movimenti del dispositivo per facilitare il collegamento con i business sulla nostra piattaforma</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>Permettici di salvare tue foto personalizzare l'esperienza sull'app</string>
+	<string>Permettici di accedere alle tue immagini cosi potrai utilizzarle con altri negozi</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Permettici di accedere alle tue foto personalizzare l'esperienza sull'app</string>
+	<string>To Pick Photos from Library</string>
+	<key>NSRemindersUsageDescription</key>
+	<string>Permettici di accedere ai reminder per ricordarti i tuoi appuntamenti</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
