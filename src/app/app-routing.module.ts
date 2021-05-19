@@ -27,7 +27,7 @@ const routes: Routes = [
     loadChildren: () => import('./business/business.module').then( m => m.BusinessPageModule)
   },
   {
-    path: 'register/:first_name/:last_name/:email/:phone',
+    path: 'register/:first_name/:last_name/:email/:phone/:store/client_id:',
     loadChildren: () => import('./tabs/tabs.module').then( m => m.TabsPageModule)
   },
   {
@@ -74,9 +74,21 @@ const routes: Routes = [
     path: 'noconnection',
     loadChildren: () => import('./absent/absent.module').then( m => m.AbsentPageModule)
   },
+  {
+    path: 'info',
+    loadChildren: () => import('./info-page/info-page.module').then( m => m.InfoPagePageModule)
+  },
   {path: '**', 
   redirectTo: '/tabs/tab1',
 },
+  {
+    path: 'info-page',
+    loadChildren: () => import('./info-page/info-page.module').then( m => m.InfoPagePageModule)
+  },
+  {
+    path: 'not-bookable-online',
+    loadChildren: () => import('./not-bookable-online/not-bookable-online.module').then( m => m.NotBookableOnlinePageModule)
+  },
 ];
 @NgModule({
   imports: [

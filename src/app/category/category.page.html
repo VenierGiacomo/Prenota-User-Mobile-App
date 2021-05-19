@@ -19,7 +19,8 @@
                         <h4>{{shop.store_name}}</h4>
                         <h5 >{{shop.business_description}}</h5>
                         <p *ngIf='shop.closed'>Al momento chiuso</p>
-                        <div class="location" *ngIf='!shop.closed'><img src='../assets/icon/location.svg'>{{shop.address}}</div> 
+                      <p *ngIf='!shop.closed && shop.only_app && !native_app'>Prenotabile solo su app</p>
+                      <div class="location" *ngIf='!shop.closed && (!shop.only_app || native_app)'><img src='../assets/icon/location.svg'>{{shop.address}}</div> 
                     </div>
         
             </div>
@@ -32,7 +33,8 @@
                   <h4>{{shop.store_name}}</h4>
                   <h5 >{{shop.business_description}}</h5>
                   <p *ngIf='shop.closed'>Al momento chiuso</p>
-                  <div class="location" *ngIf='!shop.closed'><img src='../assets/icon/location.svg'>{{shop.address}}</div> 
+                      <p *ngIf='!shop.closed && shop.only_app && !native_app'>Prenotabile solo su app</p>
+                      <div class="location" *ngIf='!shop.closed && (!shop.only_app || native_app)'><img src='../assets/icon/location.svg'>{{shop.address}}</div> 
               </div>
   
       </div>

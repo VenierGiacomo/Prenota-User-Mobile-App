@@ -10,6 +10,7 @@ import { ApiService } from '../services/api.service';
 import { StorageService } from '../services/storage.service';
 import { PopoverComponent } from '../popover/popover.component';
 const { LocalNotifications } = Plugins;
+const { App } = Plugins;
 @Component({
   selector: 'app-pay-modal',
   templateUrl: './pay-modal.page.html',
@@ -31,7 +32,7 @@ export class PayModalPage implements OnInit {
   googlePay_available=false
   disabled_back=false
   fast_pay=false
-  book_load=false
+  // book_load=false
   credit_pay=false
   @Input() total_service
   @Input() today
@@ -156,7 +157,7 @@ slidingTagLiAfterStyle.innerHTML =
        
        
       this.payment_loading=false 
-      
+    
     }
 
     async closeModal(){
@@ -303,7 +304,7 @@ slidingTagLiAfterStyle.innerHTML =
 
    async  goPay(){
     clearInterval(this.height_interval)
-    this.book_load =true
+    this.homeref.book_load =true
     clearInterval(this.height_interval)
     var adons =[]
     adons = await this.adons_list.filter((val)=>{ return val.selected})
@@ -352,7 +353,7 @@ slidingTagLiAfterStyle.innerHTML =
             setTimeout(()=>{
               this.pos_book='-100vw'
               this.pos_pay='0vw'
-              this.book_load =false
+              this.homeref.book_load =false
               this.listner_1= document.getElementById('card_number').addEventListener('input', function (e:any) {
                 e.target.value = e.target.value.replace(/[^\dA-Z]/g, '').replace(/(.{4})/g, '$1 ').trim();
                 var key = e.keyCode || e.charCode;
@@ -381,35 +382,37 @@ slidingTagLiAfterStyle.innerHTML =
               this.disabled_back=true      
              
               if(this.fast_pay){
-                 if(this.homeref.account_credits > Number(this.homeref.to_pay)*100){ this.credit_pay=true
-                  var padding_top = this.height - this.elmnt -295
-                  var x:any = document.getElementsByClassName('pay-customer-modal')[0]
-                  x.style.transition="400ms"     
-                  x.style.paddingTop =`${padding_top}px`
-                }else{
-                  this.credit_pay=false
-                  this.pos_book='-100vw'
-                  this.pos_pay='0vw'
-                }
+                if(this.homeref.account_credits > Number(this.homeref.to_pay)*100){ this.credit_pay=true
+                 var padding_top = this.height - this.elmnt -295
+                 var x:any = document.getElementsByClassName('pay-customer-modal')[0]
+                 x.style.transition="400ms"     
+                 x.style.paddingTop =`${padding_top}px`
+               }else{
+                 var padding_top = this.height - this.elmnt -245
+                 var x:any = document.getElementsByClassName('pay-customer-modal')[0]
+                 x.style.transition="400ms"     
+                 x.style.paddingTop =`${padding_top}px`
+               }
+              
+             }else{
                
-              }else{
-                
-                 if(this.homeref.account_credits > Number(this.homeref.to_pay)*100){ this.credit_pay=true
-                
-                  this.pos_book='-100vw'
-                  this.pos_pay='0vw'
-                }else{
-                  this.credit_pay=false
-                  var padding_top = this.height - this.elmnt -175
-                  var x:any = document.getElementsByClassName('pay-customer-modal')[0]
-                  x.style.transition="400ms"     
-                  x.style.paddingTop =`${padding_top}px`
-                }
-              }
+                if(this.homeref.account_credits > Number(this.homeref.to_pay)*100){ this.credit_pay=true
+                 var padding_top = this.height - this.elmnt -245
+                 var x:any = document.getElementsByClassName('pay-customer-modal')[0]
+                 x.style.transition="400ms"     
+                 x.style.paddingTop =`${padding_top}px`
+               }else{
+                 this.credit_pay=false
+                 var padding_top = this.height - this.elmnt -175
+                 var x:any = document.getElementsByClassName('pay-customer-modal')[0]
+                 x.style.transition="400ms"     
+                 x.style.paddingTop =`${padding_top}px`
+               }
+             }
               setTimeout(()=>{
                 this.pos_book='-100vw'
                 this.pos_pay='0vw'
-                this.book_load =false
+                this.homeref.book_load =false
                 this.listner_1= document.getElementById('card_number').addEventListener('input', function (e:any) {
                   e.target.value = e.target.value.replace(/[^\dA-Z]/g, '').replace(/(.{4})/g, '$1 ').trim();
                   var key = e.keyCode || e.charCode;
@@ -440,36 +443,38 @@ slidingTagLiAfterStyle.innerHTML =
             var token = await this.apiNative.isvalidToken()
             if(token){
               this.disabled_back=true          
-                if(this.fast_pay){
-                   if(this.homeref.account_credits > Number(this.homeref.to_pay)*100){ this.credit_pay=true
-                    var padding_top = this.height - this.elmnt -295
-                    var x:any = document.getElementsByClassName('pay-customer-modal')[0]
-                    x.style.transition="400ms"     
-                    x.style.paddingTop =`${padding_top}px`
-                  }else{
-                    this.credit_pay=false
-                    this.pos_book='-100vw'
-                    this.pos_pay='0vw'
-                  }
-                 
-                }else{
-                  
-                   if(this.homeref.account_credits > Number(this.homeref.to_pay)*100){ this.credit_pay=true
-                  
-                    this.pos_book='-100vw'
-                    this.pos_pay='0vw'
-                  }else{
-                    this.credit_pay=false
-                    var padding_top = this.height - this.elmnt -175
-                    var x:any = document.getElementsByClassName('pay-customer-modal')[0]
-                    x.style.transition="400ms"     
-                    x.style.paddingTop =`${padding_top}px`
-                  }
-                }
+              if(this.fast_pay){
+                if(this.homeref.account_credits > Number(this.homeref.to_pay)*100){ this.credit_pay=true
+                 var padding_top = this.height - this.elmnt -295
+                 var x:any = document.getElementsByClassName('pay-customer-modal')[0]
+                 x.style.transition="400ms"     
+                 x.style.paddingTop =`${padding_top}px`
+               }else{
+                 var padding_top = this.height - this.elmnt -245
+                 var x:any = document.getElementsByClassName('pay-customer-modal')[0]
+                 x.style.transition="400ms"     
+                 x.style.paddingTop =`${padding_top}px`
+               }
+              
+             }else{
+               
+                if(this.homeref.account_credits > Number(this.homeref.to_pay)*100){ this.credit_pay=true
+                 var padding_top = this.height - this.elmnt -245
+                 var x:any = document.getElementsByClassName('pay-customer-modal')[0]
+                 x.style.transition="400ms"     
+                 x.style.paddingTop =`${padding_top}px`
+               }else{
+                 this.credit_pay=false
+                 var padding_top = this.height - this.elmnt -175
+                 var x:any = document.getElementsByClassName('pay-customer-modal')[0]
+                 x.style.transition="400ms"     
+                 x.style.paddingTop =`${padding_top}px`
+               }
+             }
               setTimeout(()=>{
                 this.pos_book='-100vw'
                 this.pos_pay='0vw'
-                this.book_load =false
+                this.homeref.book_load =false
                 this.listner_1= document.getElementById('card_number').addEventListener('input', function (e:any) {
                   e.target.value = e.target.value.replace(/[^\dA-Z]/g, '').replace(/(.{4})/g, '$1 ').trim();
                   var key = e.keyCode || e.charCode;
@@ -499,35 +504,37 @@ slidingTagLiAfterStyle.innerHTML =
             if(token){
               this.disabled_back=true      
               if(this.fast_pay){
-                 if(this.homeref.account_credits > Number(this.homeref.to_pay)*100){ this.credit_pay=true
-                  var padding_top = this.height - this.elmnt -295
-                  var x:any = document.getElementsByClassName('pay-customer-modal')[0]
-                  x.style.transition="400ms"     
-                  x.style.paddingTop =`${padding_top}px`
-                }else{
-                  this.credit_pay=false
-                  this.pos_book='-100vw'
-                  this.pos_pay='0vw'
-                }
+                if(this.homeref.account_credits > Number(this.homeref.to_pay)*100){ this.credit_pay=true
+                 var padding_top = this.height - this.elmnt -295
+                 var x:any = document.getElementsByClassName('pay-customer-modal')[0]
+                 x.style.transition="400ms"     
+                 x.style.paddingTop =`${padding_top}px`
+               }else{
+                 var padding_top = this.height - this.elmnt -245
+                 var x:any = document.getElementsByClassName('pay-customer-modal')[0]
+                 x.style.transition="400ms"     
+                 x.style.paddingTop =`${padding_top}px`
+               }
+              
+             }else{
                
-              }else{
-                
-                 if(this.homeref.account_credits > Number(this.homeref.to_pay)*100){ this.credit_pay=true
-                
-                  this.pos_book='-100vw'
-                  this.pos_pay='0vw'
-                }else{
-                  this.credit_pay=false
-                  var padding_top = this.height - this.elmnt -175
-                  var x:any = document.getElementsByClassName('pay-customer-modal')[0]
-                  x.style.transition="400ms"     
-                  x.style.paddingTop =`${padding_top}px`
-                }
-              }
+                if(this.homeref.account_credits > Number(this.homeref.to_pay)*100){ this.credit_pay=true
+                 var padding_top = this.height - this.elmnt -245
+                 var x:any = document.getElementsByClassName('pay-customer-modal')[0]
+                 x.style.transition="400ms"     
+                 x.style.paddingTop =`${padding_top}px`
+               }else{
+                 this.credit_pay=false
+                 var padding_top = this.height - this.elmnt -175
+                 var x:any = document.getElementsByClassName('pay-customer-modal')[0]
+                 x.style.transition="400ms"     
+                 x.style.paddingTop =`${padding_top}px`
+               }
+             }
               setTimeout(()=>{
                 this.pos_book='-100vw'
                 this.pos_pay='0vw'
-                this.book_load =false
+                this.homeref.book_load =false
                 this.listner_1= document.getElementById('card_number').addEventListener('input', function (e:any) {
                   e.target.value = e.target.value.replace(/[^\dA-Z]/g, '').replace(/(.{4})/g, '$1 ').trim();
                   var key = e.keyCode || e.charCode;
@@ -566,7 +573,11 @@ slidingTagLiAfterStyle.innerHTML =
         if(back_btn){
           if (this.plt.is('hybrid')) {
             await this.closeModal()
-            // this.apiNative.deletebookings().then(()=>)
+            this.apiNative.deleteBookingsShadow(this.homeref.appointments_id).then((res)=>{
+              console.log(res)
+            }).catch((err)=>{
+              console.log(err)
+            })
             for(let appo of this.homeref.appointments_id){      
               
                 await LocalNotifications.getPending().then( res => {
@@ -647,7 +658,7 @@ slidingTagLiAfterStyle.innerHTML =
     async buywithCard(){
       this.payment_loading=true
       var card_number:any = document.getElementById('card_number')
-      card_number = card_number.value.replaceAll(' ','')
+      card_number = card_number.value.replace(/ /g, '');
       var date:any = document.getElementById('expiry')
       date = date.value.split('/')
       var cvv:any = document.getElementById('cvv')

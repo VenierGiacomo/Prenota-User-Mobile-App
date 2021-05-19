@@ -20,13 +20,30 @@
           <!-- <ion-button style='margin: 0px 10px;' fill=outline (click)='infoModal()'><a href="https://www.google.com/maps/place/Via+Pirano,+12,+34145+Trieste+TS/@45.6308291,13.7860032" target="_blank">Mappa</a></ion-button> -->
       </div>
 </section>
-<section >
-<h5 *ngIf='!adons'>Seleziona un servizio o più</h5>
-<h5 *ngIf='adons'>Seleziona un servizio</h5>
+
+
+<section style="padding: 5px 0px;" >
+<h5 *ngIf='!adons' style="margin-left: 20px;">Seleziona un servizio o più</h5>
+<h5 *ngIf='adons' style="margin-left: 20px;">Seleziona un servizio</h5>
+
 <p *ngIf='services.length>4'>Scorri verso il basso per altri servizi</p>
-  <div class="service">
+<ion-segment  scrollable='true' *ngIf='has_category' value="0" >
+        
+  <ion-segment-button (click)='scrollcategories(0)' value="0" id='0'>
+    <ion-label>I più scelti</ion-label> 
+  </ion-segment-button>
+ <ion-segment-button *ngFor='let cat of categories;let ind =index' (click)='scrollcategories(cat.id)' id='{{cat.id}}'  >
+    <ion-label>{{cat.name}}</ion-label> 
+    
+  </ion-segment-button>
+  <ion-segment-button (click)='scrollcategories(-1)' value="-1" id='-1'>
+    <ion-label>Tutti</ion-label> 
+  </ion-segment-button>  
+  
+</ion-segment>
+<div class="service">
       <!-- <ion-radio-group [(ngModel)]="service" > -->
-          <ion-item *ngFor='let service of services' lines="full"  (click)='selectService(service)'>
+          <ion-item *ngFor='let service of services_to_show' lines="full"  (click)='selectService(service)'>
               <ion-label>{{service.name}} <b style="text-align-last: right;text-align: right;"><br> Prezzo: {{(service.price==0)? "Gratuito" : (service.price==-1)? "Preventivo in studio" : (service.price/100).toFixed(2) +"€"}}</b></ion-label>
               <!-- <ion-label>{{service.name}} <b style="text-align-last: right;text-align: right;">a partire da {{service.price/100}}€</b></ion-label> -->
               <ion-checkbox slot="end"  [(ngModel)]="service.selected" ></ion-checkbox>
@@ -63,7 +80,7 @@
         </span>
      
       </span>
-    <h5 style="color: #fff;" >Seleziona un orario</h5>
+    <h5 style="color: #414141;" >Seleziona un orario</h5>
     
     <p  *ngIf='!has_spot' style="color: #efefef; font-size: 15px;"  [style.visibility]="spin_spots_neg">Nessuna disponibilita, prova in un' altra data</p>
     <div  style="position: relative;"   [style.visibility]="spin_spots_neg" *ngIf='has_spot'>

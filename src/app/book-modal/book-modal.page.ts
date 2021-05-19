@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, NgZone } from '@angular/core';
-import { ModalController, PickerController, Platform, NavController } from '@ionic/angular';
+import { ModalController, PickerController, Platform, NavController, IonMenuToggle } from '@ionic/angular';
 import Notiflix from "notiflix";
 import { StorageService } from '../services/storage.service';
 import { NativeApiService } from '../services/nativeapi.service';
@@ -52,6 +52,7 @@ export class BookModalPage implements OnInit {
   @Input() adons
   @Input() available_on
   @Input()advance_day
+  @Input()has_category
   list_appointments
   services:any=[]
   week = []
@@ -110,6 +111,10 @@ export class BookModalPage implements OnInit {
   adons_list=[];
   hourfilter
   net_listner
+  adons_topay
+  categories=[{id:0,name:''}]
+  book_load=false
+  services_to_show
   // price
   constructor(private ngZone: NgZone, private apiNative:NativeApiService, private plt: Platform,private api: ApiService, private nav: NavController, private storage: StorageService, public modalController: ModalController, private pickerController: PickerController,) {}
 // private apiNative: NativeApiService,
@@ -161,7 +166,10 @@ export class BookModalPage implements OnInit {
     // this.getAppointments(this.day)   
     
     await this.getEmployees()
-   
+    if(this.has_category){
+      this.getCategories()
+    }
+
     if(this.plt.is('hybrid')){
       var token = await this.apiNative.isvalidToken()
   if(token){
@@ -207,7 +215,25 @@ export class BookModalPage implements OnInit {
     });
     
   }
-
+  getCategories(){
+    if(this.plt.is('hybrid')) {
+      this.apiNative.getCategoriebyStore(this.id).then(async data=>{
+        console.log(data)
+        this.categories = await data
+        
+      }).catch(err=>{
+        console.log(err)
+      })
+    }
+    else{
+    this.api.getCategoriebyStore(this.id).subscribe(async data=>{
+      this.categories = await data
+      console.log(data)
+        },err=>{
+          console.log(err)
+        })
+      }
+  }
   getDatesAndServices(){
     this.calculateWorkdates().then(()=>{
       
@@ -272,15 +298,18 @@ export class BookModalPage implements OnInit {
       this.apiNative.getStoreservicebyStore(this.id).then(
         async data => {
           var services =  await data
-        
-          this.services = services.filter(val =>{
+        this.services = services
+          this.services_to_show = services.filter(val =>{
             return val.hasToBeMember == this.is_member })
             if(!this.is_client){
-              this.services = this.services.filter(val =>{
+              this.services_to_show = this.services_to_show.filter(val =>{
                 return !val.hasToBeCLient  })
             }
             
-          this.services.map(val => val.selected =false)  
+          this.services_to_show.map(val => val.selected =false)  
+          if(this.has_category){
+            this.services_to_show= this.services.filter((val)=>{return val.favorite})
+          }
           Notiflix.Block.Remove('.service');
         }).catch(
           err => {
@@ -292,13 +321,17 @@ export class BookModalPage implements OnInit {
         async data=>{
         
           var services:any =  await data
-          this.services = services.filter(val =>{
+          this.services = services
+          this.services_to_show = services.filter(val =>{
             return val.hasToBeMember == this.is_member })
             if(!this.is_client){
-              this.services = this.services.filter(val =>{
+              this.services_to_show = this.services_to_show.filter(val =>{
                 return !val.hasToBeCLient  })
             }
-            this.services.map(val => val.selected =false)  
+            this.services_to_show.map(val => val.selected =false) 
+            if(this.has_category){
+              this.services_to_show= this.services.filter((val)=>{return val.favorite})
+            } 
           Notiflix.Block.Remove('.service');
         err=>{
           console.log(err)
@@ -637,6 +670,36 @@ items.forEach(function (a) {
       }
     }
   }
+
+  scrollcategories(id){
+    if(id==-1){
+      this.services_to_show= this.services
+    }else{
+      if(id==0){
+        this.services_to_show= this.services.filter((val)=>{return val.favorite})
+      }else{
+        this.services_to_show= this.services.filter((val)=>{return val.category==id})
+      }
+    }
+   
+    console.log(id,this.services, this.services_to_show)
+  setTimeout(() => {
+    document.getElementById(id).scrollIntoView({
+      behavior: 'smooth',
+      block: 'center',
+      inline: 'center',
+    });
+  }, 300);
+  
+  
+
+   
+  
+     
+    
+  
+    
+  }
   async firstweek_availability(){
     this.uniques=[]
     this.availableSpots1=[]
@@ -675,15 +738,15 @@ items.forEach(function (a) {
     }
     var list1 =[ ]
     for (let day of this.empl_hours){
-        var start = this.times.indexOf(this.rows[day.start])
-        var end =  this.times.indexOf(this.rows[day.end])
+        var start = day.start_t
+        var end =  day.end_t
         for (var i = start; i <= end; i++) {
           list1.push({time: i  , employee: day.employee, day: week[day.wkday], week_day: day.wkday});
         }
       }
       for (let day of this.empl_hours){
-        var start = this.times.indexOf(this.rows[day.start])
-        var end =  this.times.indexOf(this.rows[day.end])
+        var start = day.start_t
+        var end =  day.end_t
         for (var i = start; i <= end; i++) {
           list1.push({time: i  , employee: day.employee, day: week2[day.wkday], week_day: day.wkday});
         }
@@ -704,26 +767,28 @@ items.forEach(function (a) {
            }
 
           //  for(let serv_ind in this.service){
-             for(let idx in this.list_work){
-         
-               let id:any = idx
-               var length =this.list_work.length-1
-               if(id ==0 || id == length || this.list_work[id].time-this.list_work[id-1].time> 1 || this.list_work[id].time-this.list_work[id-1].time< 0  || this.list_work[id].employee-this.list_work[id-1].employee!= 0 || app == undefined || app.duration == tot_dur){
-                 if (app != undefined){
-                   if(app.duration >=   tot_dur){
+            for(let idx in this.list_work){
+       
+              let id:any = idx
+              var length =this.list_work.length-1
+              if(id ==0 || id == length || this.list_work[id].time-this.list_work[id-1].time> 1 || this.list_work[id].time-this.list_work[id-1].time< 0  || this.list_work[id].employee-this.list_work[id-1].employee!= 0 || app == undefined || app.duration == tot_dur){
+                if (app != undefined){
+                  if(app.duration ==   tot_dur){
                     this.availableSpots1.push(app)
-                    app =undefined
-                 }
-                 }else{
-                  if(this.rows.indexOf(this.times[this.list_work[id].time])!=-1){
-                    app = { duration: 1, day: this.list_work[id].day} 
-                  }
-                 }
-               }else{
-                   app.duration +=1
-               }
-            
+                }
+                if(id>0 && this.list_work[id].time-this.list_work[id-1].time> 1){
+                  app=undefined
+                }
+              }
+              if(this.hourfilter.indexOf(this.times[this.list_work[id].time])!=-1){
+                  app = { duration: 1, day: this.list_work[id].day} 
+                }
+               
+             }else{
+                 app.duration +=1
              }
+           
+            }
           //  }
            let weeks=[]
            for(let spot of this.availableSpots1){
@@ -767,23 +832,25 @@ items.forEach(function (a) {
             }
             // for(let serv_ind in this.service){
               for(let idx in this.list_work){
-          
+       
                 let id:any = idx
                 var length =this.list_work.length-1
-                if(id ==0 || id == length || this.list_work[id].time-this.list_work[id-1].time> 1 || this.list_work[id].time-this.list_work[id-1].time< 0  || this.list_work[id].employee-this.list_work[id-1].employee!= 0 || app == undefined ||  app.duration == tot_dur){
+                if(id ==0 || id == length || this.list_work[id].time-this.list_work[id-1].time> 1 || this.list_work[id].time-this.list_work[id-1].time< 0  || this.list_work[id].employee-this.list_work[id-1].employee!= 0 || app == undefined || app.duration == tot_dur){
                   if (app != undefined){
-                    if(app.duration >=   tot_dur){
+                    if(app.duration ==   tot_dur){
                       this.availableSpots1.push(app)
-                      app =undefined
                   }
-                }else{
-                    if(this.rows.indexOf(this.times[this.list_work[id].time])!=-1){
-                      app = { duration: 1, day: this.list_work[id].day} 
-                    }
-                   }
-                 }else{
-                     app.duration +=1
-                 }
+                  if(id>0 && this.list_work[id].time-this.list_work[id-1].time> 1){
+                    app=undefined
+                  }
+                }
+                if(this.hourfilter.indexOf(this.times[this.list_work[id].time])!=-1){
+                    app = { duration: 1, day: this.list_work[id].day} 
+                  }
+                 
+               }else{
+                   app.duration +=1
+               }
              
               }
             // }
@@ -977,8 +1044,8 @@ async calculateAvailability(date, bool){
           for (let day of this.empl_hours){
 
             if(day_of_week == day.wkday){
-              var start = this.times.indexOf(this.rows[day.start])
-              var end =  this.times.indexOf(this.rows[day.end])
+              var start =  day.start_t
+              var end =  day.end_t
               for (var i = start; i <= end; i++) {
                 list.push({time: i  , employee: day.employee });
               }
@@ -1089,8 +1156,8 @@ async calculateAvailability(date, bool){
       var app
       for (let day of this.empl_hours){
         if(day_of_week == day.wkday){
-          var start = this.times.indexOf(this.rows[day.start])
-          var end =  this.times.indexOf(this.rows[day.end])
+          var start = day.start_t
+          var end =  day.end_t
           for (var i = start; i <= end; i++) {
             list.push({time: i  , employee: day.employee });
           }
@@ -1269,6 +1336,7 @@ async book(adons){
   this.appointments_id=[]
   var length  = this.app_to_book.length
   var token: any = await this.apiNative.isvalidToken()
+  this.adons_topay=adons
       if (this.plt.is('hybrid')) {
         if(token){
           for (let  ind in this.app_to_book){
@@ -1277,7 +1345,7 @@ async book(adons){
             var start = this.app_to_book[ind].start
             var end = start + this.app_to_book[ind].duration
            
-            this.apiNative.bookAppointmentNoOwner(start, end, this.day, this.month, this.year, client_name, this.user.phone,  this.service[ind].name, this.app_to_book[ind].employee, this.app_to_book[ind].service,this.id, this.must_be_payed, adons).then( async data=>{
+            this.apiNative.bookAppointmentNoOwner(start, end, this.day, this.month, this.year, client_name, this.user.phone,  this.service[ind].name, this.app_to_book[ind].employee, this.app_to_book[ind].service,this.id, this.must_be_payed, this.adons_topay).then( async data=>{
              if(data.just_booked){
                 this.presentJustBookedModal(); await this.pay_modal.dismiss(); 
                
@@ -1442,7 +1510,7 @@ async book(adons){
         var start = this.app_to_book[ind].start
         var end = start + this.app_to_book[ind].duration
         
-        this.api.bookAppointmentNoOwner(start, end, this.day, this.month, this.year, client_name, this.user.phone,  this.service[ind].name, this.app_to_book[ind].employee, this.app_to_book[ind].service,this.id, this.must_be_payed, adons).subscribe(async data=>{
+        this.api.bookAppointmentNoOwner(start, end, this.day, this.month, this.year, client_name, this.user.phone,  this.service[ind].name, this.app_to_book[ind].employee, this.app_to_book[ind].service,this.id, this.must_be_payed, this.adons_topay).subscribe(async data=>{
          
           this.appointments_id.push(await data.id)
        
@@ -1505,7 +1573,7 @@ async book(adons){
     }
   }
   }
-  async bookfromLogin(email,first_name,last_name,adons){
+  async bookfromLogin(email,first_name,last_name){
     this.appointments_id=[]
     var length  = this.app_to_book.length
     if (this.plt.is('hybrid')) {
@@ -1524,7 +1592,7 @@ async book(adons){
           var start = this.app_to_book[ind].start
           var end = start + this.app_to_book[ind].duration
          
-          this.apiNative.bookAppointmentNoOwner(start, end, this.day, this.month, this.year, client_name, this.user.phone,  this.service[ind].name, this.app_to_book[ind].employee, this.app_to_book[ind].service,this.id, this.must_be_payed,adons).then(async data=>{
+          this.apiNative.bookAppointmentNoOwner(start, end, this.day, this.month, this.year, client_name, this.user.phone,  this.service[ind].name, this.app_to_book[ind].employee, this.app_to_book[ind].service,this.id, this.must_be_payed,this.adons_topay).then(async data=>{
            if(data.just_booked){
             this.presentJustBookedModal(); await this.pay_modal.dismiss(); 
            }else{
@@ -1676,7 +1744,7 @@ async book(adons){
       var start = this.app_to_book[ind].start
       var end = start + this.app_to_book[ind].duration
      
-      this.api.bookAppointmentNoOwner(start, end, this.day, this.month, this.year, client_name, this.user.phone,  this.service[ind].name, this.app_to_book[ind].employee, this.app_to_book[ind].service,this.id, this.must_be_payed,adons).subscribe( data=>{
+      this.api.bookAppointmentNoOwner(start, end, this.day, this.month, this.year, client_name, this.user.phone,  this.service[ind].name, this.app_to_book[ind].employee, this.app_to_book[ind].service,this.id, this.must_be_payed,this.adons_topay).subscribe( data=>{
        
          this.appointments_id.push(data.id)
        

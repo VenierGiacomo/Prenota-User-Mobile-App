@@ -75,6 +75,15 @@ async getUserData(){
   })  
 
 }
+async registerdevice(player_id){
+  var l
+  let token 
+  token = await this.getToken()
+  l = this.parseJwt(token) 
+  var data = {'player_id': player_id , 'user': l.user_id}
+  let url = BASE_URL+'device/'
+  return  await  this.postData(url,data,this.token_header)
+}
 async getToken(){
   return new Promise(resolve => {
     this.storage.get('token').then(data => {
@@ -148,6 +157,10 @@ async getemployeeHoursByShop(id){
   var url = BASE_URL+'employeehours/shop/?shop='+id;
   return  await  this.getData(url,this.simple_header)
 }
+async getCategoriebyStore(id){
+  var url = BASE_URL+'categories/shop/?shop='+id;
+  return  await  this.getData(url,this.simple_header)
+}
 
 async getEmployees(){
   let url = BASE_URL+'employees/'
@@ -176,6 +189,13 @@ async bookAppointmentNoOwner(start, end, day, month, year,name, phone, details, 
     let url = BASE_URL+'bookings/'
   return  await  this.postData(url,data,this.token_header)
   }
+}
+
+async deleteBookingsShadow(list_ids){
+  var ids=list_ids.toString()
+  let url = BASE_URL+'bookings/delete/shadow/?list_ids='+ids
+  return await this.deleteData(url,this.token_header)
+
 }
 async booknotifications(list_ids){
   var ids=list_ids.toString()

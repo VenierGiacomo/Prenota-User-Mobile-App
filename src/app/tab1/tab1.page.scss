@@ -18,6 +18,7 @@
 
 
 
+
 .double-bounce1, .double-bounce2 {
   width: 40px;
   height: 40px;
@@ -231,6 +232,7 @@ ion-content{
    --color: #0061d5;
  }
 .empty_favorite{
+  width: 100vw;
   position: fixed;
   height: calc(100vh - 295px);
   

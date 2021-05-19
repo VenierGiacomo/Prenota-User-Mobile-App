@@ -3,15 +3,19 @@
     top:0vh;
     width: 100vw;
     height:100%;
-    background-image: url(./../../assets/Waves-multiple.svg) !important;
-    background-repeat: no-repeat;
-    background-size: cover;
+    background: #fff;
+    // background-image: url(./../../assets/Waves-multiple.svg) !important;
+    // background-repeat: no-repeat;
+    // background-size: cover;
     // height: 100vh;
     overflow: hidden;
-    color: white;
+    color:  #414141;
     position: absolute;
     text-align: center;
     z-index: 10000000;
+  }
+  ion-content{
+      scroll-behavior: smooth;
   }
   .spinner1{
     width: 100vw;
@@ -20,17 +24,31 @@
     background: transparent;
     // height: 100vh;
     overflow: hidden;
-    color: white;
+    color:  #414141;
     position: absolute;
     text-align: center;
     z-index: 10000000;
   }
-  
+  ion-segment::-webkit-scrollbar {
+    display: none;
+  }
+  ion-segment{
+      margin: 10px 20px;
+      scroll-behavior: smooth;
+      -ms-overflow-style: none;  /* IE and Edge */
+        scrollbar-width: none; 
+  }
+  ion-segment-button{
+    // --transition:600ms;
+      color: #414141;
+    // padding: 0px 5px;s
+    min-width: auto;
+  }
   .double-bounce1, .double-bounce2 {
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background-color: white;
+    background-color: #0061d5;
     opacity: 0.6;
     position: absolute;
     left:calc(50vw - 20px);
@@ -61,73 +79,77 @@
   }
 ion-icon{
     font-size: 32px;
-    color: white;
+    color:  #414141;
 }
 ion-header{
-    color: white;
+    color:  #414141;
     height: 50px;
     ion-icon{
-        color:white;
-        --color: #fff
+        color:#414141;
+        --color: #414141
     }
 }
 ion-toolbar{
-    color: white;
+    color: #414141;
     ion-icon{
-        color:white;
-        --color: #fff
+        color:#414141;
+        --color: #414141
     }
 }
 .white-icon{
     font-size: 30px;
     padding-right: 10px;
-    color: white;
+    color: #414141;
 }
 section{
-    padding: 5px 20px;
+    padding: 5px 10px;
     // background: #fafafa;
     h5{
-        color: #fff;
-        margin:0px
+        color: #414141;
+        margin: 0px 10px;
     }
     p{
-        color: #fff;
-        margin:0px
+        color: #414141;
+        margin: 0px 0px 0px 20px;
+        font-size: 11px;
     }
 }
 ion-content{
-    background-image: url(./../../assets/Waves-multiple.svg) !important;
-    background-repeat: no-repeat;
-    background-size: cover;
+    // background-image: url(./../../assets/Waves-multiple.svg) !important;
+    --background: #fff;
+    // background-repeat: no-repeat;
+    // background-size: cover;
     // height: 100vh;
     overflow: hidden;
 }
 
 .profile{
     position: relative;
-    padding:  10px;
+    padding:  0px 10px ;
     width: 100vw;
     // padding: 10px;
     .names{
         position: absolute;
         left: 36vw;
         display: inline-block;
-        top:8vw;
+        // top:8vw;
+        padding-top: 15px;
         display: inline-block;
         height: 100%;
         h2{
-            color: #fff;
+            color:  #414141;
             font-size:21px;
             line-height: 21px;
-            margin:0px;
+            margin: 0px 0px 5px 0px;
             font-weight:700
         }
         h5{
-            color: #f3f3f3;
+            color: #414141;
             font-size: 15px;
             line-height: 15px;
-            margin-top: 0px;
-            margin-bottom: 10px;
+            
+            margin: 0px 0px 20px  ;
+            
             // color: #00479D;
         }
         ion-button{
@@ -138,9 +160,9 @@ ion-content{
     .cont-img{
         height:25vw;
         width: 25vw;;
-        margin: 10px;
+        margin: 0px 10px;
         border-radius: 10px;
-        box-shadow: 0 3px 6px rgba(#112233, 0.3);
+        box-shadow: 0 0 5px 1px #ddd;
         display: inline-block;
         overflow: hidden;
         img{
@@ -154,15 +176,15 @@ ion-content{
     }
 }
 .service{
-    max-height: 230px;
+    max-height: 220px;
     bottom: 0px;
     border-radius: 4px;
-    // margin: 10px 0px;
+    margin: 10px 0px 0px 0px;
     left: 0px;
-    width: 100%;
+    width: 100vw;
     background: transparent;
     overflow: scroll;
-    box-shadow: 0 3px 6px rgba(#2c59ac, 0.4);
+    box-shadow:0 0 5px 1px #ddd;
     ion-label{
         --color: #343a40 !important;
     }
@@ -180,8 +202,9 @@ ion-content{
 white-space: normal !important;
 }
 .date{
-    h2{
-        margin-top:0px;
+    padding-bottom: 0px;
+    h5{
+        margin-top:15px;
     }
     // ion-datetime{
     //     color: #0061d5;
@@ -199,9 +222,10 @@ white-space: normal !important;
         overflow-y: hidden;
         -webkit-overflow-scrolling: touch;
         height:80px; 
-        padding:  10px ;
+        padding: 10px 10px  0px 10px;
+    margin: 0px;
         .time-slot{
-            margin: 5px;
+            margin: 0px 10px 0px 0px;
             border-radius: 5px;
             padding:  15px 20px;
             font-size: 13px;
@@ -211,7 +235,7 @@ white-space: normal !important;
             color: #343a40;
             background: #fff;
             border: 1px solid white;
-            box-shadow: 0 5px 7px rgba(#2c59ac, 0.2);
+            box-shadow: 0 0 5px 1px #ddd;
         }
     }
     
@@ -223,6 +247,7 @@ white-space: normal !important;
 }
 .time{
     padding-bottom: 20px;
+    padding-top: 0px;
     .x-scroller{
         // background: #fafafa;
         white-space: nowrap;
@@ -231,9 +256,10 @@ white-space: normal !important;
         overflow-y: hidden;
         -webkit-overflow-scrolling: touch;
         height:80px; 
-        padding:  10px ;
+        padding: 10px 10px;
+    margin: 0px ;
         .time-slot{
-            margin: 5px;
+            margin: 0px 10px 0px 0px;
             z-index: 10;
             border-radius: 5px;
             text-align: center;
@@ -243,7 +269,7 @@ white-space: normal !important;
             display: inline-block;
             color: #343a40;
             background: #fff;
-            box-shadow: 0 3px 6px rgba(#2c59ac, 0.2);
+            box-shadow: 0 0 5px 1px #ddd;
         }
     }
    
@@ -271,10 +297,12 @@ top: 0px;
 z-index: 20;
 background: rgba($color: rgb(1, 28, 83), $alpha: 0.8);
 backdrop-filter: blur(16px);
+-webkit-backdrop-filter: blur(16px);
 .cont{
 width: 80vw;
 background: rgba(#ffffff, 0.8);
 backdrop-filter: blur(16px);
+-webkit-backdrop-filter: blur(16px);
 display: block;
 border-radius: 10px;
 margin-top: 20vh;
@@ -308,16 +336,16 @@ button{
     padding: 5px 10px;
     width: 90%;
     font-size: 18px;
-    color:#0061d5;
+    color:#fff;
     border-radius: 10px;
     margin-bottom: 0px;
-    box-shadow: 0 3px 6px rgba(#2c59ac, 0.4)
+    box-shadow: 0 0 5px 1px #ddd;
 }
 .confirm{
-    background: #0061d5;
-    color: white;
+    background: #fff;
+    color:  #414141;
     font-family: 'Comfortaa Bold';
-    box-shadow: 0 3px 6px rgba(#2c59ac, 0.4)
+    box-shadow: 0 0 5px 1px #ddd;
 }
 }
 .no-disp{
@@ -338,14 +366,14 @@ h6{
 }
 
 ion-header{
-    background: #0061d5;
-     --background: #0061d5;
-      color:#fff;
+    background: #fff;
+     --background: #fff;
+      color: #414141;
       font-family: 'Comfortaa Bold';
       border: none !important;
   }
   ion-tab-bar{
-    --background: #0061d5;
+    --background: #fff;
   }
   
   .header-ios ion-toolbar:last-of-type {
@@ -358,11 +386,11 @@ ion-header{
     }
   
     ion-title {
-      color:#fff;
+      color:#414141;
       font-size: 21px;
       font-family: 'Comfortaa Bold';
-      --background: #0061d5;
-      background: #0061d5;
+      --background: #fff;
+      background: #fff;
     }
 
     body{
@@ -397,7 +425,7 @@ ion-header{
 
     .time-available{
         text-transform: capitalize;
-        color: white;
+        color:  #414141;
         display: block;
         font-weight: 700;
         font-size: 15px;
@@ -405,19 +433,22 @@ ion-header{
     }
 
     .item-class{
-        color: white;
-        margin: 5px 0px;
-        --background: rgba(255,255,255,0.1);
-        backdrop-filter: blur(16px);
-        -webkit-backdrop-filter: blur(16px);
+        color:  #414141;
+        margin:0px 10px 15px 10px;
+        // --background: rgba(255,255,255,0.1);
+        // backdrop-filter: blur(16px);
+        box-shadow: 0 0 5px 1px #ddd;
+        // -webkit-backdrop-filter: blur(16px);
         font-size: 15px;
+        overflow: hidden;
+        // width: 90%;
         border-radius: 5px;
         ion-lable{
             font-size: 15px;
         }
         ion-select{
               /* Set a different placeholder color */
-                --placeholder-color: #ffffff;
+                --placeholder-color:  #414141;
 
                 /* Set full opacity on the placeholder */
                 --placeholder-opacity: 1;

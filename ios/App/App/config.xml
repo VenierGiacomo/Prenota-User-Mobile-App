@@ -85,6 +85,10 @@
     <param name="onload" value="true"/>
   </feature>
 
+  <feature name="OneSignalPush">
+    <param name="ios-package" value="OneSignalPush"/>
+  </feature>
+
   <feature name="BarcodeScanner">
     <param name="ios-package" value="CDVBarcodeScanner"/>
   </feature>

@@ -66,6 +66,11 @@
 	<string>To Pick Photos from Library</string>
 	<key>NSRemindersUsageDescription</key>
 	<string>Permettici di accedere ai reminder per ricordarti i tuoi appuntamenti</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+		<string>remote-notification</string>
+	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>

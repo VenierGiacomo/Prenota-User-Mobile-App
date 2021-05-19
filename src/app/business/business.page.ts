@@ -107,6 +107,8 @@ export class BusinessPage implements OnInit {
   adons_list=[];
   hourfilter
   advance_day=2
+  adons_topay
+  only_app
   // price
   constructor(private actionSheetController: ActionSheetController, private router:Router, private apiNative:NativeApiService, private plt: Platform,private api: ApiService, private nav: NavController, private storage: StorageService, public modalController: ModalController, private pickerController: PickerController,) {}
 // private apiNative: NativeApiService,
@@ -122,6 +124,7 @@ async ngOnInit() {
     this.website = store.website
     this.address= store.address
     this.advance_day =store.book_advance
+    this.only_app=store.only_app
     setTimeout(()=>{
       this.spin='none'
     },800)
@@ -239,6 +242,17 @@ if(token){
   ngOnDestroy(){
     clearInterval(this.interval_insurance)
     //call your service here.
+ }
+ downloadApp(){
+   if(this.plt.is('android')){
+    window.location.href="http://play.google.com/store/apps/details?id=io.prenota.client"
+   }
+   else{
+    if(this.plt.is('ios')){
+      window.location.href="https://apps.apple.com/app/id1523525291"
+    }
+   }
+  
  }
   insurance(){
     // setTimeout(() => {
@@ -711,15 +725,15 @@ items.forEach(function (a) {
     }
     var list1 =[ ]
     for (let day of this.empl_hours){
-        var start = this.times.indexOf(this.rows[day.start])
-        var end =  this.times.indexOf(this.rows[day.end])
+        var start = day.start_t
+        var end =  day.end_t
         for (var i = start; i <= end; i++) {
           list1.push({time: i  , employee: day.employee, day: week[day.wkday], week_day: day.wkday});
         }
       }
       for (let day of this.empl_hours){
-        var start = this.times.indexOf(this.rows[day.start])
-        var end =  this.times.indexOf(this.rows[day.end])
+        var start = day.start_t
+        var end =  day.end_t
         for (var i = start; i <= end; i++) {
           list1.push({time: i  , employee: day.employee, day: week2[day.wkday], week_day: day.wkday});
         }
@@ -1013,8 +1027,8 @@ async calculateAvailability(date, bool){
           for (let day of this.empl_hours){
 
             if(day_of_week == day.wkday){
-              var start = this.times.indexOf(this.rows[day.start])
-              var end =  this.times.indexOf(this.rows[day.end])
+              var start = day.start_t
+              var end =  day.end_t
               for (var i = start; i <= end; i++) {
                 list.push({time: i  , employee: day.employee });
               }
@@ -1123,8 +1137,8 @@ async calculateAvailability(date, bool){
       var app
       for (let day of this.empl_hours){
         if(day_of_week == day.wkday){
-          var start = this.times.indexOf(this.rows[day.start])
-          var end =  this.times.indexOf(this.rows[day.end])
+          var start = day.start_t
+          var end =  day.end_t
           for (var i = start; i <= end; i++) {
             list.push({time: i  , employee: day.employee });
           }
@@ -1303,6 +1317,7 @@ async book(adons){
   this.appointments_id=[]
   var length  = this.app_to_book.length
   var token: any = await this.apiNative.isvalidToken()
+  this.adons_topay=adons
       if (this.plt.is('hybrid')) {
         if(token){
           for (let  ind in this.app_to_book){
@@ -1311,7 +1326,8 @@ async book(adons){
             var start = this.app_to_book[ind].start
             var end = start + this.app_to_book[ind].duration
            
-            this.apiNative.bookAppointmentNoOwner(start, end, this.day, this.month, this.year, client_name, this.user.phone,  this.service[ind].name, this.app_to_book[ind].employee, this.app_to_book[ind].service,this.id, this.must_be_payed, adons).then( data=>{
+            this.apiNative.bookAppointmentNoOwner(start, end, this.day, this.month, this.year, client_name, this.user.phone,  this.service[ind].name, this.app_to_book[ind].employee, this.app_to_book[ind].service,this.id, this.must_be_payed, this.adons_topay
+              ).then( data=>{
              
               this.appointments_id.push( data.id)              
               if( length === this.appointments_id.length){
@@ -1469,7 +1485,7 @@ async book(adons){
         var start = this.app_to_book[ind].start
         var end = start + this.app_to_book[ind].duration
         
-        this.api.bookAppointmentNoOwner(start, end, this.day, this.month, this.year, client_name, this.user.phone,  this.service[ind].name, this.app_to_book[ind].employee, this.app_to_book[ind].service,this.id, this.must_be_payed, adons).subscribe(async data=>{
+        this.api.bookAppointmentNoOwner(start, end, this.day, this.month, this.year, client_name, this.user.phone,  this.service[ind].name, this.app_to_book[ind].employee, this.app_to_book[ind].service,this.id, this.must_be_payed, this.adons_topay).subscribe(async data=>{
          
           this.appointments_id.push(await data.id)
        
@@ -1533,7 +1549,7 @@ async book(adons){
     }
   }
   }
-  async bookfromLogin(email,first_name,last_name,adons){
+  async bookfromLogin(email,first_name,last_name){
     this.appointments_id=[]
     var length  = this.app_to_book.length
     if (this.plt.is('hybrid')) {
@@ -1552,7 +1568,7 @@ async book(adons){
           var start = this.app_to_book[ind].start
           var end = start + this.app_to_book[ind].duration
          
-          this.apiNative.bookAppointmentNoOwner(start, end, this.day, this.month, this.year, client_name, this.user.phone,  this.service[ind].name, this.app_to_book[ind].employee, this.app_to_book[ind].service,this.id, this.must_be_payed,adons).then(data=>{
+          this.apiNative.bookAppointmentNoOwner(start, end, this.day, this.month, this.year, client_name, this.user.phone,  this.service[ind].name, this.app_to_book[ind].employee, this.app_to_book[ind].service,this.id, this.must_be_payed,this.adons_topay).then(data=>{
            
              this.appointments_id.push( data.id)
          
@@ -1702,7 +1718,7 @@ async book(adons){
       var start = this.app_to_book[ind].start
       var end = start + this.app_to_book[ind].duration
      
-      this.api.bookAppointmentNoOwner(start, end, this.day, this.month, this.year, client_name, this.user.phone,  this.service[ind].name, this.app_to_book[ind].employee, this.app_to_book[ind].service,this.id, this.must_be_payed,adons).subscribe( data=>{
+      this.api.bookAppointmentNoOwner(start, end, this.day, this.month, this.year, client_name, this.user.phone,  this.service[ind].name, this.app_to_book[ind].employee, this.app_to_book[ind].service,this.id, this.must_be_payed,this.adons_topay).subscribe( data=>{
        
          this.appointments_id.push(data.id)
        

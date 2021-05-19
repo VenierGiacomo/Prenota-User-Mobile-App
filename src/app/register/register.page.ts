@@ -3,9 +3,11 @@ import { ModalController, NavController, Platform, ToastController } from '@ioni
 import { ApiService } from '../services/api.service';
 import Notiflix from "notiflix";
 import { NativeApiService } from '../services/nativeapi.service';
-import { Plugins } from '@capacitor/core';
+import { LocalNotifications, Plugins } from '@capacitor/core';
 
 import { StorageService } from '../services/storage.service';
+import { NotModalPage } from '../not-modal/not-modal.page';
+import { OneSignal } from '@ionic-native/onesignal/ngx';
 
 const { Browser } = Plugins;
 
@@ -19,7 +21,7 @@ export class RegisterPage implements OnInit {
   error
 BASE_URL = 'https://giacomovenier.pythonanywhere.com/api/'
   registerpage =true
-  constructor(private storage: StorageService, private toastController: ToastController,private plt: Platform, private nativeApi: NativeApiService,  public modalController: ModalController,private api: ApiService, private nav: NavController) { }
+  constructor(private oneSignal: OneSignal, private storage: StorageService, private toastController: ToastController,private plt: Platform, private nativeApi: NativeApiService,  public modalController: ModalController,private api: ApiService, private nav: NavController) { }
   
   @Input()  first_name = ''
   @Input() last_name = ''
@@ -54,10 +56,12 @@ password =''
   }
 
   async closeModal(bool){
+    if(bool==false && this.homeref.book_load!=undefined){
+      this.homeref.book_load=false
+    }
     await this.modalController.dismiss(bool);
   }
-  async register(){
-    Notiflix.Block.Standard('.wrapper', 'Salvando dati...');     
+  async register(){    
     this.first_name_err = ''
     this.last_name_err = ''
     this.email_err = ''
@@ -85,9 +89,9 @@ password =''
           async data=>{
            
             // await this.nativeApi.storeToken(data.token)
-            if(await data.token){
-              await this.closeModal(true)
-              if(this.homeref.page != 'tab2'){
+            if( data.token){
+             
+              if(this.homeref.page != 'tab2' && this.homeref.page != 'tab1' ){
                 this.homeref.user.phone = this.phone
                 await this.homeref.bookfromLogin(data.email, data.first_name, data.last_name)
                 this.nativeApi.paymentMethods().then(async (res)=>{
@@ -95,24 +99,28 @@ password =''
                     await this.storage.setPaymentMethods(res)
                  
                 })
+                this.presentToast('Salve  '+ data.first_name)
+                await this.closeModal(true)
+              }else{
+
+                setTimeout(async () => {
+                  if(this.client_id){
+                    this.nativeApi.updateStoreClientQRCode(this.client_id).then(async res=>{
+                      this.presentToast('Account collegato')
+                      
+                      
+                    }).catch(async err=>{
+                      this.presentToast("Non siamo riusciti a collegare l'account. Puoi sempre riutilizzare il link")
+                    })
+                    await this.closeModal(true)
+                  }else{
+                    this.presentToast('Salve  '+ data.first_name)
+                    await this.closeModal(true)
+                  }
+                }, 200);
+                
               }
-             
               
-                        
-              setTimeout(()=>{
-                if(this.client_id){
-                  
-                  this.nativeApi.updateStoreClientQRCode(this.client_id).then(async res=>{
-                    this.presentToast('Account collegato')
-                    
-                  }).catch(async err=>{
-                    this.presentToast("Non siamo riusciti a collegare l'account. Puoi sempre riutilizzare il link")
-                  })
-                }else{
-                  // this.presentToast('Salve  '+ data.first_name)
-                }
-              },100)
-              this.presentToast('Salve  '+ data.first_name)
              
               
             }else{
@@ -129,7 +137,8 @@ password =''
             // await this.homeref.closeModal()
           }
         ).catch(
-          err => {
+          async err => {
+            
             if (err.email != undefined){
               this.error = 'Questa email è invalida o è già stata utilizzata'
               this.presentToasterr(this.error)
@@ -144,11 +153,11 @@ password =''
       this.api.register(this.first_name, this.last_name, this.email, 'm', this.phone, this.password).subscribe(
        async  data=>{
          await this.api.storeToken(data.token)
-          Notiflix.Block.Remove('.wrapper');
+       
           
-          if(this.homeref.page != 'tab2'){
+          if(this.homeref.page != 'tab2'&& this.homeref.page != 'tab1'){
             this.homeref.user.phone = this.phone
-            await this.homeref.bookfromLogin(data.email, data.first_name, data.last_name )
+            await this.homeref.bookfromLogin(data.email, data.first_name, data.last_name)
           }
           this.presentToast('Salve '+this.first_name)
           this.closeModal(true)
@@ -158,7 +167,7 @@ password =''
         },
         err => {
       
-          Notiflix.Block.Remove('.wrapper');
+      
           if (err.error.email != undefined){
            
             this.error = 'Questa email è già stata utilizzata'
@@ -174,6 +183,7 @@ password =''
       )}
     }
   }
+ 
   switchSex(){
     if(this.sex=='m'){
       this.sex='w'
@@ -242,13 +252,13 @@ password =''
               
             },err =>{
               console.log(err)
-              Notiflix.Notify.Init({ position:"center-bottom"}); 
+             
              this.presentToast('Email e Password non combaciano')
               this.error = 'La password o la email che hai inserito non sono valide'
             })
         },err =>{
           console.log(err)
-          Notiflix.Notify.Init({ position:"center-bottom"}); 
+         
          this.presentToast('Email e Password non combaciano')
           this.error = 'La password o la email che hai inserito non sono valide'
         })

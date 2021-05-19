@@ -504,7 +504,7 @@ async getCLientSecret(type){
   async buywithCard(){
     this.payment_loading=true
   var card_number:any = document.getElementById('card_number')
-  card_number = card_number.value.replaceAll(' ','')
+  card_number = card_number.value.replace(/ /g, '');
   var date:any = document.getElementById('expiry')
   date = date.value.split('/')
   var cvv:any = document.getElementById('cvv')

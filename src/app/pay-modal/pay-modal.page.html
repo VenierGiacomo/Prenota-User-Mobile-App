@@ -20,9 +20,9 @@
        
           
  
-    <div class="prenota_btn" (click)='goPay()' > <button><span *ngIf="!book_load">prenota</span> <div class="loader-5 center" *ngIf="book_load"><span></span></div> </button> </div>
+    <div class="prenota_btn" (click)='goPay()' > <button><span *ngIf="!homeref.book_load">prenota</span> <div class="loader-5 center" *ngIf="homeref.book_load"><span></span></div> </button> </div>
     <div class="separator" [style.opacity]='opacity_scroll'>
-        <p (click)='backModal(true)'>Indietro</p>
+        <p (click)='backModal()'>Indietro</p>
       </div>
     </div>
   <div class="card-int"  [style.left]='pos_pay'>    

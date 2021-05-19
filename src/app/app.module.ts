@@ -22,6 +22,7 @@ import 'hammerjs'
 import { HammerGestureConfig, HAMMER_GESTURE_CONFIG } from '@angular/platform-browser';
 import { HammerModule } from '@angular/platform-browser';
 import * as Hammer from 'hammerjs';
+import { OneSignal } from '@ionic-native/onesignal/ngx';
 @Injectable()
 export class MyHammerConfig extends HammerGestureConfig {
     buildHammer(element: HTMLElement): any {
@@ -37,7 +38,8 @@ export class MyHammerConfig extends HammerGestureConfig {
     BrowserModule,
     CommonModule,
     IonicStorageModule.forRoot(),
-    IonicModule.forRoot(),
+    IonicModule.forRoot({
+      mode: 'ios'}),
     AppRoutingModule,
     HammerModule,
     HttpClientModule],
@@ -47,7 +49,7 @@ export class MyHammerConfig extends HammerGestureConfig {
     Diagnostic,
     AppCenterAnalytics,
     // ApplePay,
-
+    OneSignal,
     // Stripe,  
     Keyboard,
     BarcodeScanner,

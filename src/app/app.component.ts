@@ -1,10 +1,7 @@
 import { Component, NgZone } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import { Platform, NavController, ModalController, ToastController } from '@ionic/angular';
-import { StatusBar } from '@ionic-native/status-bar/ngx';
-
-
-import { Plugins } from '@capacitor/core';
+import { Plugins, StatusBarStyle } from '@capacitor/core';
 import { RegisterPage } from './register/register.page';
 import { NativeApiService } from './services/nativeapi.service';
 import { ShareAppoSocialPage } from './share-appo-social/share-appo-social.page';
@@ -13,6 +10,8 @@ import { StorageService } from './services/storage.service';
 
 const { Network } = Plugins;
 const { SplashScreen } = Plugins;
+const { StatusBar } = Plugins;
+
 const { App } = Plugins;
 const { LocalNotifications } = Plugins;
 // import { CodePush, InstallMode } from '@ionic-native/code-push/ngx';
@@ -24,7 +23,7 @@ const { LocalNotifications } = Plugins;
 export class AppComponent {
   constructor(
     private platform: Platform,
-    private statusBar: StatusBar,    
+        
     private nav: NavController,
     private modalController: ModalController,
     private zone: NgZone,
@@ -78,7 +77,7 @@ export class AppComponent {
 
 
      
-      this.statusBar.styleDefault();
+      StatusBar.setStyle({ style: StatusBarStyle.Light });
 
       // set status bar to white
       // this.statusBar.backgroundColorByHexString('#ffffff');

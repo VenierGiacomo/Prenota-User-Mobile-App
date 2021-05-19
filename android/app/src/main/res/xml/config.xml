@@ -69,6 +69,10 @@
     <param name="onload" value="true"/>
   </feature>
 
+  <feature name="OneSignalPush">
+    <param name="android-package" value="com.plugin.gcm.OneSignalPush"/>
+  </feature>
+
   <feature name="BarcodeScanner">
     <param name="android-package" value="com.phonegap.plugins.barcodescanner.BarcodeScanner"/>
   </feature>

@@ -9,8 +9,12 @@ import { ActivatedRoute } from '@angular/router';
 import { RegisterPage } from '../register/register.page';
 import { Plugins } from '@capacitor/core';
 import { AddFavoritesPage } from '../add-favorites/add-favorites.page';
+import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
+import { OneSignal } from '@ionic-native/onesignal/ngx';
+import { NotModalPage } from '../not-modal/not-modal.page';
 
 const { App } = Plugins;
+const { LocalNotifications } = Plugins;
 @Component({
   selector: 'app-tab1',
   templateUrl: 'tab1.page.html',
@@ -26,12 +30,14 @@ grouped:any=[]
 spin='none'
 fav_shops:any = []
 initialoffsetTop
-  constructor(private ngZone: NgZone, private route: ActivatedRoute, private toastController: ToastController,public actionSheetController: ActionSheetController, private nav: NavController ,  private storage: StorageService, public modalController: ModalController,private api:ApiService, private plt:Platform,private apiNative:NativeApiService) {
+native_app =true
+  constructor(private oneSignal: OneSignal,private barcodeScanner: BarcodeScanner, private ngZone: NgZone, private route: ActivatedRoute, private toastController: ToastController,public actionSheetController: ActionSheetController, private nav: NavController ,  private storage: StorageService, public modalController: ModalController,private api:ApiService, private plt:Platform,private apiNative:NativeApiService) {
     this.plt.ready().then(
       async () =>{
         this.fav_shops = await this.storage.getFavShops()
         if (this.plt.is('hybrid')) {
-          this.apiNative.getStores().then(async data=>{
+          this.native_app=true
+          this.apiNative.getStores1().then(async data=>{
             var shops:any =data
             await this.storage.setShops(shops)
             this.shops = data
@@ -51,7 +57,8 @@ initialoffsetTop
                     
         }
         else{
-          this.api.getStores1().subscribe(async data=>{
+          this.native_app=false
+          this.api.getStores().subscribe(async data=>{
             var shops:any =data
             await this.storage.setShops(shops)
           
@@ -77,7 +84,7 @@ initialoffsetTop
           if(state.isActive){
             if (this.plt.is('hybrid')) {
               
-              this.apiNative.getStores().then(async data=>{
+              this.apiNative.getStores1().then(async data=>{
                 var shops:any =data
                 await this.storage.setShops(shops).then(()=>{ this.reloadFav()})
               })          
@@ -95,7 +102,42 @@ initialoffsetTop
           await this.storage.clearPaymentMethods()
             await this.storage.setPaymentMethods(res)
         })
-      }
+        LocalNotifications.areEnabled().then(async (res)=>{
+          var areEnabled=res.value
+          if(areEnabled){
+            var self = this
+            var notificationOpenedCallback =  function(jsonData) {
+              self.nav.navigateRoot('/tabs/tab2')
+              console.log('one signal',jsonData)
+                }  
+       
+            // Set your iOS Settings
+            var iosSettings = {};
+            iosSettings["kOSSettingsKeyAutoPrompt"] = false;
+            iosSettings["kOSSettingsKeyInAppLaunchURL"] = false;
+            this.oneSignal.startInit("91f9f284-1a50-44c4-8d5d-7ff9102e75a0",'51693766010')
+              .handleNotificationOpened(notificationOpenedCallback) //.then(this.nav.navigateRoot("notifications"))
+              .iOSSettings(iosSettings)
+              .inFocusDisplaying(this.oneSignal.OSInFocusDisplayOption.Notification)
+              .endInit();
+            
+            // The promptForPushNotificationsWithUserResponse function will show the iOS push notification prompt. We recommend removing the following code and instead using an In-App Message to prompt for notification permission (See step 6)
+            this.oneSignal.promptForPushNotificationsWithUserResponse().then(function(accepted) {
+            });
+            this.oneSignal.setSubscription(true)
+            this.oneSignal.handleNotificationReceived().subscribe(() => {
+     
+             });
+              this.oneSignal.getIds().then(data =>{
+                this.apiNative.registerdevice(data.userId).then(data =>{
+              
+                })
+              })
+          }
+     
+      })
+    }
+      
     }else{
       if(this.api.isvalidToken()){
         this.api.paymentMethods().subscribe(async (res)=>{
@@ -104,7 +146,8 @@ initialoffsetTop
         })}
     }
   }
-  ngOnInit() {
+
+  async ngOnInit() {
     
     if(!this.plt.is("hybrid")){
 
@@ -120,6 +163,7 @@ initialoffsetTop
                   last_name :  params.get('last_name'),
                   email : params.get('email'),
                   phone : params.get('phone'),
+                  client_id : params.get('client_id'),
                 }
                 await this.presentRegisterModal(data)
         }
@@ -127,7 +171,28 @@ initialoffsetTop
         
       }
       })
+      var not_social_reminder={
+        title: `Ciao Giacomo, grazie da Wellens Clinic!`,
+        body: `Speriamo sia andato tutto bene.\nSe ti va, ci puoi aiutare a farci conoscere. Clicca questa notifica`,
+        id: 123456,
+        attachments: null,
+        schedule: {at: new Date(new Date().getFullYear(),new Date().getMonth(),new Date().getDate(),new Date().getHours(),new Date().getUTCMinutes()+1,)},
+        extra: {
+          shop:{img: 'https://firebasestorage.googleapis.com/v0/b/prenota-d8fae.appspot.com/o/wellness_host.png?alt=media&token=03e011a5-984c-4873-b359-daa605f026fb', name: "Wellness Clinic", business_type:"Medico sportivo"},
+          open:true
+        }
+      }
+    
+    
+      await LocalNotifications.schedule({
+        notifications: [not_social_reminder]
+    
+    
+      
+    })
   }
+
+  
 }
   async presentRegisterModal(reg_data) {
     const modal = await this.modalController.create({
@@ -138,11 +203,14 @@ initialoffsetTop
         first_name: reg_data.first_name,
          last_name :  reg_data.last_name,
          email : reg_data.email,
-         phone : reg_data.phone
+         phone : reg_data.phone,
+         client_id : reg_data.client_id,
+         homeref:{page:'tab1'}
       }
     });
     modal.onDidDismiss().then(()=>{
       this.nav.navigateRoot('tabs')
+      this.presentNotModal()
     })
     return await modal.present();
 }  
@@ -159,27 +227,34 @@ async presentToast(text) {
     if(shop.closed){
       this.presentclosed(shop.closed_message)
     }else{
-      const modal = await this.modalController.create({
-        component:BookModalPage,
-        swipeToClose: true,
-        cssClass: 'select-modal' ,
-        componentProps: {
-          image:  shop.img_url,
-          name: shop.store_name,
-          role: shop.business_description,
-          id: shop.id,
-          max_spots: shop.max_spots,
-          website: shop.website,
-          address: shop.address,
-          payable: shop.payable,
-          accept_credits: shop.credits,
-          must_be_payed: shop.must_pay,
-          adons: shop.adons,
-          available_on: shop.available_on,
-          advance_day:shop.book_advance,
-        }
-      });
-      return await modal.present();
+      if(!(this.plt.is('hybrid'))&& shop.only_app){
+        this.presentclosed(shop.closed_message)
+      }else{
+        const modal = await this.modalController.create({
+          component:BookModalPage,
+          swipeToClose: true,
+          cssClass: 'select-modal' ,
+          componentProps: {
+            image:  shop.img_url,
+            name: shop.store_name,
+            role: shop.business_description,
+            id: shop.id,
+            max_spots: shop.max_spots,
+            website: shop.website,
+            address: shop.address,
+            payable: shop.payable,
+            accept_credits: shop.credits,
+            must_be_payed: shop.must_pay,
+            adons: shop.adons,
+            available_on: shop.available_on,
+            advance_day:shop.book_advance,
+            has_category:shop.has_category,
+          }
+        });
+        return await modal.present();
+      }
+
+      
     }
     
   }
@@ -283,7 +358,15 @@ async presentToast(text) {
         handler: () => {
          this.newCustomer(shop)
         }
-      }, {
+      },{
+        text: 'QR code',
+        // icon: 'share',
+        handler: () => {
+         this.scanbarcode()
+        }
+      },
+      
+       {
         text: 'Rimuovi dai preferiti',
         role: 'destructive',
         handler:  () => {
@@ -299,17 +382,110 @@ async presentToast(text) {
   }
     
     
-
+  async scanbarcode(){
+    await this.barcodeScanner.scan({showTorchButton:true,disableAnimations:false}).then(async barcodeData => {
+      if(!barcodeData.cancelled){
+        const slug = barcodeData.text.split(".cc/").pop();
+        if (slug) {
+          var slug_parts =slug.split('/')
+          if(slug_parts[0] == 'register'){
+            var token: any = await this.apiNative.isvalidToken()
+           
+            if(token){
+              if(slug_parts[6]){
+                this.apiNative.updateStoreClientQRCode(slug_parts[6]).then(async res=>{
+                  await this.presentToast('Profilo collegato')
+                  setTimeout(() => {
+                    this.presentNotModal()
+                  },800 
+                  );
+                }).catch(err=>{
+                  console.log(err)
+                })
+              }else{
+                await this.presentToast('Per registrare un nuovo account devi prima effettuare il logout')
+              }
+             
+            }else{
+             var data = {
+                first_name: slug_parts[1],
+                last_name :  slug_parts[2],
+                email : slug_parts[3],
+                phone : slug_parts[4],
+                client_id : slug_parts[6],
+              }
+              await this.presentRegisterModal(data)
+            }
+          } 
+            
+        }
+        var sections_code = barcodeData.text.split('/')
+  
+        // this.apiNative.updateStoreClientQRCode(barcodeData.text).then(async res=>{
+        //   await this.presentToast('Profilo collegato')
+        // },async err=>{
+        //   await this.presentToast('Problema di connessione')
+        // })
+      }else{
+          this.presentToast("Scansione annullata") 
+        }
+      
+     
+     }).catch(err => {
+      this.presentToast("Problema dutante la scansione. Inserisci il codice a mano o riprova")
+         console.log('Error', err);
+     });
+  }
 async removefav(id){
     await this.storage.removeFav(id)
     this.fav_shops = this.fav_shops.filter((val)=>{return val.id!=id})
     
 }
 
-  
+async presentNotModal(){
+  LocalNotifications.areEnabled().then(async (res)=>{
+    if(!res.value){
+        const modal = await this.modalController.create({
+          component: NotModalPage,
+          swipeToClose: true,
+          cssClass: 'not-modal' ,
+        
+        });
+        return await modal.present();
+
+    }else{
+      var self = this
+            var notificationOpenedCallback =  function(jsonData) {
+                }  
+       
+            // Set your iOS Settings
+            var iosSettings = {};
+            iosSettings["kOSSettingsKeyAutoPrompt"] = false;
+            iosSettings["kOSSettingsKeyInAppLaunchURL"] = false;
+            this.oneSignal.startInit("91f9f284-1a50-44c4-8d5d-7ff9102e75a0",'51693766010')
+              .handleNotificationOpened(notificationOpenedCallback) //.then(this.nav.navigateRoot("notifications"))
+              .iOSSettings(iosSettings)
+              .inFocusDisplaying(this.oneSignal.OSInFocusDisplayOption.Notification)
+              .endInit();
+            
+            // The promptForPushNotificationsWithUserResponse function will show the iOS push notification prompt. We recommend removing the following code and instead using an In-App Message to prompt for notification permission (See step 6)
+            this.oneSignal.promptForPushNotificationsWithUserResponse().then(function(accepted) {
+            });
+            this.oneSignal.setSubscription(true)
+            this.oneSignal.handleNotificationReceived().subscribe(() => {
+     
+             });
+      this.oneSignal.getIds().then(data =>{
+        this.apiNative.registerdevice(data.userId).then(data =>{
+      
+        })
+      })
+    }
+  })
+}
 
   async newCustomer(shop){
-    var channel = shop.store_name.replaceAll(' ','-')
+    var channel = shop.store_name.replace(/ /g, '-');
   if(this.plt.is('hybrid')){
     var token = await this.apiNative.isvalidToken()
     if(token){

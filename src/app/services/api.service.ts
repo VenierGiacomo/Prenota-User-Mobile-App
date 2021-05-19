@@ -147,6 +147,9 @@ getemployeeHours(id): Observable<any>{
 getemployeeHoursByShop(id): Observable<any>{
   return this.http.get(BASE_URL+'employeehours/shop/?shop='+id,{headers: this.httpheader})
 }
+getCategoriebyStore(id): Observable<any>{
+  return this.http.get(BASE_URL+'categories/shop/?shop='+id,{headers: this.httpheader})
+}
 getopenHours(id): Observable<any>{
   // modificato bene qua ma non server (non usa lo shop id)
         return this.http.get(BASE_URL+'closedhours/?shop='+id,{headers: this.httpheader})
@@ -357,6 +360,7 @@ stripePortalSession(){
 getServiceAdons(service_id):Observable<any>{
   return this.http.get(BASE_URL+'serviceaddons/'+service_id,{headers: this.httpheader})
 }
+
 newCustomerSocket(channel,id){
   var data ={
     channel: channel,

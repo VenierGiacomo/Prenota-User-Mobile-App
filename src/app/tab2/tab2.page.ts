@@ -230,7 +230,6 @@ constructor(private toastController: ToastController, public actionSheetControll
         }
         
       }
-      console.log(notifications_to_set)
       if(areEnabled){
         await LocalNotifications.schedule({
           notifications: notifications_to_set
