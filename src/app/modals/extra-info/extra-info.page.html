@@ -1,0 +1,63 @@
+<ion-header class="ion-no-border bar-header">
+  <ion-toolbar style=" background: transparent !important;">
+      
+  </ion-toolbar>
+</ion-header>
+
+
+<ion-content>
+<h1>Informazioni aggiungive</h1>
+
+ <div class="input-cont">
+  
+    <ion-item lines='none' >
+ <ion-label position="stacked">Comune di residentza</ion-label>
+  <ion-input [(ngModel)]='live_city' type="text" name="live_city" placeholder="{{live_city}}" autocapitalize=true></ion-input>
+  
+</ion-item>
+<ion-item lines='none' >
+  <ion-label position="stacked">Indirizzo di residenza</ion-label>
+  <ion-input [(ngModel)]='live_street' type="text" name="live_street" placeholder="{{live_street}}" autocapitalize=true></ion-input>
+ 
+</ion-item>
+<ion-item lines='none' >
+  <ion-label position="stacked">Cap (codice postale)</ion-label>
+  <ion-input inputmode="tel" type="text" [(ngModel)]='cap' placeholder="{{cap}}"></ion-input>
+ 
+</ion-item>
+<ion-item lines='none' >
+  <ion-label position="stacked">Codice fiscale</ion-label>
+  <ion-input [(ngModel)]='fiscal_code' type="text" name="fiscal_code" placeholder="{{fiscal_code}}"></ion-input>
+  
+</ion-item>
+
+<ion-item lines='none'>
+  <ion-label position="stacked">Ricevi risposta via email?</ion-label>
+  <ion-checkbox [checked]='by_emial' (ionChange)='by_emial=!by_emial'></ion-checkbox>
+  
+</ion-item>
+<ion-item lines='none'>
+  <ion-label position="stacked">Dovrai recarti in Croazia?</ion-label>
+  <ion-checkbox [checked]='croatia' (ionChange)='croatia=!croatia'></ion-checkbox>
+  
+</ion-item>
+
+<!-- <ion-item lines='none' lines=none>
+    <ion-label style="text-align: right; margin: 0px;">Uomo</ion-label>
+    <ion-toggle (click)='switchSex()'></ion-toggle>
+    <ion-label style="text-align: left;margin: 0px;">Donna</ion-label>
+  </ion-item> -->
+  <p *ngIf='cap_err!=""' class="err_bas" style="margin-top: 20px;">{{cap_err}}</p>
+  <p *ngIf='fiscal_code_err!=""' class="err_bas">{{fiscal_code_err}}</p>
+  <p *ngIf='live_street_err!=""' class="err_bas">{{live_street_err}}</p>
+  <p *ngIf='live_city_err!=""' class="err_bas">{{live_city_err}}</p>
+  <div class="login-btn">
+    <ion-button fill=outline color='light' (click)='update_extra_data()'>Prosegui</ion-button>
+    <p>
+      I seguenti dati sono richiesti dalla <b>Farmacia Cermelj</b> per l'invio del risultato del tampone all' <b>Azienda Sanitaria Italiana</b>.
+    <b>I dati non saranno salvati da Prenota</b> e non verranno collegati al tuo account!
+    </p>
+  </div>
+ </div>
+</ion-content>
+

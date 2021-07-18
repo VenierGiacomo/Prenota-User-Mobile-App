@@ -214,6 +214,7 @@ getAppointments(week):Observable<any>{
   return this.http.get(BASE_URL+'bookings/week/'+week+'/?owner=2', {headers: this.httpheader})
 }
 
+
 getClientAppointments():Observable<any>{
   const token = this.getToken()
   var l 
@@ -325,6 +326,7 @@ getStores1(){
 getStoresDetails(id){
   return this.http.get(BASE_URL+'store/id/'+id,{headers: this.httpheader})
 }
+s
 
 payBusiness(list_ids){
     return this.http.post(BASE_URL+'webhooks/pay/business/', {list_ids:list_ids},{headers: this.newheader()})

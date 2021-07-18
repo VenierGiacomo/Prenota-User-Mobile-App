@@ -1,6 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { IonTabs, ModalController } from '@ionic/angular';
-import { BusTicketPage } from '../bus-ticket/bus-ticket.page';
+import { BusTicketPage } from '../components/bus-ticket/bus-ticket.page';
 
 @Component({
   selector: 'app-tabs',

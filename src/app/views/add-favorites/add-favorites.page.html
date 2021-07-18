@@ -1,0 +1,35 @@
+    <ion-content >
+      <div style="position: fixed; top:0px; z-index: 5; background: white;">
+      <div style="width: 100vw; text-align: right;">
+          <ion-icon  name="close-outline"  style="color: #212121; font-size: 30px; padding: 15px 15px 0px 0px ;;" (click)='closeModal()'></ion-icon>
+      </div>
+       
+      <ion-row>
+        <ion-col><ion-searchbar placeholder="Cerca un'attività" (ionChange)='filterBusiness()' [(ngModel)]='business_name'></ion-searchbar></ion-col> 
+     
+      </ion-row>
+    </div>
+          <div style="padding-top: 124px;">
+            <ion-virtual-scroll [items]="shops_to_display" approxItemHeight="100px">
+              <div class="prof-profile" *virtualItem="let shop" (click)="addfavorite(shop)" >
+                <div class="cont_img_text">
+                        <div class="prof-img"><img src='{{shop.img_url}}'></div>
+                        <div class="text_widg">
+                            <h4>{{shop.store_name}}</h4>
+                            <h5 >{{shop.business_description}}</h5>
+                            
+                            <div class="location" ><img src='../assets/icon/location.svg'>{{shop.address}}</div> 
+                        </div>
+            
+                </div>
+        </div>  
+          
+          </ion-virtual-scroll>
+          <!-- <div class="prof-profile" *ngFor='let shop of shops' (click)="navBusiness(shop)"> -->
+                        
+        
+        </div>
+  
+       
+  </ion-content>
+    

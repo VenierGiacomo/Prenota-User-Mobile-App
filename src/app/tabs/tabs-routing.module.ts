@@ -12,20 +12,20 @@ const routes: Routes = [
         children: [
           {
             path: '',
-            loadChildren: () => import('../tab1/tab1.module').then(m => m.Tab1PageModule)
+            loadChildren: () => import('../views/tab1/tab1.module').then(m => m.Tab1PageModule)
           },
           { path: 'category/:id', 
-            loadChildren: () => import('../category/category.module').then(m => m.CategoryPageModule)
+            loadChildren: () => import('../components/category/category.module').then(m => m.CategoryPageModule)
           }
         ]
       },
       {
         path: 'tab1/register/:first_name/:last_name/:email/:phone',
-        loadChildren: () => import('../tab1/tab1.module').then(m => m.Tab1PageModule)
+        loadChildren: () => import('../views/tab1/tab1.module').then(m => m.Tab1PageModule)
       },
       {
         path: 'tab2',
-        loadChildren: () => import('../tab2/tab2.module').then(m => m.Tab2PageModule)
+        loadChildren: () => import('../views/tab2/tab2.module').then(m => m.Tab2PageModule)
       },
       // {
       //   path: 'tab3',

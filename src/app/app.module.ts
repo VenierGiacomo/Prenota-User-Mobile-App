@@ -10,7 +10,7 @@ import { AppComponent } from './app.component';
 import { CommonModule } from '@angular/common';
 import { AppCenterAnalytics } from '@ionic-native/app-center-analytics/ngx';
 // import { Stripe } from '@ionic-native/stripe/ngx';
-import { PopoverComponent } from './popover/popover.component';
+import { PopoverComponent } from './components/popover/popover.component';
 // import { ApplePay } from '@ionic-native/apple-pay/ngx';
 // import { PayPal } from '@ionic-native/paypal/ngx';
 // import { Braintree} from '@ionic-native/braintree/ngx';

@@ -1,0 +1,16 @@
+
+
+<ion-content>
+  <span *ngIf='areEnabled'>
+ <h2>Le notifiche sono <b>attive</b></h2> 
+  <img src='../assets/icon/undraw_Weather_notification_re_3pad.svg'>
+  <h4>Ricevi una notifica di prova</h4>
+  <button class="pos" (click)='testNotfication()'>Inviami una notifica</button>
+</span>
+<span *ngIf='!areEnabled'>
+  <h2>Le notifiche sono <b>disattivate</b></h2> 
+   <img src='../assets/undraw_new_notifications_fhvw.svg'>
+   <h4>Attiva le notifiche per ricevere promemoria prima degli appuntamenti</h4>
+   <button class="pos" (click)='notfications()'>Attive le notifice</button>
+ </span>
+</ion-content>

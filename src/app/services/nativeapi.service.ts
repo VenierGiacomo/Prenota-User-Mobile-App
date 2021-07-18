@@ -397,6 +397,10 @@ async updateStoreClientQRCode(id){
   const url = BASE_URL+'store/clients/QRCode'
   return await this.postData(url,{id: id, client_name:'Only because required'},this.token_header)
 }
+async testNotifications(){
+  const url = BASE_URL+'webhooks/testnotifications/'
+  return await this.getData(url,this.token_header)
+}
 
 async getData(url,headers){
   let res = await Http.request({

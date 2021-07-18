@@ -8,23 +8,23 @@ const routes: Routes = [
   },
   {
     path: 'book-modal',
-    loadChildren: () => import('./book-modal/book-modal.module').then( m => m.BookModalPageModule)
+    loadChildren: () => import('./modals/book-modal/book-modal.module').then( m => m.BookModalPageModule)
   },
   {
     path: 'register',
-    loadChildren: () => import('./register/register.module').then( m => m.RegisterPageModule)
+    loadChildren: () => import('./components/register/register.module').then( m => m.RegisterPageModule)
   },
   {
     path: 'onboarding',
-    loadChildren: () => import('./onboarding/onboarding.module').then( m => m.OnboardingPageModule)
+    loadChildren: () => import('./components/onboarding/onboarding.module').then( m => m.OnboardingPageModule)
   },
   {
     path: 'payment-success',
-    loadChildren: () => import('./payment-success/payment-success.module').then( m => m.PaymentSuccessPageModule)
+    loadChildren: () => import('./components/payment-success/payment-success.module').then( m => m.PaymentSuccessPageModule)
   },
   {
     path: 'business/:id',
-    loadChildren: () => import('./business/business.module').then( m => m.BusinessPageModule)
+    loadChildren: () => import('./views/business/business.module').then( m => m.BusinessPageModule)
   },
   {
     path: 'register/:first_name/:last_name/:email/:phone/:store/client_id:',
@@ -32,63 +32,73 @@ const routes: Routes = [
   },
   {
     path: 'bus-ticket',
-    loadChildren: () => import('./bus-ticket/bus-ticket.module').then( m => m.BusTicketPageModule)
+    loadChildren: () => import('./components/bus-ticket/bus-ticket.module').then( m => m.BusTicketPageModule)
   },
   {
     path: 'pay-modal',
-    loadChildren: () => import('./pay-modal/pay-modal.module').then( m => m.PayModalPageModule)
+    loadChildren: () => import('./modals/pay-modal/pay-modal.module').then( m => m.PayModalPageModule)
   },
   {
     path: 'not-modal',
-    loadChildren: () => import('./not-modal/not-modal.module').then( m => m.NotModalPageModule)
+    loadChildren: () => import('./modals/not-modal/not-modal.module').then( m => m.NotModalPageModule)
   },
   {
     path: 'cancel-modal',
-    loadChildren: () => import('./cancel-modal/cancel-modal.module').then( m => m.CancelModalPageModule)
+    loadChildren: () => import('./modals/cancel-modal/cancel-modal.module').then( m => m.CancelModalPageModule)
   },
   {
     path: 'profile',
-    loadChildren: () => import('./profile/profile.module').then( m => m.ProfilePageModule)
+    loadChildren: () => import('./views/profile/profile.module').then( m => m.ProfilePageModule)
   },
   {
     path: 'select-company',
-    loadChildren: () => import('./select-company/select-company.module').then( m => m.SelectCompanyPageModule)
+    loadChildren: () => import('./views/select-company/select-company.module').then( m => m.SelectCompanyPageModule)
   },
   {
     path: 'share-appo-social',
-    loadChildren: () => import('./share-appo-social/share-appo-social.module').then( m => m.ShareAppoSocialPageModule)
+    loadChildren: () => import('./modals/share-appo-social/share-appo-social.module').then( m => m.ShareAppoSocialPageModule)
   },
   {
     path: 'add-favorites',
-    loadChildren: () => import('./add-favorites/add-favorites.module').then( m => m.AddFavoritesPageModule)
+    loadChildren: () => import('./views/add-favorites/add-favorites.module').then( m => m.AddFavoritesPageModule)
   },
   {
     path: 'category',
-    loadChildren: () => import('./category/category.module').then( m => m.CategoryPageModule)
+    loadChildren: () => import('./components/category/category.module').then( m => m.CategoryPageModule)
   },
   {
     path: 'booked-by-others',
-    loadChildren: () => import('./booked-by-others/booked-by-others.module').then( m => m.BookedByOthersPageModule)
+    loadChildren: () => import('./modals/booked-by-others/booked-by-others.module').then( m => m.BookedByOthersPageModule)
   },
   {
     path: 'noconnection',
-    loadChildren: () => import('./absent/absent.module').then( m => m.AbsentPageModule)
+    loadChildren: () => import('./components/absent/absent.module').then( m => m.AbsentPageModule)
   },
   {
     path: 'info',
-    loadChildren: () => import('./info-page/info-page.module').then( m => m.InfoPagePageModule)
+    loadChildren: () => import('./views/info-page/info-page.module').then( m => m.InfoPagePageModule)
+  },
+  
+  {
+    path: 'info-page',
+    loadChildren: () => import('./views/info-page/info-page.module').then( m => m.InfoPagePageModule)
+  },
+  {
+    path: 'not-bookable-online',
+    loadChildren: () => import('./views/not-bookable-online/not-bookable-online.module').then( m => m.NotBookableOnlinePageModule)
+  },
+  {
+    path: 'extra-info',
+    loadChildren: () => import('./modals/extra-info/extra-info.module').then( m => m.ExtraInfoPageModule)
+  },
+  {
+    path: 'not-settings',
+    loadChildren: () => import('./components/not-settings/not-settings.module').then( m => m.NotSettingsPageModule)
   },
   {path: '**', 
   redirectTo: '/tabs/tab1',
 },
-  {
-    path: 'info-page',
-    loadChildren: () => import('./info-page/info-page.module').then( m => m.InfoPagePageModule)
-  },
-  {
-    path: 'not-bookable-online',
-    loadChildren: () => import('./not-bookable-online/not-bookable-online.module').then( m => m.NotBookableOnlinePageModule)
-  },
+  
 ];
 @NgModule({
   imports: [
