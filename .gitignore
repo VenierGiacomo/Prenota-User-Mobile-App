@@ -27,5 +27,4 @@ npm-debug.log*
 /platforms
 /plugins
 /www
-
-/assets/author
+src/assets/author
