@@ -1,8 +1,9 @@
 
+# Prenota - Online booking and payments for local services
 
-# Prenota - Online booking and payments for local services.
+## Mobile User App (Ionic + Capacitor)
 
-
+https://user-images.githubusercontent.com/86734894/126119937-b3e5fc76-87b6-4f98-8876-8f49f9888dba.MOV
 
 
 
@@ -13,9 +14,11 @@
 
 
 ## Brief repository summary  
-This repository is the Progressive Web Application (PWA) part of the project.   
-This app was generated with [Angular CLI](https://github.com/angular/angular-cli) version 8.3.19.  
-The CSS in mainly customed made using SCSS. In small sections of the project Bootstrap was used.
+This repository is the Mobile Application (iOS & Android) part of the project.   
+This app was built with Ionic + Capacitor.  
+**Native API**: Local Notifications, Push Notifications, In-app Browser, Camera, QR-CODE Scanner.  
+It implamentes native payments gateaways like [Apple Pay](https://www.apple.com/apple-pay/) and [Google Pay](https://pay.google.com/) + all Credit Cards.  
+The CSS in mainly customed made using SCSS.
 
 ## Links to the other parts of the project:
 - [User facing mobile App]()
