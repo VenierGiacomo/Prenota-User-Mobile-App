@@ -16,7 +16,7 @@ https://user-images.githubusercontent.com/86734894/126119937-b3e5fc76-87b6-4f98-
 ## Brief repository summary  
 This repository is the Mobile Application (iOS & Android) part of the project.   
 This app was built with Ionic + Capacitor.  
-**Native API**: Local Notifications, Push Notifications, In-app Browser, Camera, QR-CODE Scanner.  
+**Native API**: Local Notifications, Push Notifications, Deep Links, Apple Pay, Google Pay In-app Browser, Camera, QR-CODE Scanner.  
 It implamentes native payments gateaways like [Apple Pay](https://www.apple.com/apple-pay/) and [Google Pay](https://pay.google.com/) + all Credit Cards.  
 The CSS in mainly customed made using SCSS.
 
