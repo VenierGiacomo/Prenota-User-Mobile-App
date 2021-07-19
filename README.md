@@ -21,9 +21,9 @@ It implamentes native payments gateaways like [Apple Pay](https://www.apple.com/
 The CSS in mainly customed made using SCSS.
 
 ## Links to the other parts of the project:
-- [User facing mobile App]()
+- [Progessive Web Application](https://github.com/VenierGiacomo/Prenota-PWA)
 - [Django Backend for the Apps](https://github.com/VenierGiacomo/Prenota-Backend-API/)
-- [Business facing mobile App]()
+- [Business facing mobile App](https://github.com/VenierGiacomo/Prenota-Business-Mobile-App/)
 
 
 ## About the project  
